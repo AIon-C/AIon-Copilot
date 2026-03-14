@@ -1,0 +1,12 @@
+version: v1
+plugins:
+  - plugin: go
+    out: backend/gen/go
+    opt:
+      - paths=source_relative
+
+  - plugin: connect-go
+    out: backend/gen/go
+    opt:
+      - paths=source_relative
+      - simple
