@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaGithub } from 'react-icons/fa';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -23,6 +22,7 @@ import { useGetChannels } from '@/features/channels/api/use-get-channels';
 import { useGetMembers } from '@/features/members/api/use-get-members';
 import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import type { Id } from '@/mock/types';
 
 export const Toolbar = () => {
   const router = useRouter();

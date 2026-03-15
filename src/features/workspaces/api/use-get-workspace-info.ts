@@ -1,15 +1,15 @@
-import { useQuery } from 'convex/react';
+import { useCallback } from 'react';
 
-import { api } from '@/../convex/_generated/api';
-import type { Id } from '@/../convex/_generated/dataModel';
+import { getWorkspaceInfoById } from '@/mock/api';
+import { useMockQuery } from '@/mock/hooks';
+import type { Id } from '@/mock/types';
 
-interface useGetWorkspaceInfoProps {
+interface UseGetWorkspaceInfoProps {
   id: Id<'workspaces'>;
 }
 
-export const useGetWorkspaceInfo = ({ id }: useGetWorkspaceInfoProps) => {
-  const data = useQuery(api.workspaces.getInfoById, { id });
-  const isLoading = data === undefined;
+export const useGetWorkspaceInfo = ({ id }: UseGetWorkspaceInfoProps) => {
+  const queryFn = useCallback(() => getWorkspaceInfoById(id), [id]);
 
-  return { data, isLoading };
+  return useMockQuery(queryFn);
 };

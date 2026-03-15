@@ -3,10 +3,10 @@ import type { LucideIcon } from 'lucide-react';
 import Link from 'next/link';
 import type { IconType } from 'react-icons/lib';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { Button } from '@/components/ui/button';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
+import type { Id } from '@/mock/types';
 
 const sidebarItemVariants = cva('flex items-center gap-1.5 justify-start font-normal h-7 px-[18px] text-sm overflow-hidden', {
   variants: {
