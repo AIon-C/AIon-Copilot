@@ -121,6 +121,7 @@ slack-clone/
   |- components.json
   |- environment.d.ts
   |- next.config.mjs
+  |- package-lock.json
   |- package.json
   |- postcss.config.mjs
   |- tailwind.config.ts
