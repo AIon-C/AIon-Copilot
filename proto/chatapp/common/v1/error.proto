@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package chatapp.common.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/common/v1;commonv1";
+
+// フィールド単位のバリデーションエラー
+message FieldViolation {
+  string field = 1;
+  string description = 2;
+}
+
+// アプリケーションエラー詳細
+message ErrorDetail {
+  string code = 1;
+  string message = 2;
+  repeated FieldViolation violation = 3;
+}
