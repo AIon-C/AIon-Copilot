@@ -12,6 +12,6 @@ message AuditMetadata {
   google.protobuf.Timestamp update_at = 2;
   google.protobug.Timestamp deleted_at = 3;
   string created_by = 4;
-  string updated_by = 4;
-  string deleted_by = 4;
+  string updated_by = 5;
+  string deleted_by = 6;
 }
