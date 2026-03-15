@@ -1,16 +1,15 @@
-import { useQuery } from 'convex/react';
+import { useCallback } from 'react';
 
-import { api } from '@/../convex/_generated/api';
-import type { Id } from '@/../convex/_generated/dataModel';
+import { getMessageById } from '@/mock/api';
+import { useMockQuery } from '@/mock/hooks';
+import type { Id } from '@/mock/types';
 
 interface UseGetMessageProps {
   id: Id<'messages'>;
 }
 
 export const useGetMessage = ({ id }: UseGetMessageProps) => {
-  const data = useQuery(api.messages.getById, { id });
+  const queryFn = useCallback(() => getMessageById({ id }), [id]);
 
-  const isLoading = data === undefined;
-
-  return { data, isLoading };
+  return useMockQuery(queryFn);
 };

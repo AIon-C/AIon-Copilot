@@ -1,9 +1,7 @@
-import { ConvexAuthNextjsServerProvider } from '@convex-dev/auth/nextjs/server';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
 
-import { ConvexClientProvider } from '@/components/convex-client-provider';
 import { JotaiProvider } from '@/components/jotai-provider';
 import { ModalProvider } from '@/components/modal-provider';
 import { Toaster } from '@/components/ui/sonner';
@@ -19,20 +17,16 @@ export const metadata: Metadata = siteConfig;
 
 const RootLayout = ({ children }: Readonly<PropsWithChildren>) => {
   return (
-    <ConvexAuthNextjsServerProvider>
-      <html lang="en">
-        <body className={`${inter.className} antialiased`}>
-          <ConvexClientProvider>
-            <JotaiProvider>
-              <Toaster theme="light" richColors closeButton />
-              <ModalProvider />
+    <html lang="en">
+      <body className={`${inter.className} antialiased`}>
+        <JotaiProvider>
+          <Toaster theme="light" richColors closeButton />
+          <ModalProvider />
 
-              {children}
-            </JotaiProvider>
-          </ConvexClientProvider>
-        </body>
-      </html>
-    </ConvexAuthNextjsServerProvider>
+          {children}
+        </JotaiProvider>
+      </body>
+    </html>
   );
 };
 

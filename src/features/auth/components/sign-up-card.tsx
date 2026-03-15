@@ -1,5 +1,5 @@
-import { useAuthActions } from '@convex-dev/auth/react';
 import { TriangleAlert } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { FaGithub } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { useAuthActions } from '@/mock/auth';
 
 import type { SignInFlow } from '../types';
 
@@ -16,6 +17,7 @@ interface SignUpCardProps {
 }
 
 export const SignUpCard = ({ setState }: SignUpCardProps) => {
+  const router = useRouter();
   const { signIn } = useAuthActions();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -26,7 +28,9 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
 
   const handleOAuthSignUp = (value: 'github' | 'google') => {
     setPending(true);
-    signIn(value).finally(() => setPending(false));
+    signIn(value)
+      .then(() => router.replace('/'))
+      .finally(() => setPending(false));
   };
 
   const handleSignUp = (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,6 +55,7 @@ export const SignUpCard = ({ setState }: SignUpCardProps) => {
     setPending(true);
     setError('');
     signIn('password', { name, email, password, flow: 'signUp' })
+      .then(() => router.replace('/'))
       .catch(() => {
         setError('Something went wrong!');
       })

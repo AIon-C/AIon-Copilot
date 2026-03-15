@@ -3,11 +3,11 @@
 import { Loader } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Profile } from '@/features/members/components/profile';
 import { Thread } from '@/features/messages/components/thread';
 import { usePanel } from '@/hooks/use-panel';
+import type { Id } from '@/mock/types';
 
 import { Sidebar } from './sidebar';
 import { Toolbar } from './toolbar';

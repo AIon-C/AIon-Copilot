@@ -1,9 +1,8 @@
-import { usePaginatedQuery } from 'convex/react';
+import { useCallback } from 'react';
 
-import { api } from '@/../convex/_generated/api';
-import type { Id } from '@/../convex/_generated/dataModel';
-
-const BATCH_SIZE = 20;
+import { getMessagesByFilter } from '@/mock/api';
+import { useMockPaginatedQuery } from '@/mock/hooks';
+import type { Id, MockMessage } from '@/mock/types';
 
 interface UseGetMessagesProps {
   channelId?: Id<'channels'>;
@@ -11,18 +10,13 @@ interface UseGetMessagesProps {
   parentMessageId?: Id<'messages'>;
 }
 
-export type GetMessagesReturnType = (typeof api.messages.get._returnType)['page'];
+export type GetMessagesReturnType = MockMessage[];
 
 export const useGetMessages = ({ channelId, conversationId, parentMessageId }: UseGetMessagesProps) => {
-  const { results, status, loadMore } = usePaginatedQuery(
-    api.messages.get,
-    { channelId, conversationId, parentMessageId },
-    { initialNumItems: BATCH_SIZE },
+  const queryFn = useCallback(
+    () => getMessagesByFilter({ channelId, conversationId, parentMessageId }),
+    [channelId, conversationId, parentMessageId],
   );
 
-  return {
-    results,
-    status,
-    loadMore: () => loadMore(BATCH_SIZE),
-  };
+  return useMockPaginatedQuery(queryFn);
 };

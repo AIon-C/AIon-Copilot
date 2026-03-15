@@ -6,10 +6,10 @@ import type Quill from 'quill';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useGenerateUploadUrl } from '@/features/upload/api/use-generate-upload-url';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import type { Id } from '@/mock/types';
 
 const Editor = dynamic(() => import('@/components/editor'), {
   ssr: false,
