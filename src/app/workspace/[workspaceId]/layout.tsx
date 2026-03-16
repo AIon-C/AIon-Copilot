@@ -5,6 +5,7 @@ import type { PropsWithChildren } from 'react';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
 import { Profile } from '@/features/members/components/profile';
+import { AiChatPanel } from '@/features/messages/components/copilot-chat-panel';
 import { Thread } from '@/features/messages/components/thread';
 import { usePanel } from '@/hooks/use-panel';
 import type { Id } from '@/mock/types';
@@ -14,9 +15,9 @@ import { Toolbar } from './toolbar';
 import { WorkspaceSidebar } from './workspace-sidebar';
 
 const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
-  const { parentMessageId, profileMemberId, onClose } = usePanel();
+  const { aiChatOpen, parentMessageId, profileMemberId, onClose, onCloseAiChat, onCloseMessage } = usePanel();
 
-  const showPanel = !!parentMessageId || !!profileMemberId;
+  const showPanel = !!aiChatOpen || !!parentMessageId || !!profileMemberId;
 
   return (
     <div className="h-full">
@@ -40,8 +41,22 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
             <>
               <ResizableHandle withHandle />
               <ResizablePanel minSize={20} defaultSize={29}>
-                {parentMessageId ? (
-                  <Thread messageId={parentMessageId as Id<'messages'>} onClose={onClose} />
+                {aiChatOpen && parentMessageId ? (
+                  <ResizablePanelGroup direction="horizontal" autoSaveId="slack-clone-thread-ai-layout">
+                    <ResizablePanel minSize={35} defaultSize={50}>
+                      <Thread messageId={parentMessageId as Id<'messages'>} onClose={onCloseMessage} />
+                    </ResizablePanel>
+
+                    <ResizableHandle withHandle />
+
+                    <ResizablePanel minSize={35} defaultSize={50}>
+                      <AiChatPanel onClose={onCloseAiChat} />
+                    </ResizablePanel>
+                  </ResizablePanelGroup>
+                ) : aiChatOpen ? (
+                  <AiChatPanel onClose={onCloseAiChat} />
+                ) : parentMessageId ? (
+                  <Thread messageId={parentMessageId as Id<'messages'>} onClose={onCloseMessage} />
                 ) : profileMemberId ? (
                   <Profile memberId={profileMemberId as Id<'members'>} onClose={onClose} />
                 ) : (
