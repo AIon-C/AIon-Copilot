@@ -53,7 +53,7 @@ message GetChannelResponse {
 
 message UpdateChannelRequest {
   chatapp.model.v1.Channel channel = 1;
-  goole.protobuf.FieldMask update_mask = 2;
+  google.protobuf.FieldMask update_mask = 2;
 }
 
 message UpdateChannelResponse {
