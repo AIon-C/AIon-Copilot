@@ -1,0 +1,91 @@
+syntax = "proto3";
+
+package chatapp.auth.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/workspace/v1;workspacev1";
+
+import "google/protobuf/field_mask.proto.proto";
+import "chatapp/common/v1/pagination.proto";
+import "chatapp/model/v1/workspace.proto";
+import "chatapp/model/v1/workspace_member.proto";
+
+message CreateWorkspaceRequest {
+  string name = 1;
+  string slug = 2;
+  string icon_url = 3;
+  string client_request_id = 4;
+}
+
+message CreateWorkspaceResponse {
+  chatapp.model.v1.Workspace workspace = 1;
+}
+
+message ListWorkspacesRequest {
+  chatapp.common.v1.PageRequest page = 1;
+}
+
+message ListWorkspacesResponse {
+  repeated chatapp.model.v1.Workspace workspace = 1;
+  chatapp.common.v1.PageResponse page = 2;
+}
+
+message GetWorkspaceRequest {
+  string workspace_id = 1;
+}
+
+message GetWorkspaceResponse {
+  chatapp.model.v1.Workspace workspace = 1;
+  google.protobuf.FiledMask update_mask = 2;
+}
+
+message UpdateWorkspaceRequest {
+  chatapp.model.v1.Workspace workspace = 1;
+  google.protobuf.FiledMask update_mask = 2;
+}
+
+message UpdateWorkspaceRequest {
+  chatapp.model.v1.Workspace workspace = 1;
+}
+
+message InviteWorkspaceMemberRequest {
+  string workspace_id = 1;
+  string email = 2;
+}
+
+message InviteWorkspaceMemberResponse {
+  string invite_token = 1;
+}
+
+message JoinWorkspaceByInviteRequest {
+  string invite_token = 1;
+  string client_request_id = 2;
+}
+
+message JoinWorkspaceByInviteResponse {
+  chatapp.model.v1.WorkspaceMember member = 1;
+}
+
+message ListWorkspaceMembersRequest {
+  string workspace_id = 1;
+  chatapp.common.v1.PageRequest page =2;
+}
+
+message ListWorkspaceMembersResponse {
+  repeated chatapp.model.v1.WorkspaceMember members = 1;
+  chatapp.common.v1.PageResponse page = 2;
+}
+
+service WorkspaceService {
+  rpc CreateWorkspace(CreateWorkspaceRequest) returns (CreateWorkspaceResponse);
+  rpc ListWorkspaces(ListWorkspacesRequest) returns (ListWorkspacesResponse);
+  rpc GetWorkspace(GetWorkspaceRequest) returns (GetWorkspaceResponse);
+  rpc UpdateWorkspace(UpdateWorkspaceRequest) returns (UpdateWorkspaceResponse);
+  rpc InviteWorkspaceMember(InviteWorkspaceMemberRequest) returns (InviteWorkspaceMemberResponse);
+  rpc JoinWorkspaceByInvite(JoinWorkspaceByInviteRequest) returns (JoinWorkspaceByInviteResponse);
+  rpc ListWorkspaceMembers(ListWorkspaceMembersRequest) returns (ListWorkspaceMembersResponse);
+}
+
+
+
+
+
