@@ -1,11 +1,11 @@
 import { type VariantProps, cva } from 'class-variance-authority';
 import Link from 'next/link';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
+import type { Id } from '@/mock/types';
 
 const userItemVariants = cva('flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden', {
   variants: {

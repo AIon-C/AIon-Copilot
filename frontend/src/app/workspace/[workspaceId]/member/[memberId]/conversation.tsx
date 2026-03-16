@@ -1,11 +1,11 @@
 import { Loader } from 'lucide-react';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { MessageList } from '@/components/message-list';
 import { useGetMember } from '@/features/members/api/use-get-member';
 import { useGetMessages } from '@/features/messages/api/use-get-messages';
 import { useMemberId } from '@/hooks/use-member-id';
 import { usePanel } from '@/hooks/use-panel';
+import type { Id } from '@/mock/types';
 
 import { ChatInput } from './chat-input';
 import { Header } from './header';

@@ -10,8 +10,8 @@ import { useToggleReaction } from '@/features/reactions/api/use-toggle-reaction'
 import { useConfirm } from '@/hooks/use-confirm';
 import { usePanel } from '@/hooks/use-panel';
 import { cn } from '@/lib/utils';
+import type { Doc, Id } from '@/mock/types';
 
-import type { Doc, Id } from '../../convex/_generated/dataModel';
 import { Hint } from './hint';
 import { Reactions } from './reactions';
 import { ThreadBar } from './thread-bar';
@@ -86,7 +86,7 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm('Delete message', 'Are you sure you want to delete this message? This cannot be undone.');
-  const { parentMessageId, onOpenMessage, onOpenProfile, onClose } = usePanel();
+  const { parentMessageId, onOpenMessage, onOpenProfile, onCloseMessage } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } = useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } = useRemoveMessage();
@@ -121,7 +121,7 @@ export const Message = ({
         onSuccess: () => {
           toast.success('Message deleted.');
 
-          if (parentMessageId === id) onClose();
+          if (parentMessageId === id) onCloseMessage();
         },
         onError: () => {
           toast.error('Failed to delete message.');

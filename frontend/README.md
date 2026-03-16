@@ -44,26 +44,13 @@
 Here is the folder structure of this app.
 
 <!--- FOLDER_STRUCTURE_START --->
+
 ```bash
 slack-clone/
-  |- convex/
-    |-- _generated/
-    |-- auth.config.ts
-    |-- auth.ts
-    |-- channels.ts
-    |-- conversations.ts
-    |-- http.ts
-    |-- members.ts
-    |-- messages.ts
-    |-- reactions.ts
-    |-- schema.ts
-    |-- tsconfig.json
-    |-- upload.ts
-    |-- users.ts
-    |-- workspaces.ts
   |- public/
   |- src/
     |-- app/
+      |--- api/
       |--- auth/
       |--- join/
       |--- workspace/
@@ -78,7 +65,6 @@ slack-clone/
       |--- ui/
       |--- channel-hero.tsx
       |--- conversation-hero.tsx
-      |--- convex-client-provider.tsx
       |--- editor.tsx
       |--- emoji-popover.tsx
       |--- hint.tsx
@@ -110,23 +96,32 @@ slack-clone/
       |--- use-workspace-id.ts
     |-- lib/
       |--- utils.ts
-    |-- middleware.ts
+    |-- mock/
+      |--- api.ts
+      |--- auth.ts
+      |--- hooks.ts
+      |--- messages.ts
+      |--- types.ts
+      |--- use-mock-mutation.ts
   |- .env.example
   |- .env/.env.local
   |- .eslintrc.json
   |- .gitignore
+  |- .npmrc
   |- .prettierrc.json
   |- .prettierrc.mjs
   |- bun.lockb
   |- components.json
   |- environment.d.ts
   |- next.config.mjs
+  |- package-lock.json
   |- package.json
   |- postcss.config.mjs
   |- tailwind.config.ts
   |- tsconfig.json
   |- vercel.ts
 ```
+
 <!--- FOLDER_STRUCTURE_END --->
 
 <br />
@@ -144,100 +139,31 @@ slack-clone/
 # disabled next.js telemetry
 NEXT_TELEMETRY_DISABLED=1
 
-# deployment used by `npx convex dev` or `bunx convex dev`
-CONVEX_DEPLOYMENT=dev:<deployment-name> # team: <team-name>, project: <project-name>
-
-# convex public url
-NEXT_PUBLIC_CONVEX_URL="https://<deployment-name>.convex.cloud"
-
 ```
 
-5. Convex Deployment
-
-- Visit the Convex website: [https://convex.dev](https://convex.dev)
-- Log in to your Convex account or sign up if you don't have one.
-- Once logged in, navigate to the "Deployments" section.
-- Create a new deployment or select an existing one.
-- Replace `<deployment-name>`, `<team-name>`, and `<project-name>` in the `.env.local` file with your Convex deployment details.
-- In the Convex dashboard, find the public URL associated with your deployment.
-- Replace `<your-convex-url>` in the `.env.local` file with your Convex public URL.
-
-6. Initialise Convex Auth Development Keys
-
-- Run the initialization command: `npx @convex-dev/auth` or `bunx @convex-dev/auth` to setup your project for authenticating via the library.
-- Make sure your **SITE_URL** environment variable is set correctly. This is the URL where your app is hosted, e.g., `http://localhost:3000` for development.
-- Your project authentication is setup for logging in with credentials.
-
-7. Setting Up Google OAuth
-
-**Step 1: Create a Google Cloud Project**
-
-- Go to the [Google Cloud Console](https://console.cloud.google.com/).
-- Create a new project (if you don’t have one) by clicking on **Select a project** > **New Project**, and give it a name.
-- Enable the **Google OAuth 2.0** API by navigating to **APIs & Services > Library** and searching for **Google OAuth 2.0**.
-
-**Step 2: Create OAuth Credentials**
-
-- In the **APIs & Services > Credentials** section, click **Create Credentials** and choose **OAuth 2.0 Client IDs**.
-- Select **Web Application** as the application type.
-- Set the **Authorized Redirect URI** to your Convex callback URL. The origin (domain) of the callback URL is your Convex backend's **HTTP Actions URL**. You can find it in your Convex dashboard and it is similar to your `CONVEX_URL`, but with `.site` instead of `.cloud`.
-
-- After setting the redirect URI, click **Create**. You’ll be provided with a **Client ID** and **Client Secret**.
-
-**Step 3: Set Google OAuth Environment Variables in Convex**
-To configure Google OAuth in your Convex backend, run the following commands with your actual values:
+5. Install dependencies.
 
 ```bash
-npx convex env set AUTH_GOOGLE_CLIENT_ID your-google-client-id
-npx convex env set AUTH_GOOGLE_CLIENT_SECRET your-google-client-secret
+npm install
 ```
 
-OR
+6. Start the development server.
 
 ```bash
-bunx convex env set AUTH_GOOGLE_CLIENT_ID your-google-client-id
-bunx convex env set AUTH_GOOGLE_CLIENT_SECRET your-google-client-secret
+npm run dev
 ```
 
-8. Setting Up GitHub OAuth
+7. Optional: Configure OAuth providers directly in your app/auth layer if needed.
 
-**Step 1: Create a GitHub OAuth Application**
+8. Install project dependencies (if you have not already): `npm install`.
 
-- Go to [GitHub Developer Settings](https://github.com/settings/developers).
-- Under **OAuth Apps**, click **New OAuth App**.
-- Fill in the following:
-
-  - **Application Name**: Name your app (e.g., "Slack Clone").
-  - **Homepage URL**: Your app’s homepage URL, like `http://localhost:3000` for local development.
-  - **Authorization Callback URL**: Set this to your Convex callback URL (Similar to Google OAuth **Authorized Redirect URI**).
-
-- After registering the app, you’ll get a **Client ID** and **Client Secret**.
-
-**Step 2: Set GitHub OAuth Environment Variables in Convex**
-
-- To configure GitHub OAuth in your Convex backend, run the following commands with your actual values:
-
-```bash
-npx convex env set AUTH_GITHUB_ID your-github-client-id
-npx convex env set AUTH_GITHUB_SECRET your-github-client-secret
-```
-
-OR
-
-```bash
-bunx convex env set AUTH_GITHUB_ID your-github-client-id
-bunx convex env set AUTH_GITHUB_SECRET your-github-client-secret
-```
-
-9. Install Project Dependencies using `npm install --legacy-peer-deps` or `yarn install --legacy-peer-deps` or `bun install --legacy-peer-deps`.
-
-10. Now app is fully configured 👍 and you can start using this app using either one of `npm run dev` or `yarn dev` or `bun dev`.
+9. Start development: `npm run dev`.
 
 **NOTE:** Please make sure to keep your API keys and configuration values secure and do not expose them publicly.
 
 ## :camera: Screenshots
 
-![Sign in and Sign up form using Convex Auth](/.github/images/img1.png 'Sign in and Sign up form using Convex Auth')
+![Sign in and Sign up form](/.github/images/img1.png 'Sign in and Sign up form')
 
 ![Modern UI/UX](/.github/images/img2.png 'Modern UI/UX')
 
@@ -264,8 +190,8 @@ Useful resources and dependencies that are used in Slack Clone.
 - Thanks to CodeWithAntonio: https://codewithantonio.com/
 <!--- DEPENDENCIES_START --->
 - [@auth/core](https://www.npmjs.com/package/@auth/core): ^0.34.3
+- [@babel/core](https://www.npmjs.com/package/@babel/core): ^7.29.0
 - [@babel/eslint-parser](https://www.npmjs.com/package/@babel/eslint-parser): ^7.28.6
-- [@convex-dev/auth](https://www.npmjs.com/package/@convex-dev/auth): ^0.0.65
 - [@radix-ui/react-alert-dialog](https://www.npmjs.com/package/@radix-ui/react-alert-dialog): ^1.1.15
 - [@radix-ui/react-avatar](https://www.npmjs.com/package/@radix-ui/react-avatar): ^1.1.11
 - [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.1.15
@@ -283,11 +209,10 @@ Useful resources and dependencies that are used in Slack Clone.
 - [class-variance-authority](https://www.npmjs.com/package/class-variance-authority): ^0.7.1
 - [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
 - [cmdk](https://www.npmjs.com/package/cmdk): 1.1.1
-- [convex](https://www.npmjs.com/package/convex): ^1.15.0
 - [date-fns](https://www.npmjs.com/package/date-fns): ^4.1.0
 - [emoji-picker-react](https://www.npmjs.com/package/emoji-picker-react): ^4.18.0
 - [eslint](https://www.npmjs.com/package/eslint): ^8
-- [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 14.2.8
+- [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 15.5.10
 - [eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier): ^9.1.0
 - [eslint-plugin-prettier](https://www.npmjs.com/package/eslint-plugin-prettier): ^5.2.1
 - [jotai](https://www.npmjs.com/package/jotai): ^2.17.1
@@ -296,6 +221,7 @@ Useful resources and dependencies that are used in Slack Clone.
 - [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
 - [nuqs](https://www.npmjs.com/package/nuqs): ^1.20.0
 - [postcss](https://www.npmjs.com/package/postcss): ^8.5.6
+- [prettier](https://www.npmjs.com/package/prettier): ^3.6.2
 - [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss): ^0.6.14
 - [quill](https://www.npmjs.com/package/quill): ^2.0.3
 - [react](https://www.npmjs.com/package/react): ^19.2.4

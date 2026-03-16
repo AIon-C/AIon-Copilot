@@ -3,11 +3,10 @@ import type { Metadata } from 'next';
 export const siteConfig: Metadata = {
   title: 'Slack Clone',
   description:
-    'Collaborate with your team using real-time messaging, rich text editing, and emoji support in this Slack-like app built with Next.js, Convex, and Shadcn UI.',
+    'Collaborate with your team using real-time messaging, rich text editing, and emoji support in this Slack-like app built with Next.js and Shadcn UI.',
   keywords: [
     'reactjs',
     'nextjs',
-    'convex',
     'next-auth',
     'emoji-picker-react',
     'lucide-icons',

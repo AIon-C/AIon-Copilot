@@ -4,10 +4,10 @@ import { AlertTriangle, Loader } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { useCreateOrGetConversation } from '@/features/conversations/api/use-create-or-get-conversation';
 import { useMemberId } from '@/hooks/use-member-id';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import type { Id } from '@/mock/types';
 
 import { Conversation } from './conversation';
 
