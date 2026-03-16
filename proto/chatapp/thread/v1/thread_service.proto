@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package chatapp.thread.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/thread/v1;threadv1";
+
+import "chatapp/common/v1/cursor.proto";
+import "chatapp/model/v1/message.proto";
+
+message ReplyToThreadRequest {
+  string thread_root_id = 1;
+  string content = 2;
+  repeated string file_ids = 3;
+  string client_message_id = 4;
+}
+
+message ReplyToThreadResponse {
+  chatapp.model.v1.Message message = 1;
+}
+
+message ListThreadMessagesRequest {
+  string thread_root_id = 1;
+  chatapp.common.v1.CursorRequest page = 2;
+}
+
+message ListThreadMessagesResponse {
+  repeated chatapp.model.v1.Message messages = 1;
+  chatapp.common.v1.CursorResponse page = 2;
+}
+
+service ThreadService {
+  rpc ReplyToThread(ReplyToThreadRequest) returns (ReplyToThreadResponse);
+  rpc ListThreadMessages(ListThreadMessagesRequest) returns (ListThreadMessagesResponse);
+}

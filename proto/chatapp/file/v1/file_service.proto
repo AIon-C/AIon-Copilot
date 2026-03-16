@@ -1,0 +1,56 @@
+syntax = "proto3";
+
+package chatapp.file.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/file/v1;filev1";
+
+import "google/protobuf/timestamp.proto";
+import "chatapp/model/v1/file.proto";
+
+message CreateUploadSessionRequest {
+  string workspace_id = 1;
+  string file_name = 2;
+  string content_type = 3;
+  int64 file_size = 4;
+  string checksum_sha256 = 5;
+  string client_request_id = 6;
+}
+
+message CreateUploadSessionResponse {
+  string upload_url = 1;
+  string file_id = 2;
+  google.protobuf.Timestamp expires_at = 3;
+}
+
+message CompleteUploadRequest {
+  string file_id = 1;
+}
+
+message CompleteUploadResponse {
+  chatapp.model.v1.File file = 1;
+}
+
+message AbortUploadRequest {
+  string file_id = 1;
+}
+
+message AbortUploadResponse {}
+
+message GetDownloadUrlRequest {
+  string file_id = 1;
+}
+
+message GetDownloadUrlResponse {
+  string download_url = 1;
+  google.protobuf.Timestamp expires_at = 2;
+}
+
+service FileService {
+  rpc CreateUploadSession(CreateUploadSessionRequest) returns (CreateUploadSessionResponse);
+  rpc CompleteUpload(CompleteUploadRequest) returns (CompleteUploadResponse);
+  rpc AbortUpload(AbortUploadRequest) returns (AbortUploadResponse);
+  rpc GetDownloadUrl(GetDownloadUrlRequest) returns (GetDownloadUrlResponse);
+}
+
+
+
