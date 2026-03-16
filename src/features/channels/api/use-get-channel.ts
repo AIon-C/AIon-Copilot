@@ -1,16 +1,15 @@
-import { useQuery } from 'convex/react';
+import { useCallback } from 'react';
 
-import { api } from '@/../convex/_generated/api';
-import type { Id } from '@/../convex/_generated/dataModel';
+import { getChannelById } from '@/mock/api';
+import { useMockQuery } from '@/mock/hooks';
+import type { Id } from '@/mock/types';
 
 interface UseGetChannelProps {
   id: Id<'channels'>;
 }
 
 export const useGetChannel = ({ id }: UseGetChannelProps) => {
-  const data = useQuery(api.channels.getById, { id });
+  const queryFn = useCallback(() => getChannelById({ id }), [id]);
 
-  const isLoading = data === undefined;
-
-  return { data, isLoading };
+  return useMockQuery(queryFn);
 };

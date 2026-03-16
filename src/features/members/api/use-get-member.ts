@@ -1,18 +1,15 @@
-'use client';
+import { useCallback } from 'react';
 
-import { useQuery } from 'convex/react';
-
-import { api } from '@/../convex/_generated/api';
-import type { Id } from '@/../convex/_generated/dataModel';
+import { getMemberById } from '@/mock/api';
+import { useMockQuery } from '@/mock/hooks';
+import type { Id } from '@/mock/types';
 
 interface UseGetMemberProps {
   id: Id<'members'>;
 }
 
 export const useGetMember = ({ id }: UseGetMemberProps) => {
-  const data = useQuery(api.members.getById, { id });
+  const queryFn = useCallback(() => getMemberById({ id }), [id]);
 
-  const isLoading = data === undefined;
-
-  return { data, isLoading };
+  return useMockQuery(queryFn);
 };
