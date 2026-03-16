@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package chatapp.auth.v1;
+package chatapp.workspace.v1;
 
 option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/workspace/v1;workspacev1";
 
-import "google/protobuf/field_mask.proto.proto";
+import "google/protobuf/field_mask.proto";
 import "chatapp/common/v1/pagination.proto";
 import "chatapp/model/v1/workspace.proto";
 import "chatapp/model/v1/workspace_member.proto";
@@ -35,15 +35,15 @@ message GetWorkspaceRequest {
 
 message GetWorkspaceResponse {
   chatapp.model.v1.Workspace workspace = 1;
-  google.protobuf.FiledMask update_mask = 2;
+  google.protobuf.FieldMask update_mask = 2;
 }
 
 message UpdateWorkspaceRequest {
   chatapp.model.v1.Workspace workspace = 1;
-  google.protobuf.FiledMask update_mask = 2;
+  google.protobuf.FieldMask update_mask = 2;
 }
 
-message UpdateWorkspaceRequest {
+message UpdateWorkspaceResponse {
   chatapp.model.v1.Workspace workspace = 1;
 }
 
