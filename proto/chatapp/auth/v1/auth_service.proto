@@ -26,9 +26,9 @@ message LogInResponse {
   string refresh_token = 2;
 }
 
-message LogOutRequest {}
+message LogoutRequest {}
 
-message LogOutResponse {}
+message LogoutResponse {}
 
 message RefreshTokenRequest {
   string refresh_token = 1;
@@ -54,7 +54,7 @@ message ResetPasswordResponse {}
 service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse);
   rpc LogIn(LogInRequest) returns (LogInResponse);
-  rpc Logout(LogOutRequest) returns (LogOutResponse);
+  rpc Logout(LogoutRequest) returns (LogoutResponse);
   rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
   rpc SendPasswordResetEmail(SendPasswordResetEmailRequest) returns (SendPasswordResetEmailResponse);
   rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
