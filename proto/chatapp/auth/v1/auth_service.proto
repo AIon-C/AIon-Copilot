@@ -1,0 +1,54 @@
+syntax = "proto3";
+
+package chatapp.auth.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/auth/v1;authv1";
+
+message SignUpRequest {
+  string email = 1;
+  string password = 2;
+  string display_name = 3;
+  
+  string client_request_id = 4;
+}
+
+message SignUpResponse {
+  string user_id = 1;
+}
+
+message LogInRequest {
+  string email = 1;
+  string password = 2;
+}
+
+message LogInResponse {
+  string access_token = 1;
+  string refresh_token = 2;
+}
+
+message LogOutRequest {}
+
+message LogOutResponse {}
+
+message RefreshTokenRequest {
+  string refresh_token = 1;
+}
+
+message RefreshTokenResponse {
+  string access_token = 1;
+}
+
+message SendPasswordResetEmailRequest {
+  string email = 1;
+}
+
+message SendPasswordResetEmailResponse {}
+
+service AuthService {
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc LogIn(LogInRequest) returns (LogInResponse);
+  rpc Logout(LogOutRequest) returns (LogOutResponse);
+  rpc RefreshToken(RefreshTokenRequest) returns (RefreshTokenResponse);
+  rpc SendPasswordResetEmail(SendPasswordResetEmailRequest) returns (SendPasswordResetEmailResponse);
+  rpc ResetPassword(ResetPasswordRequest) returns (ResetPasswordResponse);
+}
