@@ -10,8 +10,8 @@ message Message {
   string id = 1;
   string channel_id = 2;
   string user_id = 3;
-  string thread_root_id = 4;
+  optional string thread_root_id = 4;
   string content = 5;
   bool is_edited = 6;
-  chatapp.common.v1.AuditMetadata metadata = 5;
+  chatapp.common.v1.AuditMetadata metadata = 7;
 }
