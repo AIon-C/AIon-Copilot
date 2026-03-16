@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package chatapp.auth.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/user/v1;userv1";
+
+import "google/protobuf/field_mask.proto";
+import "chatapp/model/v1/user.proto";
+
+message GetMeRequest {}
+
+message GetMeResponse {
+  chatapp.model.v1.User user = 1;
+}
+
+message UpdateProfileRequest {
+  chatapp.model.v1.User user = 1;
+  google.protobuf.FieldMask update_mask = 2;
+}
+
+message UpdateProfileResponse {
+  chatapp.model.v1.User user = 1;
+}
+
+service UserService {
+  rpc GetMe (GetMeRequest) returns (GetMeResponse);
+  rpc UpdateProfile (UpdateProfileRequest) returns (UpdateProfileResponse);
+}
