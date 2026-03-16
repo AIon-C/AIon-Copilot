@@ -44,6 +44,13 @@ message SendPasswordResetEmailRequest {
 
 message SendPasswordResetEmailResponse {}
 
+message ResetPasswordRequest {
+  string token = 1;
+  string new_password = 2;
+}
+
+message ResetPasswordResponse {}
+
 service AuthService {
   rpc SignUp(SignUpRequest) returns (SignUpResponse);
   rpc LogIn(LogInRequest) returns (LogInResponse);
