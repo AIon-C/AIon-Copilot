@@ -1,297 +1,280 @@
-# AIon-Copilot
-# Model ER図・構成・設計（chatapp model/v1）
+<a name="readme-top"></a>
 
-## ER図（Mermaid）
-```mermaid
-erDiagram
-  WORKSPACE ||--o{ CHANNEL : has
-  WORKSPACE ||--o{ WORKSPACE_MEMBER : has
-  USER ||--o{ WORKSPACE_MEMBER : joins
-  CHANNEL ||--o{ MESSAGE : contains
-  USER ||--o{ MESSAGE : authors
-  MESSAGE ||--o{ REACTION : receives
-  USER ||--o{ REACTION : reacts
-  MESSAGE ||--o{ MESSAGE_ATTACHMENT : has
-  FILE ||--o{ MESSAGE_ATTACHMENT : attached
-  CHANNEL ||--o{ CHANNEL_MEMBER : has
-  USER ||--o{ CHANNEL_MEMBER : joins
-  WORKSPACE ||--o{ FILE : stores
+# Collaborate with your team in this Slack clone built using Next.js
 
-  WORKSPACE {
-    string id
-    string name
-    string slug
-    string icon_url
-    AuditMetadata metadata
-  }
-  CHANNEL {
-    string id
-    string workspace_id
-    string name
-    string description
-    string created_by
-    AuditMetadata metadata
-  }
-  USER {
-    string id
-    string email
-    string display_name
-    string avatar_url
-    AuditMetadata metadata
-  }
-  WORKSPACE_MEMBER {
-    string id
-    string workspace_id
-    string user_id
-    timestamp joined_at
-  }
-  CHANNEL_MEMBER {
-    string id
-    string channel_id
-    string user_id
-    timestamp last_read_at
-    timestamp joined_at
-  }
-  MESSAGE {
-    string id
-    string channel_id
-    string user_id
-    string thread_root_id
-    string content
-    bool is_edited
-    AuditMetadata metadata
-  }
-  REACTION {
-    string id
-    string message_id
-    string user_id
-    string emoji_code
-    timestamp created_at
-  }
-  FILE {
-    string id
-    string workspace_id
-    string uploaded_by
-    string file_name
-    string file_key
-    string content_type
-    int64 file_size
-    timestamp created_at
-  }
-  MESSAGE_ATTACHMENT {
-    string id
-    string message_id
-    string file_id
-  }
+![Collaborate with your team in this Slack clone built using Next.js](/.github/images/img_main.png 'Collaborate with your team in this Slack clone built using Next.js')
+
+[![Ask Me Anything!](https://flat.badgen.net/static/Ask%20me/anything?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy 'Ask Me Anything!')
+[![GitHub license](https://flat.badgen.net/github/license/sanidhyy/slack-clone?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy/slack-clone/blob/main/LICENSE 'GitHub license')
+[![Maintenance](https://flat.badgen.net/static/Maintained/yes?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy/slack-clone/commits/main 'Maintenance')
+[![GitHub branches](https://flat.badgen.net/github/branches/sanidhyy/slack-clone?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy/slack-clone/branches 'GitHub branches')
+[![Github commits](https://flat.badgen.net/github/commits/sanidhyy/slack-clone?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy/slack-clone/commits 'Github commits')
+[![GitHub issues](https://flat.badgen.net/github/issues/sanidhyy/slack-clone?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy/slack-clone/issues 'GitHub issues')
+[![GitHub pull requests](https://flat.badgen.net/github/prs/sanidhyy/slack-clone?icon=github&color=black&scale=1.01)](https://github.com/sanidhyy/slack-clone/pulls 'GitHub pull requests')
+[![Vercel status](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://app-slack.vercel.app/ 'Vercel status')
+
+<!-- Table of Contents -->
+<details>
+
+<summary>
+
+# :notebook_with_decorative_cover: Table of Contents
+
+</summary>
+
+- [Folder Structure](#bangbang-folder-structure)
+- [Getting Started](#toolbox-getting-started)
+- [Screenshots](#camera-screenshots)
+- [Tech Stack](#gear-tech-stack)
+- [Stats](#wrench-stats)
+- [Contribute](#raised_hands-contribute)
+- [Acknowledgements](#gem-acknowledgements)
+- [Buy Me a Coffee](#coffee-buy-me-a-coffee)
+- [Follow Me](#rocket-follow-me)
+- [Learn More](#books-learn-more)
+- [Deploy on Vercel](#page_with_curl-deploy-on-vercel)
+- [Give A Star](#star-give-a-star)
+- [Star History](#star2-star-history)
+- [Give A Star](#star-give-a-star)
+
+</details>
+
+## :bangbang: Folder Structure
+
+Here is the folder structure of this app.
+
+<!--- FOLDER_STRUCTURE_START --->
+
+```bash
+slack-clone/
+  |- public/
+  |- src/
+    |-- app/
+      |--- api/
+      |--- auth/
+      |--- join/
+      |--- workspace/
+      |--- apple-icon.png
+      |--- favicon.ico
+      |--- globals.css
+      |--- icon1.png
+      |--- icon2.png
+      |--- layout.tsx
+      |--- page.tsx
+    |-- components/
+      |--- ui/
+      |--- channel-hero.tsx
+      |--- conversation-hero.tsx
+      |--- editor.tsx
+      |--- emoji-popover.tsx
+      |--- hint.tsx
+      |--- jotai-provider.tsx
+      |--- message-list.tsx
+      |--- message.tsx
+      |--- modal-provider.tsx
+      |--- reactions.tsx
+      |--- renderer.tsx
+      |--- thread-bar.tsx
+      |--- thumbnail.tsx
+      |--- toolbar.tsx
+    |-- config/
+      |--- index.ts
+    |-- features/
+      |--- auth/
+      |--- channels/
+      |--- conversations/
+      |--- members/
+      |--- messages/
+      |--- reactions/
+      |--- upload/
+      |--- workspaces/
+    |-- hooks/
+      |--- use-channel-id.ts
+      |--- use-confirm.tsx
+      |--- use-member-id.ts
+      |--- use-panel.ts
+      |--- use-workspace-id.ts
+    |-- lib/
+      |--- utils.ts
+    |-- mock/
+      |--- api.ts
+      |--- auth.ts
+      |--- hooks.ts
+      |--- messages.ts
+      |--- types.ts
+      |--- use-mock-mutation.ts
+  |- .env.example
+  |- .env/.env.local
+  |- .eslintrc.json
+  |- .gitignore
+  |- .npmrc
+  |- .prettierrc.json
+  |- .prettierrc.mjs
+  |- bun.lockb
+  |- components.json
+  |- environment.d.ts
+  |- next.config.mjs
+  |- package-lock.json
+  |- package.json
+  |- postcss.config.mjs
+  |- tailwind.config.ts
+  |- tsconfig.json
+  |- vercel.ts
 ```
 
----
+<!--- FOLDER_STRUCTURE_END --->
 
-## モデル構成（ファイル一覧）
-- Model定義: [proto/chatapp/model/v1](proto/chatapp/model/v1)
-  - [proto/chatapp/model/v1/workspace.proto](proto/chatapp/model/v1/workspace.proto)
-  - [proto/chatapp/model/v1/workspace_member.proto](proto/chatapp/model/v1/workspace_member.proto)
-  - [proto/chatapp/model/v1/user.proto](proto/chatapp/model/v1/user.proto)
-  - [proto/chatapp/model/v1/channel.proto](proto/chatapp/model/v1/channel.proto)
-  - [proto/chatapp/model/v1/channel_member.proto](proto/chatapp/model/v1/channel_member.proto)
-  - [proto/chatapp/model/v1/message.proto](proto/chatapp/model/v1/message.proto)
-  - [proto/chatapp/model/v1/reaction.proto](proto/chatapp/model/v1/reaction.proto)
-  - [proto/chatapp/model/v1/file.proto](proto/chatapp/model/v1/file.proto)
-  - [proto/chatapp/model/v1/message_attachment.proto](proto/chatapp/model/v1/message_attachment.proto)
-- 共通メタ情報: [proto/chatapp/common/v1/metadata.proto](proto/chatapp/common/v1/metadata.proto)
+<br />
 
----
+## :toolbox: Getting Started
 
-## 設計のポイント（全体）
-- **Workspace を起点に構造化**
-  - Workspace → Channel / WorkspaceMember / File がぶら下がる。
-- **User は Workspace/Channel/Message/Reaction に参加**
-  - WorkspaceMember/ChannelMember で参加関係を表現。
-  - Message/Reaction でアクティビティを表現。
-- **Message は Channel に属する**
-  - `thread_root_id` によりスレッドを表現（NULL なら通常メッセージ）。
-- **Attachment は Message と File の中間テーブル**
-  - 複数ファイルを1メッセージに紐づけ可能。
-- **監査情報は AuditMetadata に集約**
-  - Workspace/User/Channel/Message で共通利用。
+1. Make sure **Git** and **NodeJS** is installed.
+2. Clone this repository to your local computer.
+3. Create `.env.local` file in **root** directory.
+4. Contents of `.env.local`:
 
----
+```env
+# .env.local
 
-## 各モデルの役割（要約）
+# disabled next.js telemetry
+NEXT_TELEMETRY_DISABLED=1
 
-### Workspace
-- ワークスペース全体の単位
-- 参加者は `WorkspaceMember` で管理
+```
 
-### WorkspaceMember
-- `workspace_id` と `user_id` の関連
-- 参加日時のみ保持
+5. Install dependencies.
 
-### User
-- ユーザーの基本情報
-- プロフィールは `display_name` / `avatar_url`
+```bash
+npm install
+```
 
-### Channel
-- ワークスペース内の会話単位
-- `created_by` を独立保持（AuditMetadata にも created_by が存在）
+6. Start the development server.
 
-### ChannelMember
-- `channel_id` と `user_id` の関連
-- 既読情報（`last_read_at`）を保持
+```bash
+npm run dev
+```
 
-### Message
-- Channel に属する投稿
-- `thread_root_id` によるスレッド構造
+7. Optional: Configure OAuth providers directly in your app/auth layer if needed.
 
-### Reaction
-- Message に対するリアクション
-- 絵文字コードで表現
+8. Install project dependencies (if you have not already): `npm install`.
 
-### File
-- Workspace 内に保存されるファイル
-- `uploaded_by` でアップロードユーザーを保持
+9. Start development: `npm run dev`.
 
-### MessageAttachment
-- Message と File の多対多を表現
+**NOTE:** Please make sure to keep your API keys and configuration values secure and do not expose them publicly.
 
----
+## :camera: Screenshots
 
-## 補足
-- `AuditMetadata` の `create_at` / `update_at` 命名は一般的な `created_at` / `updated_at` と異なるため、必要なら統一検討。
-- `Channel.created_by` と `AuditMetadata.created_by` の二重管理になる可能性があるため、運用方針の整理推奨。
+![Sign in and Sign up form](/.github/images/img1.png 'Sign in and Sign up form')
 
----
-## Service 定義一覧（chatapp/*/v1）
+![Modern UI/UX](/.github/images/img2.png 'Modern UI/UX')
 
-## AuthService
-- **SignUp**: `SignUpRequest` → `SignUpResponse`
-  - request: `email`, `password`, `display_name`, `client_request_id`
-  - response: `user_id`
-- **LogIn**: `LogInRequest` → `LogInResponse`
-  - request: `email`, `password`
-  - response: `access_token`, `refresh_token`
-- **Logout**: `LogOutRequest` → `LogOutResponse`
-- **RefreshToken**: `RefreshTokenRequest` → `RefreshTokenResponse`
-  - request: `refresh_token`
-  - response: `access_token`
-- **SendPasswordResetEmail**: `SendPasswordResetEmailRequest` → `SendPasswordResetEmailResponse`
-  - request: `email`
-- **ResetPassword**: `ResetPasswordRequest` → `ResetPasswordResponse`
-  - request: `token`, `new_password`
+![Threads and Reactions](/.github/images/img3.png 'Threads and Reactions')
 
----
+![Search Channels and DMs](/.github/images/img4.png 'Search Channels and DMs')
 
-## ChannelService
-- **CreateChannel**: `CreateChannelRequest` → `CreateChannelResponse`
-  - request: `workspace_id`, `name`, `description`, `client_request_id`
-  - response: `channel`
-- **ListChannels**: `ListChannelsRequest` → `ListChannelsResponse`
-  - request: `workspace_id`, `page`, `sort`
-  - response: `channels[]`, `page`
-- **SearchChannels**: `SearchChannelsRequest` → `SearchChannelsResponse`
-  - request: `workspace_id`, `query`, `page`
-  - response: `channels[]`, `page`
-- **GetChannel**: `GetChannelRequest` → `GetChannelResponse`
-  - request: `channel_id`
-  - response: `channel`
-- **UpdateChannel**: `UpdateChannelRequest` → `UpdateChannelResponse`
-  - request: `channel`, `update_mask`
-  - response: `channel`
-- **JoinChannel**: `JoinChannelRequest` → `JoinChannelResponse`
-  - request: `channel_id`, `client_request_id`
-  - response: `membership`
-- **LeaveChannel**: `LeaveChannelRequest` → `LeaveChannelResponse`
-  - request: `channel_id`
-- **MarkChannelRead**: `MarkChannelReadRequest` → `MarkChannelReadResponse`
-  - request: `channel_id`, `last_read_message_id`
+## :gear: Tech Stack
 
----
+[![React JS](https://skillicons.dev/icons?i=react 'React JS')](https://react.dev/ 'React JS') [![Next JS](https://skillicons.dev/icons?i=next 'Next JS')](https://nextjs.org/ 'Next JS') [![Typescript](https://skillicons.dev/icons?i=ts 'Typescript')](https://www.typescriptlang.org/ 'Typescript') [![Tailwind CSS](https://skillicons.dev/icons?i=tailwind 'Tailwind CSS')](https://tailwindcss.com/ 'Tailwind CSS') [![Vercel](https://skillicons.dev/icons?i=vercel 'Vercel')](https://vercel.app/ 'Vercel')
 
-## FileService
-- **CreateUploadSession**: `CreateUploadSessionRequest` → `CreateUploadSessionResponse`
-  - request: `workspace_id`, `file_name`, `content_type`, `file_size`, `checksum_sha256`, `client_request_id`
-  - response: `upload_url`, `file_id`, `expires_at`
-- **CompleteUpload**: `CompleteUploadRequest` → `CompleteUploadResponse`
-  - request: `file_id`
-  - response: `file`
-- **AbortUpload**: `AbortUploadRequest` → `AbortUploadResponse`
-  - request: `file_id`
-- **GetDownloadUrl**: `GetDownloadUrlRequest` → `GetDownloadUrlResponse`
-  - request: `file_id`
-  - response: `download_url`, `expires_at`
+## :wrench: Stats
 
----
+[![Stats for Slack Clone](/.github/images/stats.svg 'Stats for Slack Clone')](https://pagespeed.web.dev/analysis?url=https://app-slack.vercel.app/ 'Stats for Slack Clone')
 
-## MessageService
-- **SendMessage**: `SendMessageRequest` → `SendMessageResponse`
-  - request: `channel_id`, `content`, `file_ids[]`, `client_message_id`
-  - response: `message`
-- **ListMessages**: `ListMessagesRequest` → `ListMessagesResponse`
-  - request: `channel_id`, `page`
-  - response: `messages[]`, `page`
-- **GetMessage**: `GetMessageRequest` → `GetMessageResponse`
-  - request: `message_id`
-  - response: `message`
-- **UpdateMessage**: `UpdateMessageRequest` → `UpdateMessageResponse`
-  - request: `message`, `update_mask`
-  - response: `message`
-- **DeleteMessage**: `DeleteMessageRequest` → `DeleteMessageResponse`
-  - request: `message_id`
-  - response: `message`
+## :raised_hands: Contribute
 
----
+You might encounter some bugs while using this app. You are more than welcome to contribute. Just submit changes via pull request and I will review them before merging. Make sure you follow community guidelines.
 
-## ReactionService
-- **AddReaction**: `AddReactionRequest` → `AddReactionResponse`
-  - request: `message_id`, `emoji_code`
-  - response: `reaction`
-- **RemoveReaction**: `RemoveReactionRequest` → `RemoveReactionResponse`
-  - request: `message_id`, `emoji_code`
-  - response: `message_id`
-- **ListReactions**: `ListReactionsRequest` → `ListReactionsResponse`
-  - request: `message_id`
-  - response: `reactions[]`
+## :gem: Acknowledgements
 
----
+Useful resources and dependencies that are used in Slack Clone.
 
-## ThreadService
-- **ReplyToThread**: `ReplyToThreadRequest` → `ReplyToThreadResponse`
-  - request: `thread_root_id`, `content`, `file_ids[]`, `client_message_id`
-  - response: `message`
-- **ListThreadMessages**: `ListThreadMessagesRequest` → `ListThreadMessagesResponse`
-  - request: `thread_root_id`, `page`
-  - response: `messages[]`, `page`
+- Thanks to CodeWithAntonio: https://codewithantonio.com/
+<!--- DEPENDENCIES_START --->
+- [@auth/core](https://www.npmjs.com/package/@auth/core): ^0.34.3
+- [@babel/core](https://www.npmjs.com/package/@babel/core): ^7.29.0
+- [@babel/eslint-parser](https://www.npmjs.com/package/@babel/eslint-parser): ^7.28.6
+- [@radix-ui/react-alert-dialog](https://www.npmjs.com/package/@radix-ui/react-alert-dialog): ^1.1.15
+- [@radix-ui/react-avatar](https://www.npmjs.com/package/@radix-ui/react-avatar): ^1.1.11
+- [@radix-ui/react-dialog](https://www.npmjs.com/package/@radix-ui/react-dialog): ^1.1.15
+- [@radix-ui/react-dropdown-menu](https://www.npmjs.com/package/@radix-ui/react-dropdown-menu): ^2.1.16
+- [@radix-ui/react-popover](https://www.npmjs.com/package/@radix-ui/react-popover): ^1.1.15
+- [@radix-ui/react-separator](https://www.npmjs.com/package/@radix-ui/react-separator): ^1.1.8
+- [@radix-ui/react-slot](https://www.npmjs.com/package/@radix-ui/react-slot): ^1.2.4
+- [@radix-ui/react-tooltip](https://www.npmjs.com/package/@radix-ui/react-tooltip): ^1.2.8
+- [@radix-ui/react-visually-hidden](https://www.npmjs.com/package/@radix-ui/react-visually-hidden): ^1.2.4
+- [@trivago/prettier-plugin-sort-imports](https://www.npmjs.com/package/@trivago/prettier-plugin-sort-imports): ^4.3.0
+- [@types/node](https://www.npmjs.com/package/@types/node): ^20.19.33
+- [@types/react](https://www.npmjs.com/package/@types/react): ^18.3.28
+- [@types/react-dom](https://www.npmjs.com/package/@types/react-dom): ^18.3.7
+- [@vercel/config](https://www.npmjs.com/package/@vercel/config): ^0.0.33
+- [class-variance-authority](https://www.npmjs.com/package/class-variance-authority): ^0.7.1
+- [clsx](https://www.npmjs.com/package/clsx): ^2.1.1
+- [cmdk](https://www.npmjs.com/package/cmdk): 1.1.1
+- [date-fns](https://www.npmjs.com/package/date-fns): ^4.1.0
+- [emoji-picker-react](https://www.npmjs.com/package/emoji-picker-react): ^4.18.0
+- [eslint](https://www.npmjs.com/package/eslint): ^8
+- [eslint-config-next](https://www.npmjs.com/package/eslint-config-next): 15.5.10
+- [eslint-config-prettier](https://www.npmjs.com/package/eslint-config-prettier): ^9.1.0
+- [eslint-plugin-prettier](https://www.npmjs.com/package/eslint-plugin-prettier): ^5.2.1
+- [jotai](https://www.npmjs.com/package/jotai): ^2.17.1
+- [lucide-react](https://www.npmjs.com/package/lucide-react): ^0.564.0
+- [next](https://www.npmjs.com/package/next): 15.5.10
+- [next-themes](https://www.npmjs.com/package/next-themes): ^0.4.6
+- [nuqs](https://www.npmjs.com/package/nuqs): ^1.20.0
+- [postcss](https://www.npmjs.com/package/postcss): ^8.5.6
+- [prettier](https://www.npmjs.com/package/prettier): ^3.6.2
+- [prettier-plugin-tailwindcss](https://www.npmjs.com/package/prettier-plugin-tailwindcss): ^0.6.14
+- [quill](https://www.npmjs.com/package/quill): ^2.0.3
+- [react](https://www.npmjs.com/package/react): ^19.2.4
+- [react-dom](https://www.npmjs.com/package/react-dom): ^19.2.4
+- [react-icons](https://www.npmjs.com/package/react-icons): ^5.5.0
+- [react-resizable-panels](https://www.npmjs.com/package/react-resizable-panels): ^2.1.9
+- [react-use](https://www.npmjs.com/package/react-use): ^17.6.0
+- [react-verification-input](https://www.npmjs.com/package/react-verification-input): ^4.2.2
+- [sonner](https://www.npmjs.com/package/sonner): ^1.7.4
+- [tailwind-merge](https://www.npmjs.com/package/tailwind-merge): ^2.6.1
+- [tailwindcss](https://www.npmjs.com/package/tailwindcss): ^3.4.19
+- [tailwindcss-animate](https://www.npmjs.com/package/tailwindcss-animate): ^1.0.7
+- [typescript](https://www.npmjs.com/package/typescript): ^5.9.3
 
----
+<!--- DEPENDENCIES_END --->
 
-## UserService
-- **GetMe**: `GetMeRequest` → `GetMeResponse`
-  - response: `user`
-- **UpdateProfile**: `UpdateProfileRequest` → `UpdateProfileResponse`
-  - request: `user`, `update_mask`
-  - response: `user`
+## :coffee: Buy Me a Coffee
 
----
+[<img src="https://img.shields.io/badge/Buy_Me_A_Coffee-FFDD00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black" width="200" />](https://www.buymeacoffee.com/sanidhy 'Buy me a Coffee')
 
-## WorkspaceService
-- **CreateWorkspace**: `CreateWorkspaceRequest` → `CreateWorkspaceResponse`
-  - request: `name`, `slug`, `icon_url`, `client_request_id`
-  - response: `workspace`
-- **ListWorkspaces**: `ListWorkspacesRequest` → `ListWorkspacesResponse`
-  - request: `page`
-  - response: `workspace[]`, `page`
-- **GetWorkspace**: `GetWorkspaceRequest` → `GetWorkspaceResponse`
-  - request: `workspace_id`
-  - response: `workspace`, `update_mask`
-- **UpdateWorkspace**: `UpdateWorkspaceRequest` → `UpdateWorkspaceResponse`
-  - request: `workspace`, `update_mask`
-  - response: `workspace`
-- **InviteWorkspaceMember**: `InviteWorkspaceMemberRequest` → `InviteWorkspaceMemberResponse`
-  - request: `workspace_id`, `email`
-  - response: `invite_token`
-- **JoinWorkspaceByInvite**: `JoinWorkspaceByInviteRequest` → `JoinWorkspaceByInviteResponse`
-  - request: `invite_token`, `client_request_id`
-  - response: `member`
-- **ListWorkspaceMembers**: `ListWorkspaceMembersRequest` → `ListWorkspaceMembersResponse`
-  - request: `workspace_id`, `page`
-  - response: `members[]`, `page`
+## :rocket: Follow Me
+
+[![Follow Me](https://img.shields.io/github/followers/sanidhyy?style=social&label=Follow&maxAge=2592000)](https://github.com/sanidhyy 'Follow Me')
+[![Tweet about this project](https://img.shields.io/twitter/url?style=social&url=https%3A%2F%2Fx.com%2F_sanidhyy)](https://x.com/intent/tweet?text=Check+out+this+amazing+app:&url=https%3A%2F%2Fgithub.com%2Fsanidhyy%2Fslack-clone 'Tweet about this project')
+
+## :books: Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+
+## :page_with_curl: Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+## :star: Give A Star
+
+You can also give this repository a star to show more people and they can use this repository.
+
+## :star2: Star History
+
+<a href="https://star-history.com/#sanidhyy/slack-clone&Timeline">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=sanidhyy/slack-clone&type=Timeline&theme=dark" />
+  <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=sanidhyy/slack-clone&type=Timeline" />
+  <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=sanidhyy/slack-clone&type=Timeline" />
+</picture>
+</a>
+
+<br />
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
