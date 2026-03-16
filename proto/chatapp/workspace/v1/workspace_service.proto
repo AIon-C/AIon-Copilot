@@ -35,7 +35,6 @@ message GetWorkspaceRequest {
 
 message GetWorkspaceResponse {
   chatapp.model.v1.Workspace workspace = 1;
-  google.protobuf.FieldMask update_mask = 2;
 }
 
 message UpdateWorkspaceRequest {
