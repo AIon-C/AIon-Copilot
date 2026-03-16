@@ -82,6 +82,19 @@ message MarkChannelReadRequest {
 
 message MarkChannelReadResponse {}
 
+message UnreadCount {
+  string channel_id = 1;
+  int32 count = 2;
+}
+
+message GetUnreadCountsRequest {
+  string workspace_id = 1;
+}
+
+message GetUnreadCountsResponse {
+  repeated UnreadCount unread_counts = 1;
+}
+
 service ChannelService {
   rpc CreateChannel(CreateChannelRequest) returns (CreateChannelResponse);
   rpc ListChannels(ListChannelsRequest) returns (ListChannelsResponse);
@@ -91,4 +104,5 @@ service ChannelService {
   rpc JoinChannel(JoinChannelRequest) returns (JoinChannelResponse);
   rpc LeaveChannel(LeaveChannelRequest) returns (LeaveChannelResponse);
   rpc MarkChannelRead(MarkChannelReadRequest) returns (MarkChannelReadResponse);
+  rpc GetUnreadCounts(GetUnreadCountsRequest) returns (GetUnreadCountsResponse);
 }
