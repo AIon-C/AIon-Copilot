@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package chatapp.reaction.v1;
+
+option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/reaction/v1;reactionv1";
+
+import "chatapp/model/v1/reaction.proto";
+
+message AddReactionResponse {
+  chatapp.model.v1.Reaction reaction = 1;
+}
+
+message RemoveReactionRequest {
+  string message_id = 1;
+  string emogi_code = 2;
+}
+
+message RemoveReactionResponse {
+  string message_id = 1;
+}
+
+message ListReactionRequest {
+  string message_id = 1;
+}
+
+message ListReactionResponse {
+  repeated chatapp.model.v1.Reaction reactions = 1;
+}
+
+service ReactionService {
+  rpc AddReaction(AddReactionRequest) returns (AddReactionResponse);
+  rpc RemoveReaction(RemoveReactionRequest) returns (RemoveReactionResponse);
+  rpc ListReactions(ListReactionsRequest) returns (ListReactionsResponse);
+}
