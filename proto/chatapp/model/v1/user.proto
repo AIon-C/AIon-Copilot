@@ -6,12 +6,10 @@ option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/model/v1;mod
 
 import "chatapp/common/v1/metadata.proto";
 
-message Message {
+message User {
   string id = 1;
-  string channel_id = 2;
-  string user_id = 3;
-  optional string thread_root_id = 4;
-  string content = 5;
-  bool is_edited = 6;
-  chatapp.common.v1.AuditMetadata metadata = 7;
+  string email = 2;
+  string display_name = 3;
+  string avatar_url = 4;
+  chatapp.common.v1.AuditMetadata metadata = 5;
 }
