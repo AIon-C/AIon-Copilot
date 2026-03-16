@@ -1,5 +1,6 @@
 import { formatDistanceToNow } from 'date-fns';
 import { ChevronRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
@@ -13,6 +14,11 @@ interface ThreadBarProps {
 
 export const ThreadBar = ({ count, image, name = 'Member', timestamp, onClick }: ThreadBarProps) => {
   const avatarFallback = name.charAt(0).toUpperCase();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   if (!count || !timestamp) return null;
 
@@ -33,7 +39,7 @@ export const ThreadBar = ({ count, image, name = 'Member', timestamp, onClick }:
         </span>
 
         <span className="block truncate text-xs text-muted-foreground group-hover/thread-bar:hidden">
-          Last reply {formatDistanceToNow(timestamp, { addSuffix: true })}
+          {isMounted ? `Last reply ${formatDistanceToNow(timestamp, { addSuffix: true })}` : 'Last reply'}
         </span>
 
         <span className="hidden truncate text-xs text-muted-foreground group-hover/thread-bar:block">View thread</span>

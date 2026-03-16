@@ -3,9 +3,6 @@ export {};
 
 declare global {
   namespace NodeJS {
-    interface ProcessEnv {
-      // convex public url
-      NEXT_PUBLIC_CONVEX_URL: string;
-    }
+    interface ProcessEnv {}
   }
 }

@@ -1,10 +1,10 @@
-import { useQuery } from 'convex/react';
+import { useCallback } from 'react';
 
-import { api } from '@/../convex/_generated/api';
+import { getCurrentUser } from '@/mock/api';
+import { useMockQuery } from '@/mock/hooks';
 
 export const useCurrentUser = () => {
-  const data = useQuery(api.users.current);
-  const isLoading = data === undefined;
+  const queryFn = useCallback(() => getCurrentUser(), []);
 
-  return { data, isLoading };
+  return useMockQuery(queryFn);
 };

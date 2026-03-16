@@ -3,8 +3,8 @@ import { MdOutlineAddReaction } from 'react-icons/md';
 import { useCurrentMember } from '@/features/members/api/use-current-member';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
+import type { Doc, Id } from '@/mock/types';
 
-import type { Doc, Id } from '../../convex/_generated/dataModel';
 import { EmojiPopover } from './emoji-popover';
 import { Hint } from './hint';
 
