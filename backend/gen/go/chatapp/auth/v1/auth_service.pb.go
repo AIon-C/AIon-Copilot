@@ -290,14 +290,14 @@ func (x *LogInResponse) GetExpiresAt() *timestamppb.Timestamp {
 	return nil
 }
 
-type LogOutRequest struct {
+type LogoutRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *LogOutRequest) Reset() {
-	*x = LogOutRequest{}
+func (x *LogoutRequest) Reset() {
+	*x = LogoutRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_chatapp_auth_v1_auth_service_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -305,13 +305,13 @@ func (x *LogOutRequest) Reset() {
 	}
 }
 
-func (x *LogOutRequest) String() string {
+func (x *LogoutRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LogOutRequest) ProtoMessage() {}
+func (*LogoutRequest) ProtoMessage() {}
 
-func (x *LogOutRequest) ProtoReflect() protoreflect.Message {
+func (x *LogoutRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_chatapp_auth_v1_auth_service_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -323,19 +323,19 @@ func (x *LogOutRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LogOutRequest.ProtoReflect.Descriptor instead.
-func (*LogOutRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use LogoutRequest.ProtoReflect.Descriptor instead.
+func (*LogoutRequest) Descriptor() ([]byte, []int) {
 	return file_chatapp_auth_v1_auth_service_proto_rawDescGZIP(), []int{4}
 }
 
-type LogOutResponse struct {
+type LogoutResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *LogOutResponse) Reset() {
-	*x = LogOutResponse{}
+func (x *LogoutResponse) Reset() {
+	*x = LogoutResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_chatapp_auth_v1_auth_service_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -343,13 +343,13 @@ func (x *LogOutResponse) Reset() {
 	}
 }
 
-func (x *LogOutResponse) String() string {
+func (x *LogoutResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*LogOutResponse) ProtoMessage() {}
+func (*LogoutResponse) ProtoMessage() {}
 
-func (x *LogOutResponse) ProtoReflect() protoreflect.Message {
+func (x *LogoutResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_chatapp_auth_v1_auth_service_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -361,8 +361,8 @@ func (x *LogOutResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use LogOutResponse.ProtoReflect.Descriptor instead.
-func (*LogOutResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use LogoutResponse.ProtoReflect.Descriptor instead.
+func (*LogoutResponse) Descriptor() ([]byte, []int) {
 	return file_chatapp_auth_v1_auth_service_proto_rawDescGZIP(), []int{5}
 }
 
@@ -702,8 +702,8 @@ var file_chatapp_auth_v1_auth_service_proto_rawDesc = []byte{
 	0x20, 0x01, 0x28, 0x0b, 0x32, 0x1a, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72,
 	0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x54, 0x69, 0x6d, 0x65, 0x73, 0x74, 0x61, 0x6d, 0x70,
 	0x52, 0x09, 0x65, 0x78, 0x70, 0x69, 0x72, 0x65, 0x73, 0x41, 0x74, 0x22, 0x0f, 0x0a, 0x0d, 0x4c,
-	0x6f, 0x67, 0x4f, 0x75, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x10, 0x0a, 0x0e,
-	0x4c, 0x6f, 0x67, 0x4f, 0x75, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a,
+	0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x10, 0x0a, 0x0e,
+	0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x22, 0x3a,
 	0x0a, 0x13, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x23, 0x0a, 0x0d, 0x72, 0x65, 0x66, 0x72, 0x65, 0x73, 0x68,
 	0x5f, 0x74, 0x6f, 0x6b, 0x65, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0c, 0x72, 0x65,
@@ -741,9 +741,9 @@ var file_chatapp_auth_v1_auth_service_proto_rawDesc = []byte{
 	0x68, 0x61, 0x74, 0x61, 0x70, 0x70, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x4c,
 	0x6f, 0x67, 0x49, 0x6e, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x49, 0x0a, 0x06,
 	0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x12, 0x1e, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x61, 0x70, 0x70,
-	0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x6f, 0x67, 0x4f, 0x75, 0x74, 0x52,
+	0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52,
 	0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x1f, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x61, 0x70, 0x70,
-	0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x6f, 0x67, 0x4f, 0x75, 0x74, 0x52,
+	0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x4c, 0x6f, 0x67, 0x6f, 0x75, 0x74, 0x52,
 	0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x5b, 0x0a, 0x0c, 0x52, 0x65, 0x66, 0x72, 0x65,
 	0x73, 0x68, 0x54, 0x6f, 0x6b, 0x65, 0x6e, 0x12, 0x24, 0x2e, 0x63, 0x68, 0x61, 0x74, 0x61, 0x70,
 	0x70, 0x2e, 0x61, 0x75, 0x74, 0x68, 0x2e, 0x76, 0x31, 0x2e, 0x52, 0x65, 0x66, 0x72, 0x65, 0x73,
@@ -789,8 +789,8 @@ var file_chatapp_auth_v1_auth_service_proto_goTypes = []interface{}{
 	(*SignUpResponse)(nil),                 // 1: chatapp.auth.v1.SignUpResponse
 	(*LogInRequest)(nil),                   // 2: chatapp.auth.v1.LogInRequest
 	(*LogInResponse)(nil),                  // 3: chatapp.auth.v1.LogInResponse
-	(*LogOutRequest)(nil),                  // 4: chatapp.auth.v1.LogOutRequest
-	(*LogOutResponse)(nil),                 // 5: chatapp.auth.v1.LogOutResponse
+	(*LogoutRequest)(nil),                  // 4: chatapp.auth.v1.LogoutRequest
+	(*LogoutResponse)(nil),                 // 5: chatapp.auth.v1.LogoutResponse
 	(*RefreshTokenRequest)(nil),            // 6: chatapp.auth.v1.RefreshTokenRequest
 	(*RefreshTokenResponse)(nil),           // 7: chatapp.auth.v1.RefreshTokenResponse
 	(*SendPasswordResetEmailRequest)(nil),  // 8: chatapp.auth.v1.SendPasswordResetEmailRequest
@@ -808,13 +808,13 @@ var file_chatapp_auth_v1_auth_service_proto_depIdxs = []int32{
 	13, // 4: chatapp.auth.v1.RefreshTokenResponse.expires_at:type_name -> google.protobuf.Timestamp
 	0,  // 5: chatapp.auth.v1.AuthService.SignUp:input_type -> chatapp.auth.v1.SignUpRequest
 	2,  // 6: chatapp.auth.v1.AuthService.LogIn:input_type -> chatapp.auth.v1.LogInRequest
-	4,  // 7: chatapp.auth.v1.AuthService.Logout:input_type -> chatapp.auth.v1.LogOutRequest
+	4,  // 7: chatapp.auth.v1.AuthService.Logout:input_type -> chatapp.auth.v1.LogoutRequest
 	6,  // 8: chatapp.auth.v1.AuthService.RefreshToken:input_type -> chatapp.auth.v1.RefreshTokenRequest
 	8,  // 9: chatapp.auth.v1.AuthService.SendPasswordResetEmail:input_type -> chatapp.auth.v1.SendPasswordResetEmailRequest
 	10, // 10: chatapp.auth.v1.AuthService.ResetPassword:input_type -> chatapp.auth.v1.ResetPasswordRequest
 	1,  // 11: chatapp.auth.v1.AuthService.SignUp:output_type -> chatapp.auth.v1.SignUpResponse
 	3,  // 12: chatapp.auth.v1.AuthService.LogIn:output_type -> chatapp.auth.v1.LogInResponse
-	5,  // 13: chatapp.auth.v1.AuthService.Logout:output_type -> chatapp.auth.v1.LogOutResponse
+	5,  // 13: chatapp.auth.v1.AuthService.Logout:output_type -> chatapp.auth.v1.LogoutResponse
 	7,  // 14: chatapp.auth.v1.AuthService.RefreshToken:output_type -> chatapp.auth.v1.RefreshTokenResponse
 	9,  // 15: chatapp.auth.v1.AuthService.SendPasswordResetEmail:output_type -> chatapp.auth.v1.SendPasswordResetEmailResponse
 	11, // 16: chatapp.auth.v1.AuthService.ResetPassword:output_type -> chatapp.auth.v1.ResetPasswordResponse
@@ -880,7 +880,7 @@ func file_chatapp_auth_v1_auth_service_proto_init() {
 			}
 		}
 		file_chatapp_auth_v1_auth_service_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LogOutRequest); i {
+			switch v := v.(*LogoutRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -892,7 +892,7 @@ func file_chatapp_auth_v1_auth_service_proto_init() {
 			}
 		}
 		file_chatapp_auth_v1_auth_service_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*LogOutResponse); i {
+			switch v := v.(*LogoutResponse); i {
 			case 0:
 				return &v.state
 			case 1:
