@@ -38,6 +38,6 @@ func TestJWT_RefreshTokenCannotBeVerifiedAsAccess(t *testing.T) {
 	}
 
 	if _, err := m.VerifyRefreshToken(token); err == nil {
-		t.Fatalf("expected error: got nil")
+		t.Fatal("expected error: got nil")
 	}
 }
