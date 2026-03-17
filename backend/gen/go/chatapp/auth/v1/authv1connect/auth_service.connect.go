@@ -54,7 +54,7 @@ const (
 type AuthServiceClient interface {
 	SignUp(context.Context, *v1.SignUpRequest) (*v1.SignUpResponse, error)
 	LogIn(context.Context, *v1.LogInRequest) (*v1.LogInResponse, error)
-	Logout(context.Context, *v1.LogOutRequest) (*v1.LogOutResponse, error)
+	Logout(context.Context, *v1.LogoutRequest) (*v1.LogoutResponse, error)
 	RefreshToken(context.Context, *v1.RefreshTokenRequest) (*v1.RefreshTokenResponse, error)
 	SendPasswordResetEmail(context.Context, *v1.SendPasswordResetEmailRequest) (*v1.SendPasswordResetEmailResponse, error)
 	ResetPassword(context.Context, *v1.ResetPasswordRequest) (*v1.ResetPasswordResponse, error)
@@ -83,7 +83,7 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(authServiceMethods.ByName("LogIn")),
 			connect.WithClientOptions(opts...),
 		),
-		logout: connect.NewClient[v1.LogOutRequest, v1.LogOutResponse](
+		logout: connect.NewClient[v1.LogoutRequest, v1.LogoutResponse](
 			httpClient,
 			baseURL+AuthServiceLogoutProcedure,
 			connect.WithSchema(authServiceMethods.ByName("Logout")),
@@ -114,7 +114,7 @@ func NewAuthServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 type authServiceClient struct {
 	signUp                 *connect.Client[v1.SignUpRequest, v1.SignUpResponse]
 	logIn                  *connect.Client[v1.LogInRequest, v1.LogInResponse]
-	logout                 *connect.Client[v1.LogOutRequest, v1.LogOutResponse]
+	logout                 *connect.Client[v1.LogoutRequest, v1.LogoutResponse]
 	refreshToken           *connect.Client[v1.RefreshTokenRequest, v1.RefreshTokenResponse]
 	sendPasswordResetEmail *connect.Client[v1.SendPasswordResetEmailRequest, v1.SendPasswordResetEmailResponse]
 	resetPassword          *connect.Client[v1.ResetPasswordRequest, v1.ResetPasswordResponse]
@@ -139,7 +139,7 @@ func (c *authServiceClient) LogIn(ctx context.Context, req *v1.LogInRequest) (*v
 }
 
 // Logout calls chatapp.auth.v1.AuthService.Logout.
-func (c *authServiceClient) Logout(ctx context.Context, req *v1.LogOutRequest) (*v1.LogOutResponse, error) {
+func (c *authServiceClient) Logout(ctx context.Context, req *v1.LogoutRequest) (*v1.LogoutResponse, error) {
 	response, err := c.logout.CallUnary(ctx, connect.NewRequest(req))
 	if response != nil {
 		return response.Msg, err
@@ -178,7 +178,7 @@ func (c *authServiceClient) ResetPassword(ctx context.Context, req *v1.ResetPass
 type AuthServiceHandler interface {
 	SignUp(context.Context, *v1.SignUpRequest) (*v1.SignUpResponse, error)
 	LogIn(context.Context, *v1.LogInRequest) (*v1.LogInResponse, error)
-	Logout(context.Context, *v1.LogOutRequest) (*v1.LogOutResponse, error)
+	Logout(context.Context, *v1.LogoutRequest) (*v1.LogoutResponse, error)
 	RefreshToken(context.Context, *v1.RefreshTokenRequest) (*v1.RefreshTokenResponse, error)
 	SendPasswordResetEmail(context.Context, *v1.SendPasswordResetEmailRequest) (*v1.SendPasswordResetEmailResponse, error)
 	ResetPassword(context.Context, *v1.ResetPasswordRequest) (*v1.ResetPasswordResponse, error)
@@ -258,7 +258,7 @@ func (UnimplementedAuthServiceHandler) LogIn(context.Context, *v1.LogInRequest) 
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("chatapp.auth.v1.AuthService.LogIn is not implemented"))
 }
 
-func (UnimplementedAuthServiceHandler) Logout(context.Context, *v1.LogOutRequest) (*v1.LogOutResponse, error) {
+func (UnimplementedAuthServiceHandler) Logout(context.Context, *v1.LogoutRequest) (*v1.LogoutResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("chatapp.auth.v1.AuthService.Logout is not implemented"))
 }
 
