@@ -6,14 +6,14 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-const DefaultBctyptCost = bcrypt.DefaultCost
+const DefaultBcryptCost = bcrypt.DefaultCost
 
 func HashPassword(password string) (string, error) {
 	if password == "" {
 		return "", errors.New("password is required")
 	}
 
-	hashed, err := bcrypt.GenerateFromPassword([]byte(password), DefaultBctyptCost)
+	hashed, err := bcrypt.GenerateFromPassword([]byte(password), DefaultBcryptCost)
 	if err != nil {
 		return "", err
 	}
