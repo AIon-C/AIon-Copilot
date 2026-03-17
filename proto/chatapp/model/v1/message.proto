@@ -4,6 +4,7 @@ package chatapp.model.v1;
 
 option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/model/v1;modelv1";
 
+import "google/protobuf/timestamp.proto";
 import "chatapp/common/v1/metadata.proto";
 
 message Message {
@@ -14,4 +15,5 @@ message Message {
   string content = 5;
   bool is_edited = 6;
   chatapp.common.v1.AuditMetadata metadata = 7;
+  optional google.protobuf.Timestamp edited_at = 8;
 }
