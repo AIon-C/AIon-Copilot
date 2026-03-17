@@ -29,7 +29,7 @@ export const useCreateMessage = () => {
       const prompt = copilot.promptText?.trim() || getTextFromQuillBody(values.body);
 
       if (!prompt) {
-        throw new Error('Prompt is empty.');
+        throw new Error('プロンプトが空です。');
       }
 
       return sendCopilotMessage({
