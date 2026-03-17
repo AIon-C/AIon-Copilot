@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chatapp.user.v1;
 
-option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/user/v1;userv1";
+option go_package = "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/user/v1;userv1";
 
 import "google/protobuf/field_mask.proto";
 import "chatapp/model/v1/user.proto";
