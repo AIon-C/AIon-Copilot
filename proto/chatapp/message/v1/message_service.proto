@@ -14,6 +14,7 @@ message SendMessageRequest {
   repeated string file_ids = 3;
   // generate key by client side
   string client_message_id = 4;
+  optional string thread_root_id = 5;
 }
 
 message SendMessageResponse {
@@ -55,10 +56,18 @@ message DeleteMessageResponse {
   chatapp.model.v1.Message message = 1;
 }
 
+message SendTypingIndicatorRequest {
+  string channel_id = 1;
+  optional string thread_root_id = 2;
+}
+
+message SendTypingIndicatorResponse {}
+
 service MessageService {
   rpc SendMessage(SendMessageRequest) returns (SendMessageResponse);
   rpc ListMessages(ListMessagesRequest) returns (ListMessagesResponse);
   rpc GetMessage(GetMessageRequest) returns (GetMessageResponse);
   rpc UpdateMessage(UpdateMessageRequest) returns (UpdateMessageResponse);
   rpc DeleteMessage(DeleteMessageRequest) returns (DeleteMessageResponse);
+  rpc SendTypingIndicator(SendTypingIndicatorRequest) returns (SendTypingIndicatorResponse);
 }

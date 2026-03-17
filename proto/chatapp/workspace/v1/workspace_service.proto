@@ -11,7 +11,8 @@ import "chatapp/model/v1/workspace_member.proto";
 
 message CreateWorkspaceRequest {
   string name = 1;
-  string slug = 2;
+  reserved 2;
+  reserved "slug";
   string icon_url = 3;
   string client_request_id = 4;
 }
@@ -74,6 +75,21 @@ message ListWorkspaceMembersResponse {
   chatapp.common.v1.PageResponse page = 2;
 }
 
+message GetInviteInfoRequest {
+  string invite_code = 1;
+}
+
+message GetInviteInfoResponse {
+  chatapp.model.v1.Workspace workspace = 1;
+}
+
+message RemoveMemberRequest {
+  string workspace_id = 1;
+  string user_id = 2;
+}
+
+message RemoveMemberResponse {}
+
 service WorkspaceService {
   rpc CreateWorkspace(CreateWorkspaceRequest) returns (CreateWorkspaceResponse);
   rpc ListWorkspaces(ListWorkspacesRequest) returns (ListWorkspacesResponse);
@@ -82,6 +98,8 @@ service WorkspaceService {
   rpc InviteWorkspaceMember(InviteWorkspaceMemberRequest) returns (InviteWorkspaceMemberResponse);
   rpc JoinWorkspaceByInvite(JoinWorkspaceByInviteRequest) returns (JoinWorkspaceByInviteResponse);
   rpc ListWorkspaceMembers(ListWorkspaceMembersRequest) returns (ListWorkspaceMembersResponse);
+  rpc GetInviteInfo(GetInviteInfoRequest) returns (GetInviteInfoResponse);
+  rpc RemoveMember(RemoveMemberRequest) returns (RemoveMemberResponse);
 }
 
 
