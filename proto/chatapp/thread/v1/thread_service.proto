@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chatapp.thread.v1;
 
-option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/thread/v1;threadv1";
+option go_package = "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/thread/v1;threadv1";
 
 import "chatapp/model/v1/message.proto";
 

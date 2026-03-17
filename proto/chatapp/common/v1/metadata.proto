@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chatapp.common.v1;
 
-option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/common/v1;commonv1";
+option go_package = "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/common/v1;commonv1";
 
 import "google/protobuf/timestamp.proto";
 
