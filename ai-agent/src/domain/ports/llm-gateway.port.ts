@@ -10,19 +10,27 @@ export interface LLMStreamResult {
   }>;
 }
 
+export interface LLMStreamOptions {
+  abortSignal?: AbortSignal;
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
+
+export interface LLMGenerateOptions {
+  model?: string;
+  temperature?: number;
+  maxTokens?: number;
+}
+
 export interface LLMGatewayPort {
   stream(
     messages: LLMMessage[],
-    options?: {
-      abortSignal?: AbortSignal;
-      model?: string;
-    },
+    options?: LLMStreamOptions,
   ): Promise<LLMStreamResult>;
 
   generate(
     messages: LLMMessage[],
-    options?: {
-      model?: string;
-    },
+    options?: LLMGenerateOptions,
   ): Promise<{ text: string; inputTokens: number; outputTokens: number }>;
 }
