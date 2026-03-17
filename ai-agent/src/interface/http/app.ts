@@ -11,6 +11,7 @@ import { createThreadsRoute } from "./routes/threads.route.js";
 import { createChatRoute } from "./routes/chat.route.js";
 import { createHealthRoute } from "./routes/health.route.js";
 import { createReadinessRoute } from "./routes/readiness.route.js";
+import { createSwaggerRoute } from "./swagger/swagger.route.js";
 
 export function createApp(deps: {
   manageThread: ManageThreadUseCase;
@@ -28,6 +29,7 @@ export function createApp(deps: {
   // Public routes (no auth)
   app.route("/api/health", createHealthRoute());
   app.route("/api/ready", createReadinessRoute(deps.pgPool));
+  app.route("/api/swagger", createSwaggerRoute());
 
   // Protected routes (JWT auth)
   const api = new Hono();

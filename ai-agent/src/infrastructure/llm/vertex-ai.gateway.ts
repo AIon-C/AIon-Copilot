@@ -1,6 +1,6 @@
 import { createVertex } from "@ai-sdk/google-vertex";
 import { generateText, streamText } from "ai";
-import type { LLMGatewayPort, LLMStreamResult } from "../../domain/ports/llm-gateway.port.js";
+import type { LLMGatewayPort, LLMStreamResult, LLMStreamOptions, LLMGenerateOptions } from "../../domain/ports/llm-gateway.port.js";
 import type { LLMMessage } from "../../domain/types/index.js";
 import { config } from "../../shared/config.js";
 import { LLMError } from "../../shared/errors.js";
@@ -14,7 +14,7 @@ export class VertexAiGateway implements LLMGatewayPort {
 
   async stream(
     messages: LLMMessage[],
-    options?: { abortSignal?: AbortSignal; model?: string },
+    options?: LLMStreamOptions,
   ): Promise<LLMStreamResult> {
     const modelName = options?.model ?? "gemini-2.5-flash";
     const startTime = Date.now();
@@ -24,6 +24,8 @@ export class VertexAiGateway implements LLMGatewayPort {
         model: this.vertex(modelName),
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
         abortSignal: options?.abortSignal,
+        temperature: options?.temperature ?? 0.7,
+        maxOutputTokens: options?.maxTokens ?? 4096,
       });
 
     let streamResult: ReturnType<typeof streamText>;
@@ -69,7 +71,7 @@ export class VertexAiGateway implements LLMGatewayPort {
 
   async generate(
     messages: LLMMessage[],
-    options?: { model?: string },
+    options?: LLMGenerateOptions,
   ): Promise<{ text: string; inputTokens: number; outputTokens: number }> {
     const modelName = options?.model ?? "gemini-2.5-flash";
 
@@ -77,6 +79,8 @@ export class VertexAiGateway implements LLMGatewayPort {
       const result = await generateText({
         model: this.vertex(modelName),
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
+        temperature: options?.temperature ?? 0.1,
+        maxOutputTokens: options?.maxTokens ?? 256,
       });
       return {
         text: result.text,
@@ -89,6 +93,8 @@ export class VertexAiGateway implements LLMGatewayPort {
         const result = await generateText({
           model: this.vertex(modelName),
           messages: messages.map((m) => ({ role: m.role, content: m.content })),
+          temperature: options?.temperature ?? 0.1,
+          maxOutputTokens: options?.maxTokens ?? 256,
         });
         return {
           text: result.text,
