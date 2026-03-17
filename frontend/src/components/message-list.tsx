@@ -5,8 +5,8 @@ import { useState } from 'react';
 import { useCurrentMember } from '@/features/members/api/use-current-member';
 import type { GetMessagesReturnType } from '@/features/messages/api/use-get-messages';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import { Id } from '@/mock/types';
 
-import { Id } from '../../convex/_generated/dataModel';
 import { ChannelHero } from './channel-hero';
 import { ConversationHero } from './conversation-hero';
 import { Message } from './message';

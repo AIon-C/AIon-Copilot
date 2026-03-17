@@ -4,12 +4,13 @@ package chatapp.model.v1;
 
 option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/model/v1;modelv1";
 
-import "google/protobuf/timestamp.proto";
+import "chatapp/common/v1/metadata.proto";
 
-message ChannelMember {
+message Channel {
   string id = 1;
-  string channel_id = 2;
-  string user_id = 3;
-  google.protobuf.Timestamp last_read_at = 4;
-  google.protobuf.Timestamp joined_at = 5;
+  string workspace_id = 2;
+  string name = 3;
+  string description = 4;
+  string created_by = 5;
+  chatapp.common.v1.AuditMetadata metadata = 6;
 }

@@ -1,10 +1,10 @@
-import { useQuery } from 'convex/react';
+import { useCallback } from 'react';
 
-import { api } from '@/../convex/_generated/api';
+import { getWorkspaces } from '@/mock/api';
+import { useMockQuery } from '@/mock/hooks';
 
 export const useGetWorkspaces = () => {
-  const data = useQuery(api.workspaces.get);
-  const isLoading = data === undefined;
+  const queryFn = useCallback(() => getWorkspaces(), []);
 
-  return { data, isLoading };
+  return useMockQuery(queryFn);
 };

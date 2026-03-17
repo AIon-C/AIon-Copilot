@@ -1,12 +1,11 @@
 'use client';
 
-import { Search } from 'lucide-react';
+import { Bot, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { FaGithub } from 'react-icons/fa';
 
-import type { Id } from '@/../convex/_generated/dataModel';
 import { Button } from '@/components/ui/button';
 import {
   Command,
@@ -22,11 +21,14 @@ import { links } from '@/config';
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
 import { useGetMembers } from '@/features/members/api/use-get-members';
 import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
+import { usePanel } from '@/hooks/use-panel';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
+import type { Id } from '@/mock/types';
 
 export const Toolbar = () => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
+  const { onOpenAiChat } = usePanel();
 
   const { data } = useGetWorkspace({ id: workspaceId });
   const { data: channels } = useGetChannels({ workspaceId });
@@ -98,10 +100,9 @@ export const Toolbar = () => {
       </div>
 
       <div className="ml-auto flex flex-1 items-center justify-end">
-        <Button variant="transparent" size="iconSm" asChild>
-          <Link href={links.sourceCode} target="_blank" rel="noreferrer noopener" title="Source Code">
-            <FaGithub className="size-5 text-white" />
-          </Link>
+        <Button variant="transparent" size="sm" onClick={onOpenAiChat} className="h-7 gap-1.5 text-white">
+          <Bot className="size-4" />
+          Copilot
         </Button>
       </div>
     </nav>

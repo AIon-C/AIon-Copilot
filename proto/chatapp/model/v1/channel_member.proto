@@ -6,10 +6,10 @@ option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/model/v1;mod
 
 import "google/protobuf/timestamp.proto";
 
-message Reaction {
+message ChannelMember {
   string id = 1;
-  string message_id = 2;
+  string channel_id = 2;
   string user_id = 3;
-  string emoji_code = 4;
-  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp last_read_at = 4;
+  google.protobuf.Timestamp joined_at = 5;
 }

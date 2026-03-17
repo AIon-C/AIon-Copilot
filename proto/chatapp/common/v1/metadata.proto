@@ -8,9 +8,9 @@ import "google/protobuf/timestamp.proto";
 
 // 監査用の共有メタ情報
 message AuditMetadata {
-  google.protobuf.Timestamp create_at = 1;
-  google.protobuf.Timestamp update_at = 2;
-  google.protobug.Timestamp deleted_at = 3;
+  google.protobuf.Timestamp created_at = 1;
+  google.protobuf.Timestamp updated_at = 2;
+  google.protobuf.Timestamp deleted_at = 3;
   string created_by = 4;
   string updated_by = 5;
   string deleted_by = 6;
