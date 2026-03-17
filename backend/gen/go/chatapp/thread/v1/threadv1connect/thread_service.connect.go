@@ -8,7 +8,7 @@ import (
 	connect "connectrpc.com/connect"
 	context "context"
 	errors "errors"
-	v1 "github.com/AIon-Copilot/backend/gen/go/chatapp/thread/v1"
+	v1 "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/thread/v1"
 	http "net/http"
 	strings "strings"
 )
@@ -35,11 +35,19 @@ const (
 const (
 	// ThreadServiceGetThreadProcedure is the fully-qualified name of the ThreadService's GetThread RPC.
 	ThreadServiceGetThreadProcedure = "/chatapp.thread.v1.ThreadService/GetThread"
+	// ThreadServiceReplyToThreadProcedure is the fully-qualified name of the ThreadService's
+	// ReplyToThread RPC.
+	ThreadServiceReplyToThreadProcedure = "/chatapp.thread.v1.ThreadService/ReplyToThread"
+	// ThreadServiceListThreadMessagesProcedure is the fully-qualified name of the ThreadService's
+	// ListThreadMessages RPC.
+	ThreadServiceListThreadMessagesProcedure = "/chatapp.thread.v1.ThreadService/ListThreadMessages"
 )
 
 // ThreadServiceClient is a client for the chatapp.thread.v1.ThreadService service.
 type ThreadServiceClient interface {
 	GetThread(context.Context, *v1.GetThreadRequest) (*v1.GetThreadResponse, error)
+	ReplyToThread(context.Context, *v1.ReplyToThreadRequest) (*v1.ReplyToThreadResponse, error)
+	ListThreadMessages(context.Context, *v1.ListThreadMessagesRequest) (*v1.ListThreadMessagesResponse, error)
 }
 
 // NewThreadServiceClient constructs a client for the chatapp.thread.v1.ThreadService service. By
@@ -59,12 +67,26 @@ func NewThreadServiceClient(httpClient connect.HTTPClient, baseURL string, opts 
 			connect.WithSchema(threadServiceMethods.ByName("GetThread")),
 			connect.WithClientOptions(opts...),
 		),
+		replyToThread: connect.NewClient[v1.ReplyToThreadRequest, v1.ReplyToThreadResponse](
+			httpClient,
+			baseURL+ThreadServiceReplyToThreadProcedure,
+			connect.WithSchema(threadServiceMethods.ByName("ReplyToThread")),
+			connect.WithClientOptions(opts...),
+		),
+		listThreadMessages: connect.NewClient[v1.ListThreadMessagesRequest, v1.ListThreadMessagesResponse](
+			httpClient,
+			baseURL+ThreadServiceListThreadMessagesProcedure,
+			connect.WithSchema(threadServiceMethods.ByName("ListThreadMessages")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // threadServiceClient implements ThreadServiceClient.
 type threadServiceClient struct {
-	getThread *connect.Client[v1.GetThreadRequest, v1.GetThreadResponse]
+	getThread          *connect.Client[v1.GetThreadRequest, v1.GetThreadResponse]
+	replyToThread      *connect.Client[v1.ReplyToThreadRequest, v1.ReplyToThreadResponse]
+	listThreadMessages *connect.Client[v1.ListThreadMessagesRequest, v1.ListThreadMessagesResponse]
 }
 
 // GetThread calls chatapp.thread.v1.ThreadService.GetThread.
@@ -76,9 +98,29 @@ func (c *threadServiceClient) GetThread(ctx context.Context, req *v1.GetThreadRe
 	return nil, err
 }
 
+// ReplyToThread calls chatapp.thread.v1.ThreadService.ReplyToThread.
+func (c *threadServiceClient) ReplyToThread(ctx context.Context, req *v1.ReplyToThreadRequest) (*v1.ReplyToThreadResponse, error) {
+	response, err := c.replyToThread.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
+// ListThreadMessages calls chatapp.thread.v1.ThreadService.ListThreadMessages.
+func (c *threadServiceClient) ListThreadMessages(ctx context.Context, req *v1.ListThreadMessagesRequest) (*v1.ListThreadMessagesResponse, error) {
+	response, err := c.listThreadMessages.CallUnary(ctx, connect.NewRequest(req))
+	if response != nil {
+		return response.Msg, err
+	}
+	return nil, err
+}
+
 // ThreadServiceHandler is an implementation of the chatapp.thread.v1.ThreadService service.
 type ThreadServiceHandler interface {
 	GetThread(context.Context, *v1.GetThreadRequest) (*v1.GetThreadResponse, error)
+	ReplyToThread(context.Context, *v1.ReplyToThreadRequest) (*v1.ReplyToThreadResponse, error)
+	ListThreadMessages(context.Context, *v1.ListThreadMessagesRequest) (*v1.ListThreadMessagesResponse, error)
 }
 
 // NewThreadServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -94,10 +136,26 @@ func NewThreadServiceHandler(svc ThreadServiceHandler, opts ...connect.HandlerOp
 		connect.WithSchema(threadServiceMethods.ByName("GetThread")),
 		connect.WithHandlerOptions(opts...),
 	)
+	threadServiceReplyToThreadHandler := connect.NewUnaryHandlerSimple(
+		ThreadServiceReplyToThreadProcedure,
+		svc.ReplyToThread,
+		connect.WithSchema(threadServiceMethods.ByName("ReplyToThread")),
+		connect.WithHandlerOptions(opts...),
+	)
+	threadServiceListThreadMessagesHandler := connect.NewUnaryHandlerSimple(
+		ThreadServiceListThreadMessagesProcedure,
+		svc.ListThreadMessages,
+		connect.WithSchema(threadServiceMethods.ByName("ListThreadMessages")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/chatapp.thread.v1.ThreadService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ThreadServiceGetThreadProcedure:
 			threadServiceGetThreadHandler.ServeHTTP(w, r)
+		case ThreadServiceReplyToThreadProcedure:
+			threadServiceReplyToThreadHandler.ServeHTTP(w, r)
+		case ThreadServiceListThreadMessagesProcedure:
+			threadServiceListThreadMessagesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -109,4 +167,12 @@ type UnimplementedThreadServiceHandler struct{}
 
 func (UnimplementedThreadServiceHandler) GetThread(context.Context, *v1.GetThreadRequest) (*v1.GetThreadResponse, error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("chatapp.thread.v1.ThreadService.GetThread is not implemented"))
+}
+
+func (UnimplementedThreadServiceHandler) ReplyToThread(context.Context, *v1.ReplyToThreadRequest) (*v1.ReplyToThreadResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("chatapp.thread.v1.ThreadService.ReplyToThread is not implemented"))
+}
+
+func (UnimplementedThreadServiceHandler) ListThreadMessages(context.Context, *v1.ListThreadMessagesRequest) (*v1.ListThreadMessagesResponse, error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("chatapp.thread.v1.ThreadService.ListThreadMessages is not implemented"))
 }

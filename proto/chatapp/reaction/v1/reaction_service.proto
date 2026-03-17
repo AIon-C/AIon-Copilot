@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chatapp.reaction.v1;
 
-option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/reaction/v1;reactionv1";
+option go_package = "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/reaction/v1;reactionv1";
 
 import "chatapp/model/v1/reaction.proto";
 

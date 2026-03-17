@@ -12,7 +12,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file chatapp/model/v1/workspace_member.proto.
  */
 export const file_chatapp_model_v1_workspace_member: GenFile = /*@__PURE__*/
-  fileDesc("CidjaGF0YXBwL21vZGVsL3YxL3dvcmtzcGFjZV9tZW1iZXIucHJvdG8SEGNoYXRhcHAubW9kZWwudjEigQEKD1dvcmtzcGFjZU1lbWJlchIKCgJpZBgBIAEoCRIUCgx3b3Jrc3BhY2VfaWQYAiABKAkSDwoHdXNlcl9pZBgDIAEoCRIMCgRyb2xlGAQgASgJEi0KCWpvaW5lZF9hdBgFIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXBCQVo/Z2l0aHViLmNvbS9BSW9uLUNvcGlsb3QvYmFja2VuZC9nZW4vZ28vY2hhdGFwcC9tb2RlbC92MTttb2RlbHYxYgZwcm90bzM", [file_google_protobuf_timestamp]);
+  fileDesc("CidjaGF0YXBwL21vZGVsL3YxL3dvcmtzcGFjZV9tZW1iZXIucHJvdG8SEGNoYXRhcHAubW9kZWwudjEigQEKD1dvcmtzcGFjZU1lbWJlchIKCgJpZBgBIAEoCRIUCgx3b3Jrc3BhY2VfaWQYAiABKAkSDwoHdXNlcl9pZBgDIAEoCRItCglqb2luZWRfYXQYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEgwKBHJvbGUYBSABKAlCSFpGZ2l0aHViLmNvbS9BSW9uLUMvQUlvbi1Db3BpbG90L2JhY2tlbmQvZ2VuL2dvL2NoYXRhcHAvbW9kZWwvdjE7bW9kZWx2MWIGcHJvdG8z", [file_google_protobuf_timestamp]);
 
 /**
  * @generated from message chatapp.model.v1.WorkspaceMember
@@ -34,14 +34,14 @@ export type WorkspaceMember = Message<"chatapp.model.v1.WorkspaceMember"> & {
   userId: string;
 
   /**
-   * @generated from field: string role = 4;
-   */
-  role: string;
-
-  /**
-   * @generated from field: google.protobuf.Timestamp joined_at = 5;
+   * @generated from field: google.protobuf.Timestamp joined_at = 4;
    */
   joinedAt?: Timestamp;
+
+  /**
+   * @generated from field: string role = 5;
+   */
+  role: string;
 };
 
 /**

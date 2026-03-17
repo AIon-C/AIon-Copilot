@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chatapp.auth.v1;
 
-option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/auth/v1;authv1";
+option go_package = "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/auth/v1;authv1";
 
 import "google/protobuf/timestamp.proto";
 import "chatapp/model/v1/user.proto";
@@ -16,10 +16,12 @@ message SignUpRequest {
 }
 
 message SignUpResponse {
-  chatapp.model.v1.User user = 1;
+  reserved 1;
+  reserved "user_id";
   string access_token = 2;
   string refresh_token = 3;
   google.protobuf.Timestamp expires_at = 4;
+  chatapp.model.v1.User user = 5;
 }
 
 message LogInRequest {
@@ -28,9 +30,9 @@ message LogInRequest {
 }
 
 message LogInResponse {
-  chatapp.model.v1.User user = 1;
-  string access_token = 2;
-  string refresh_token = 3;
+  string access_token = 1;
+  string refresh_token = 2;
+  chatapp.model.v1.User user = 3;
   google.protobuf.Timestamp expires_at = 4;
 }
 

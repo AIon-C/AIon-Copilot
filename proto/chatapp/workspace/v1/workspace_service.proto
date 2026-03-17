@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package chatapp.workspace.v1;
 
-option go_package = "github.com/AIon-Copilot/backend/gen/go/chatapp/workspace/v1;workspacev1";
+option go_package = "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/workspace/v1;workspacev1";
 
 import "google/protobuf/field_mask.proto";
 import "chatapp/common/v1/pagination.proto";
@@ -76,7 +76,7 @@ message ListWorkspaceMembersResponse {
 }
 
 message GetInviteInfoRequest {
-  string invite_code = 1;
+  string invite_token = 1;
 }
 
 message GetInviteInfoResponse {

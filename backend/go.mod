@@ -3,6 +3,6 @@ module github.com/AIon-C/AIon-Copilot/backend
 go 1.24.2
 
 require (
-	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.6.1 // indirect
-	google.golang.org/protobuf v1.36.11 // indirect
+	connectrpc.com/connect v1.19.1
+	google.golang.org/protobuf v1.36.11
 )

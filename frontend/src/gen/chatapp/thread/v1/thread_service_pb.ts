@@ -4,6 +4,8 @@
 
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
+import type { CursorRequest, CursorResponse } from "../../common/v1/cursor_pb";
+import { file_chatapp_common_v1_cursor } from "../../common/v1/cursor_pb";
 import type { Message as Message$1 } from "../../model/v1/message_pb";
 import { file_chatapp_model_v1_message } from "../../model/v1/message_pb";
 import type { Message } from "@bufbuild/protobuf";
@@ -12,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file chatapp/thread/v1/thread_service.proto.
  */
 export const file_chatapp_thread_v1_thread_service: GenFile = /*@__PURE__*/
-  fileDesc("CiZjaGF0YXBwL3RocmVhZC92MS90aHJlYWRfc2VydmljZS5wcm90bxIRY2hhdGFwcC50aHJlYWQudjEiKgoQR2V0VGhyZWFkUmVxdWVzdBIWCg50aHJlYWRfcm9vdF9pZBgBIAEoCSJwChFHZXRUaHJlYWRSZXNwb25zZRIvCgxyb290X21lc3NhZ2UYASABKAsyGS5jaGF0YXBwLm1vZGVsLnYxLk1lc3NhZ2USKgoHcmVwbGllcxgCIAMoCzIZLmNoYXRhcHAubW9kZWwudjEuTWVzc2FnZTJnCg1UaHJlYWRTZXJ2aWNlElYKCUdldFRocmVhZBIjLmNoYXRhcHAudGhyZWFkLnYxLkdldFRocmVhZFJlcXVlc3QaJC5jaGF0YXBwLnRocmVhZC52MS5HZXRUaHJlYWRSZXNwb25zZUJDWkFnaXRodWIuY29tL0FJb24tQ29waWxvdC9iYWNrZW5kL2dlbi9nby9jaGF0YXBwL3RocmVhZC92MTt0aHJlYWR2MWIGcHJvdG8z", [file_chatapp_model_v1_message]);
+  fileDesc("CiZjaGF0YXBwL3RocmVhZC92MS90aHJlYWRfc2VydmljZS5wcm90bxIRY2hhdGFwcC50aHJlYWQudjEiKgoQR2V0VGhyZWFkUmVxdWVzdBIWCg50aHJlYWRfcm9vdF9pZBgBIAEoCSJwChFHZXRUaHJlYWRSZXNwb25zZRIvCgxyb290X21lc3NhZ2UYASABKAsyGS5jaGF0YXBwLm1vZGVsLnYxLk1lc3NhZ2USKgoHcmVwbGllcxgCIAMoCzIZLmNoYXRhcHAubW9kZWwudjEuTWVzc2FnZSJsChRSZXBseVRvVGhyZWFkUmVxdWVzdBIWCg50aHJlYWRfcm9vdF9pZBgBIAEoCRIPCgdjb250ZW50GAIgASgJEhAKCGZpbGVfaWRzGAMgAygJEhkKEWNsaWVudF9tZXNzYWdlX2lkGAQgASgJIkMKFVJlcGx5VG9UaHJlYWRSZXNwb25zZRIqCgdtZXNzYWdlGAEgASgLMhkuY2hhdGFwcC5tb2RlbC52MS5NZXNzYWdlImMKGUxpc3RUaHJlYWRNZXNzYWdlc1JlcXVlc3QSFgoOdGhyZWFkX3Jvb3RfaWQYASABKAkSLgoEcGFnZRgCIAEoCzIgLmNoYXRhcHAuY29tbW9uLnYxLkN1cnNvclJlcXVlc3QiegoaTGlzdFRocmVhZE1lc3NhZ2VzUmVzcG9uc2USKwoIbWVzc2FnZXMYASADKAsyGS5jaGF0YXBwLm1vZGVsLnYxLk1lc3NhZ2USLwoEcGFnZRgCIAEoCzIhLmNoYXRhcHAuY29tbW9uLnYxLkN1cnNvclJlc3BvbnNlMr4CCg1UaHJlYWRTZXJ2aWNlElYKCUdldFRocmVhZBIjLmNoYXRhcHAudGhyZWFkLnYxLkdldFRocmVhZFJlcXVlc3QaJC5jaGF0YXBwLnRocmVhZC52MS5HZXRUaHJlYWRSZXNwb25zZRJiCg1SZXBseVRvVGhyZWFkEicuY2hhdGFwcC50aHJlYWQudjEuUmVwbHlUb1RocmVhZFJlcXVlc3QaKC5jaGF0YXBwLnRocmVhZC52MS5SZXBseVRvVGhyZWFkUmVzcG9uc2UScQoSTGlzdFRocmVhZE1lc3NhZ2VzEiwuY2hhdGFwcC50aHJlYWQudjEuTGlzdFRocmVhZE1lc3NhZ2VzUmVxdWVzdBotLmNoYXRhcHAudGhyZWFkLnYxLkxpc3RUaHJlYWRNZXNzYWdlc1Jlc3BvbnNlQkpaSGdpdGh1Yi5jb20vQUlvbi1DL0FJb24tQ29waWxvdC9iYWNrZW5kL2dlbi9nby9jaGF0YXBwL3RocmVhZC92MTt0aHJlYWR2MWIGcHJvdG8z", [file_chatapp_common_v1_cursor, file_chatapp_model_v1_message]);
 
 /**
  * @generated from message chatapp.thread.v1.GetThreadRequest
@@ -54,6 +56,99 @@ export const GetThreadResponseSchema: GenMessage<GetThreadResponse> = /*@__PURE_
   messageDesc(file_chatapp_thread_v1_thread_service, 1);
 
 /**
+ * @generated from message chatapp.thread.v1.ReplyToThreadRequest
+ */
+export type ReplyToThreadRequest = Message<"chatapp.thread.v1.ReplyToThreadRequest"> & {
+  /**
+   * @generated from field: string thread_root_id = 1;
+   */
+  threadRootId: string;
+
+  /**
+   * @generated from field: string content = 2;
+   */
+  content: string;
+
+  /**
+   * @generated from field: repeated string file_ids = 3;
+   */
+  fileIds: string[];
+
+  /**
+   * @generated from field: string client_message_id = 4;
+   */
+  clientMessageId: string;
+};
+
+/**
+ * Describes the message chatapp.thread.v1.ReplyToThreadRequest.
+ * Use `create(ReplyToThreadRequestSchema)` to create a new message.
+ */
+export const ReplyToThreadRequestSchema: GenMessage<ReplyToThreadRequest> = /*@__PURE__*/
+  messageDesc(file_chatapp_thread_v1_thread_service, 2);
+
+/**
+ * @generated from message chatapp.thread.v1.ReplyToThreadResponse
+ */
+export type ReplyToThreadResponse = Message<"chatapp.thread.v1.ReplyToThreadResponse"> & {
+  /**
+   * @generated from field: chatapp.model.v1.Message message = 1;
+   */
+  message?: Message$1;
+};
+
+/**
+ * Describes the message chatapp.thread.v1.ReplyToThreadResponse.
+ * Use `create(ReplyToThreadResponseSchema)` to create a new message.
+ */
+export const ReplyToThreadResponseSchema: GenMessage<ReplyToThreadResponse> = /*@__PURE__*/
+  messageDesc(file_chatapp_thread_v1_thread_service, 3);
+
+/**
+ * @generated from message chatapp.thread.v1.ListThreadMessagesRequest
+ */
+export type ListThreadMessagesRequest = Message<"chatapp.thread.v1.ListThreadMessagesRequest"> & {
+  /**
+   * @generated from field: string thread_root_id = 1;
+   */
+  threadRootId: string;
+
+  /**
+   * @generated from field: chatapp.common.v1.CursorRequest page = 2;
+   */
+  page?: CursorRequest;
+};
+
+/**
+ * Describes the message chatapp.thread.v1.ListThreadMessagesRequest.
+ * Use `create(ListThreadMessagesRequestSchema)` to create a new message.
+ */
+export const ListThreadMessagesRequestSchema: GenMessage<ListThreadMessagesRequest> = /*@__PURE__*/
+  messageDesc(file_chatapp_thread_v1_thread_service, 4);
+
+/**
+ * @generated from message chatapp.thread.v1.ListThreadMessagesResponse
+ */
+export type ListThreadMessagesResponse = Message<"chatapp.thread.v1.ListThreadMessagesResponse"> & {
+  /**
+   * @generated from field: repeated chatapp.model.v1.Message messages = 1;
+   */
+  messages: Message$1[];
+
+  /**
+   * @generated from field: chatapp.common.v1.CursorResponse page = 2;
+   */
+  page?: CursorResponse;
+};
+
+/**
+ * Describes the message chatapp.thread.v1.ListThreadMessagesResponse.
+ * Use `create(ListThreadMessagesResponseSchema)` to create a new message.
+ */
+export const ListThreadMessagesResponseSchema: GenMessage<ListThreadMessagesResponse> = /*@__PURE__*/
+  messageDesc(file_chatapp_thread_v1_thread_service, 5);
+
+/**
  * @generated from service chatapp.thread.v1.ThreadService
  */
 export const ThreadService: GenService<{
@@ -64,6 +159,22 @@ export const ThreadService: GenService<{
     methodKind: "unary";
     input: typeof GetThreadRequestSchema;
     output: typeof GetThreadResponseSchema;
+  },
+  /**
+   * @generated from rpc chatapp.thread.v1.ThreadService.ReplyToThread
+   */
+  replyToThread: {
+    methodKind: "unary";
+    input: typeof ReplyToThreadRequestSchema;
+    output: typeof ReplyToThreadResponseSchema;
+  },
+  /**
+   * @generated from rpc chatapp.thread.v1.ThreadService.ListThreadMessages
+   */
+  listThreadMessages: {
+    methodKind: "unary";
+    input: typeof ListThreadMessagesRequestSchema;
+    output: typeof ListThreadMessagesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_chatapp_thread_v1_thread_service, 0);

@@ -14,7 +14,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file chatapp/auth/v1/auth_service.proto.
  */
 export const file_chatapp_auth_v1_auth_service: GenFile = /*@__PURE__*/
-  fileDesc("CiJjaGF0YXBwL2F1dGgvdjEvYXV0aF9zZXJ2aWNlLnByb3RvEg9jaGF0YXBwLmF1dGgudjEiYQoNU2lnblVwUmVxdWVzdBINCgVlbWFpbBgBIAEoCRIQCghwYXNzd29yZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSGQoRY2xpZW50X3JlcXVlc3RfaWQYBCABKAkikwEKDlNpZ25VcFJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5jaGF0YXBwLm1vZGVsLnYxLlVzZXISFAoMYWNjZXNzX3Rva2VuGAIgASgJEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkSLgoKZXhwaXJlc19hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiLwoMTG9nSW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIpIBCg1Mb2dJblJlc3BvbnNlEiQKBHVzZXIYASABKAsyFi5jaGF0YXBwLm1vZGVsLnYxLlVzZXISFAoMYWNjZXNzX3Rva2VuGAIgASgJEhUKDXJlZnJlc2hfdG9rZW4YAyABKAkSLgoKZXhwaXJlc19hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiDwoNTG9nT3V0UmVxdWVzdCIQCg5Mb2dPdXRSZXNwb25zZSIsChNSZWZyZXNoVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkicwoUUmVmcmVzaFRva2VuUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAEgASgJEhUKDXJlZnJlc2hfdG9rZW4YAiABKAkSLgoKZXhwaXJlc19hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiLgodU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlcXVlc3QSDQoFZW1haWwYASABKAkiIAoeU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlc3BvbnNlIjsKFFJlc2V0UGFzc3dvcmRSZXF1ZXN0Eg0KBXRva2VuGAEgASgJEhQKDG5ld19wYXNzd29yZBgCIAEoCSIXChVSZXNldFBhc3N3b3JkUmVzcG9uc2UyowQKC0F1dGhTZXJ2aWNlEkkKBlNpZ25VcBIeLmNoYXRhcHAuYXV0aC52MS5TaWduVXBSZXF1ZXN0Gh8uY2hhdGFwcC5hdXRoLnYxLlNpZ25VcFJlc3BvbnNlEkYKBUxvZ0luEh0uY2hhdGFwcC5hdXRoLnYxLkxvZ0luUmVxdWVzdBoeLmNoYXRhcHAuYXV0aC52MS5Mb2dJblJlc3BvbnNlEkkKBkxvZ291dBIeLmNoYXRhcHAuYXV0aC52MS5Mb2dPdXRSZXF1ZXN0Gh8uY2hhdGFwcC5hdXRoLnYxLkxvZ091dFJlc3BvbnNlElsKDFJlZnJlc2hUb2tlbhIkLmNoYXRhcHAuYXV0aC52MS5SZWZyZXNoVG9rZW5SZXF1ZXN0GiUuY2hhdGFwcC5hdXRoLnYxLlJlZnJlc2hUb2tlblJlc3BvbnNlEnkKFlNlbmRQYXNzd29yZFJlc2V0RW1haWwSLi5jaGF0YXBwLmF1dGgudjEuU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlcXVlc3QaLy5jaGF0YXBwLmF1dGgudjEuU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlc3BvbnNlEl4KDVJlc2V0UGFzc3dvcmQSJS5jaGF0YXBwLmF1dGgudjEuUmVzZXRQYXNzd29yZFJlcXVlc3QaJi5jaGF0YXBwLmF1dGgudjEuUmVzZXRQYXNzd29yZFJlc3BvbnNlQj9aPWdpdGh1Yi5jb20vQUlvbi1Db3BpbG90L2JhY2tlbmQvZ2VuL2dvL2NoYXRhcHAvYXV0aC92MTthdXRodjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_chatapp_model_v1_user]);
+  fileDesc("CiJjaGF0YXBwL2F1dGgvdjEvYXV0aF9zZXJ2aWNlLnByb3RvEg9jaGF0YXBwLmF1dGgudjEiYQoNU2lnblVwUmVxdWVzdBINCgVlbWFpbBgBIAEoCRIQCghwYXNzd29yZBgCIAEoCRIUCgxkaXNwbGF5X25hbWUYAyABKAkSGQoRY2xpZW50X3JlcXVlc3RfaWQYBCABKAkiogEKDlNpZ25VcFJlc3BvbnNlEhQKDGFjY2Vzc190b2tlbhgCIAEoCRIVCg1yZWZyZXNoX3Rva2VuGAMgASgJEi4KCmV4cGlyZXNfYXQYBCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEiQKBHVzZXIYBSABKAsyFi5jaGF0YXBwLm1vZGVsLnYxLlVzZXJKBAgBEAJSB3VzZXJfaWQiLwoMTG9nSW5SZXF1ZXN0Eg0KBWVtYWlsGAEgASgJEhAKCHBhc3N3b3JkGAIgASgJIpIBCg1Mb2dJblJlc3BvbnNlEhQKDGFjY2Vzc190b2tlbhgBIAEoCRIVCg1yZWZyZXNoX3Rva2VuGAIgASgJEiQKBHVzZXIYAyABKAsyFi5jaGF0YXBwLm1vZGVsLnYxLlVzZXISLgoKZXhwaXJlc19hdBgEIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiDwoNTG9nT3V0UmVxdWVzdCIQCg5Mb2dPdXRSZXNwb25zZSIsChNSZWZyZXNoVG9rZW5SZXF1ZXN0EhUKDXJlZnJlc2hfdG9rZW4YASABKAkicwoUUmVmcmVzaFRva2VuUmVzcG9uc2USFAoMYWNjZXNzX3Rva2VuGAEgASgJEhUKDXJlZnJlc2hfdG9rZW4YAiABKAkSLgoKZXhwaXJlc19hdBgDIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiLgodU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlcXVlc3QSDQoFZW1haWwYASABKAkiIAoeU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlc3BvbnNlIjsKFFJlc2V0UGFzc3dvcmRSZXF1ZXN0Eg0KBXRva2VuGAEgASgJEhQKDG5ld19wYXNzd29yZBgCIAEoCSIXChVSZXNldFBhc3N3b3JkUmVzcG9uc2UyowQKC0F1dGhTZXJ2aWNlEkkKBlNpZ25VcBIeLmNoYXRhcHAuYXV0aC52MS5TaWduVXBSZXF1ZXN0Gh8uY2hhdGFwcC5hdXRoLnYxLlNpZ25VcFJlc3BvbnNlEkYKBUxvZ0luEh0uY2hhdGFwcC5hdXRoLnYxLkxvZ0luUmVxdWVzdBoeLmNoYXRhcHAuYXV0aC52MS5Mb2dJblJlc3BvbnNlEkkKBkxvZ291dBIeLmNoYXRhcHAuYXV0aC52MS5Mb2dPdXRSZXF1ZXN0Gh8uY2hhdGFwcC5hdXRoLnYxLkxvZ091dFJlc3BvbnNlElsKDFJlZnJlc2hUb2tlbhIkLmNoYXRhcHAuYXV0aC52MS5SZWZyZXNoVG9rZW5SZXF1ZXN0GiUuY2hhdGFwcC5hdXRoLnYxLlJlZnJlc2hUb2tlblJlc3BvbnNlEnkKFlNlbmRQYXNzd29yZFJlc2V0RW1haWwSLi5jaGF0YXBwLmF1dGgudjEuU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlcXVlc3QaLy5jaGF0YXBwLmF1dGgudjEuU2VuZFBhc3N3b3JkUmVzZXRFbWFpbFJlc3BvbnNlEl4KDVJlc2V0UGFzc3dvcmQSJS5jaGF0YXBwLmF1dGgudjEuUmVzZXRQYXNzd29yZFJlcXVlc3QaJi5jaGF0YXBwLmF1dGgudjEuUmVzZXRQYXNzd29yZFJlc3BvbnNlQkZaRGdpdGh1Yi5jb20vQUlvbi1DL0FJb24tQ29waWxvdC9iYWNrZW5kL2dlbi9nby9jaGF0YXBwL2F1dGgvdjE7YXV0aHYxYgZwcm90bzM", [file_google_protobuf_timestamp, file_chatapp_model_v1_user]);
 
 /**
  * @generated from message chatapp.auth.v1.SignUpRequest
@@ -53,11 +53,6 @@ export const SignUpRequestSchema: GenMessage<SignUpRequest> = /*@__PURE__*/
  */
 export type SignUpResponse = Message<"chatapp.auth.v1.SignUpResponse"> & {
   /**
-   * @generated from field: chatapp.model.v1.User user = 1;
-   */
-  user?: User;
-
-  /**
    * @generated from field: string access_token = 2;
    */
   accessToken: string;
@@ -71,6 +66,11 @@ export type SignUpResponse = Message<"chatapp.auth.v1.SignUpResponse"> & {
    * @generated from field: google.protobuf.Timestamp expires_at = 4;
    */
   expiresAt?: Timestamp;
+
+  /**
+   * @generated from field: chatapp.model.v1.User user = 5;
+   */
+  user?: User;
 };
 
 /**
@@ -107,19 +107,19 @@ export const LogInRequestSchema: GenMessage<LogInRequest> = /*@__PURE__*/
  */
 export type LogInResponse = Message<"chatapp.auth.v1.LogInResponse"> & {
   /**
-   * @generated from field: chatapp.model.v1.User user = 1;
-   */
-  user?: User;
-
-  /**
-   * @generated from field: string access_token = 2;
+   * @generated from field: string access_token = 1;
    */
   accessToken: string;
 
   /**
-   * @generated from field: string refresh_token = 3;
+   * @generated from field: string refresh_token = 2;
    */
   refreshToken: string;
+
+  /**
+   * @generated from field: chatapp.model.v1.User user = 3;
+   */
+  user?: User;
 
   /**
    * @generated from field: google.protobuf.Timestamp expires_at = 4;

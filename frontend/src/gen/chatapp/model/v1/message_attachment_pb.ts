@@ -10,7 +10,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file chatapp/model/v1/message_attachment.proto.
  */
 export const file_chatapp_model_v1_message_attachment: GenFile = /*@__PURE__*/
-  fileDesc("CiljaGF0YXBwL21vZGVsL3YxL21lc3NhZ2VfYXR0YWNobWVudC5wcm90bxIQY2hhdGFwcC5tb2RlbC52MSJEChFNZXNzYWdlQXR0YWNobWVudBIKCgJpZBgBIAEoCRISCgptZXNzYWdlX2lkGAIgASgJEg8KB2ZpbGVfaWQYAyABKAlCQVo/Z2l0aHViLmNvbS9BSW9uLUNvcGlsb3QvYmFja2VuZC9nZW4vZ28vY2hhdGFwcC9tb2RlbC92MTttb2RlbHYxYgZwcm90bzM");
+  fileDesc("CiljaGF0YXBwL21vZGVsL3YxL21lc3NhZ2VfYXR0YWNobWVudC5wcm90bxIQY2hhdGFwcC5tb2RlbC52MSJEChFNZXNzYWdlQXR0YWNobWVudBIKCgJpZBgBIAEoCRISCgptZXNzYWdlX2lkGAIgASgJEg8KB2ZpbGVfaWQYAyABKAlCSFpGZ2l0aHViLmNvbS9BSW9uLUMvQUlvbi1Db3BpbG90L2JhY2tlbmQvZ2VuL2dvL2NoYXRhcHAvbW9kZWwvdjE7bW9kZWx2MWIGcHJvdG8z");
 
 /**
  * @generated from message chatapp.model.v1.MessageAttachment
