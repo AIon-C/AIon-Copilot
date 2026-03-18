@@ -26,19 +26,27 @@ type ReactionUsecase interface {
 type messageUsecase struct {
 	msgRepo        domain.MessageRepository
 	attachmentRepo domain.MessageAttachmentRepository
+	chMemberRepo   domain.ChannelMemberRepository
 }
 
 func NewMessageUsecase(
 	msgRepo domain.MessageRepository,
 	attachmentRepo domain.MessageAttachmentRepository,
+	chMemberRepo domain.ChannelMemberRepository,
 ) MessageUsecase {
 	return &messageUsecase{
 		msgRepo:        msgRepo,
 		attachmentRepo: attachmentRepo,
+		chMemberRepo:   chMemberRepo,
 	}
 }
 
 func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, content string, threadRootID *string, fileIDs []string) (*domain.Message, error) {
+	// Verify channel membership
+	if _, err := uc.chMemberRepo.FindByChannelAndUser(ctx, channelID, userID); err != nil {
+		return nil, domain.ErrForbidden
+	}
+
 	msg := &domain.Message{
 		ID:           ulid.NewID(),
 		ChannelID:    channelID,
@@ -63,7 +71,9 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 				FileID:    fid,
 			}
 		}
-		_ = uc.attachmentRepo.CreateBatch(ctx, attachments)
+		if err := uc.attachmentRepo.CreateBatch(ctx, attachments); err != nil {
+			return nil, err
+		}
 	}
 
 	return msg, nil

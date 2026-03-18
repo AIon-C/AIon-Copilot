@@ -16,12 +16,17 @@ type File struct {
 	CreatedAt   time.Time
 }
 
+const MaxFileSize = 100 * 1024 * 1024 // 100MB
+
 func (f *File) Validate() error {
 	if f.FileName == "" {
 		return &ValidationError{Field: "file_name", Message: "must not be empty"}
 	}
 	if f.FileSize <= 0 {
 		return &ValidationError{Field: "file_size", Message: "must be positive"}
+	}
+	if f.FileSize > MaxFileSize {
+		return &ValidationError{Field: "file_size", Message: "must be at most 100MB"}
 	}
 	return nil
 }

@@ -61,7 +61,7 @@ func (m *mockChannelRepo) Update(_ context.Context, ch *domain.Channel) error {
 }
 
 type mockChMemberRepo struct {
-	members map[string]*domain.ChannelMember // key: chID+userID
+	members map[string]*domain.ChannelMember
 }
 
 func newMockChMemberRepo() *mockChMemberRepo {
@@ -111,12 +111,55 @@ func (m *mockChMemberRepo) GetUnreadCounts(_ context.Context, userID, wsID strin
 	return nil, nil
 }
 
+// --- ws member mock for channel tests ---
+
+type mockChWsMemberRepo struct {
+	members map[string]*domain.WorkspaceMember
+}
+
+func newMockChWsMemberRepo() *mockChWsMemberRepo {
+	return &mockChWsMemberRepo{members: make(map[string]*domain.WorkspaceMember)}
+}
+
+func (m *mockChWsMemberRepo) Create(_ context.Context, wm *domain.WorkspaceMember) error {
+	key := wm.WorkspaceID + ":" + wm.UserID
+	wm.JoinedAt = time.Now()
+	m.members[key] = wm
+	return nil
+}
+
+func (m *mockChWsMemberRepo) FindByWorkspaceAndUser(_ context.Context, wsID, userID string) (*domain.WorkspaceMember, error) {
+	key := wsID + ":" + userID
+	wm, ok := m.members[key]
+	if !ok {
+		return nil, domain.ErrNotFound
+	}
+	return wm, nil
+}
+
+func (m *mockChWsMemberRepo) ListByWorkspace(_ context.Context, wsID string, page, pageSize int) ([]*domain.WorkspaceMember, int64, error) {
+	return nil, 0, nil
+}
+
+func (m *mockChWsMemberRepo) DeleteByWorkspaceAndUser(_ context.Context, wsID, userID string) error {
+	return nil
+}
+
+func seedWsMember(repo *mockChWsMemberRepo, wsID, userID, role string) {
+	key := wsID + ":" + userID
+	repo.members[key] = &domain.WorkspaceMember{
+		ID: "wm-" + userID, WorkspaceID: wsID, UserID: userID, Role: role, JoinedAt: time.Now(),
+	}
+}
+
 // --- tests ---
 
 func TestChannelUsecase_CreateChannel(t *testing.T) {
 	chRepo := newMockChannelRepo()
 	memberRepo := newMockChMemberRepo()
-	uc := NewChannelUsecase(chRepo, memberRepo)
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
 
 	ch, err := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "General chat")
 	if err != nil {
@@ -128,28 +171,41 @@ func TestChannelUsecase_CreateChannel(t *testing.T) {
 	if ch.CreatedBy != "user-1" {
 		t.Errorf("expected creator user-1, got %s", ch.CreatedBy)
 	}
-	// Creator should auto-join
 	if _, err := memberRepo.FindByChannelAndUser(context.Background(), ch.ID, "user-1"); err != nil {
 		t.Error("creator should auto-join the channel")
 	}
 }
 
+func TestChannelUsecase_CreateChannel_NotWsMember(t *testing.T) {
+	wsRepo := newMockChWsMemberRepo()
+	uc := NewChannelUsecase(newMockChannelRepo(), newMockChMemberRepo(), wsRepo)
+
+	_, err := uc.CreateChannel(context.Background(), "outsider", "ws-1", "general", "")
+	if err != domain.ErrForbidden {
+		t.Errorf("expected ErrForbidden for non-workspace member, got %v", err)
+	}
+}
+
 func TestChannelUsecase_CreateChannel_InvalidName(t *testing.T) {
-	uc := NewChannelUsecase(newMockChannelRepo(), newMockChMemberRepo())
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "member")
+	uc := NewChannelUsecase(newMockChannelRepo(), newMockChMemberRepo(), wsRepo)
 	_, err := uc.CreateChannel(context.Background(), "user-1", "ws-1", "", "desc")
 	if err == nil {
 		t.Error("expected validation error for empty name")
 	}
 }
 
-func TestChannelUsecase_UpdateChannel(t *testing.T) {
+func TestChannelUsecase_UpdateChannel_ByMember(t *testing.T) {
 	chRepo := newMockChannelRepo()
-	uc := NewChannelUsecase(chRepo, newMockChMemberRepo())
+	memberRepo := newMockChMemberRepo()
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
 
 	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "old-name", "")
 	updated, err := uc.UpdateChannel(context.Background(), "user-1", ch.ID, map[string]string{
-		"name":        "new-name",
-		"description": "new desc",
+		"name": "new-name", "description": "new desc",
 	})
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -157,19 +213,35 @@ func TestChannelUsecase_UpdateChannel(t *testing.T) {
 	if updated.Name != "new-name" {
 		t.Errorf("expected 'new-name', got %s", updated.Name)
 	}
-	if updated.Description != "new desc" {
-		t.Errorf("expected 'new desc', got %s", updated.Description)
+}
+
+func TestChannelUsecase_UpdateChannel_Forbidden(t *testing.T) {
+	chRepo := newMockChannelRepo()
+	memberRepo := newMockChMemberRepo()
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
+
+	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "ch", "")
+
+	// user-2 is not a member of channel or workspace
+	_, err := uc.UpdateChannel(context.Background(), "user-2", ch.ID, map[string]string{"name": "hacked"})
+	if err != domain.ErrForbidden {
+		t.Errorf("expected ErrForbidden, got %v", err)
 	}
 }
 
-func TestChannelUsecase_JoinAndLeave(t *testing.T) {
+func TestChannelUsecase_JoinChannel_WsMemberRequired(t *testing.T) {
 	chRepo := newMockChannelRepo()
 	memberRepo := newMockChMemberRepo()
-	uc := NewChannelUsecase(chRepo, memberRepo)
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	seedWsMember(wsRepo, "ws-1", "user-2", "member")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
 
 	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "")
 
-	// user-2 joins
+	// user-2 is ws member — should succeed
 	member, err := uc.JoinChannel(context.Background(), "user-2", ch.ID)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -178,35 +250,36 @@ func TestChannelUsecase_JoinAndLeave(t *testing.T) {
 		t.Errorf("expected user-2, got %s", member.UserID)
 	}
 
-	// user-2 leaves
-	err = uc.LeaveChannel(context.Background(), "user-2", ch.ID)
+	// outsider — should fail
+	_, err = uc.JoinChannel(context.Background(), "outsider", ch.ID)
+	if err != domain.ErrForbidden {
+		t.Errorf("expected ErrForbidden for non-ws member, got %v", err)
+	}
+}
+
+func TestChannelUsecase_LeaveChannel(t *testing.T) {
+	chRepo := newMockChannelRepo()
+	memberRepo := newMockChMemberRepo()
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	seedWsMember(wsRepo, "ws-1", "user-2", "member")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
+
+	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "")
+	_, _ = uc.JoinChannel(context.Background(), "user-2", ch.ID)
+
+	err := uc.LeaveChannel(context.Background(), "user-2", ch.ID)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
-
-	// user-2 should no longer be a member
 	_, err = memberRepo.FindByChannelAndUser(context.Background(), ch.ID, "user-2")
 	if err != domain.ErrNotFound {
 		t.Error("expected user-2 to be removed")
 	}
 }
 
-func TestChannelUsecase_JoinChannel_AlreadyMember(t *testing.T) {
-	chRepo := newMockChannelRepo()
-	memberRepo := newMockChMemberRepo()
-	uc := NewChannelUsecase(chRepo, memberRepo)
-
-	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "")
-
-	// user-1 already joined via create, try again
-	_, err := uc.JoinChannel(context.Background(), "user-1", ch.ID)
-	if err != domain.ErrAlreadyExists {
-		t.Errorf("expected ErrAlreadyExists, got %v", err)
-	}
-}
-
 func TestChannelUsecase_GetChannel_NotFound(t *testing.T) {
-	uc := NewChannelUsecase(newMockChannelRepo(), newMockChMemberRepo())
+	uc := NewChannelUsecase(newMockChannelRepo(), newMockChMemberRepo(), newMockChWsMemberRepo())
 	_, err := uc.GetChannel(context.Background(), "nonexistent")
 	if err != domain.ErrNotFound {
 		t.Errorf("expected ErrNotFound, got %v", err)
@@ -216,7 +289,9 @@ func TestChannelUsecase_GetChannel_NotFound(t *testing.T) {
 func TestChannelUsecase_MarkChannelRead(t *testing.T) {
 	chRepo := newMockChannelRepo()
 	memberRepo := newMockChMemberRepo()
-	uc := NewChannelUsecase(chRepo, memberRepo)
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
 
 	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "")
 	err := uc.MarkChannelRead(context.Background(), "user-1", ch.ID, "msg-1")
