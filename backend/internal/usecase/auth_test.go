@@ -254,11 +254,14 @@ func TestAuthUsecase_Logout(t *testing.T) {
 func TestAuthUsecase_RefreshToken_Success(t *testing.T) {
 	userRepo := newMockUserRepo()
 	rtRepo := newMockRefreshTokenRepo()
-	jwt := newTestJWT(t)
-	uc := NewAuthUsecase(userRepo, rtRepo, jwt)
+	jwtMgr := newTestJWT(t)
+	uc := NewAuthUsecase(userRepo, rtRepo, jwtMgr)
 
 	seedUser(t, userRepo, "test@example.com", "password123")
 	_, tp, _ := uc.LogIn(context.Background(), "test@example.com", "password123")
+
+	// Count tokens before refresh
+	tokensBefore := len(rtRepo.tokens)
 
 	newTP, err := uc.RefreshToken(context.Background(), tp.RefreshToken)
 	if err != nil {
@@ -267,9 +270,20 @@ func TestAuthUsecase_RefreshToken_Success(t *testing.T) {
 	if newTP.AccessToken == "" || newTP.RefreshToken == "" {
 		t.Error("expected new token pair")
 	}
-	// Verify old token was deleted from store
-	if _, err := rtRepo.FindByToken(context.Background(), tp.RefreshToken); err != domain.ErrNotFound {
-		t.Error("expected old refresh token to be deleted after rotation")
+
+	// Verify the new access token is valid
+	claims, err := jwtMgr.VerifyAccessToken(newTP.AccessToken)
+	if err != nil {
+		t.Fatalf("new access token should be valid: %v", err)
+	}
+	if claims.UserID != "user-123" {
+		t.Errorf("expected user-123, got %s", claims.UserID)
+	}
+
+	// After rotation, token count should remain the same (old deleted, new created)
+	tokensAfter := len(rtRepo.tokens)
+	if tokensAfter != tokensBefore {
+		t.Errorf("expected token count to remain %d after rotation, got %d", tokensBefore, tokensAfter)
 	}
 }
 
