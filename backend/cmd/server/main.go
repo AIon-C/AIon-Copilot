@@ -8,7 +8,9 @@ import (
 	"connectrpc.com/connect"
 
 	authv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/auth/v1/authv1connect"
+	channelv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/channel/v1/channelv1connect"
 	userv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/user/v1/userv1connect"
+	workspacev1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/workspace/v1/workspacev1connect"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/adapter/handler"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/adapter/persistence"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/infra"
@@ -47,6 +49,11 @@ func main() {
 	// Repository
 	userRepo := persistence.NewUserRepository(gormDB)
 	refreshTokenRepo := persistence.NewRefreshTokenRepository(gormDB)
+	wsRepo := persistence.NewWorkspaceRepository(gormDB)
+	wsMemberRepo := persistence.NewWorkspaceMemberRepository(gormDB)
+	wsInviteRepo := persistence.NewWorkspaceInviteRepository(gormDB)
+	chRepo := persistence.NewChannelRepository(gormDB)
+	chMemberRepo := persistence.NewChannelMemberRepository(gormDB)
 
 	// JWT
 	jwtManager, err := auth.NewJWTManager(cfg.JWTSecret, "chatapp")
@@ -58,6 +65,8 @@ func main() {
 	// Usecase
 	authUC := usecase.NewAuthUsecase(userRepo, refreshTokenRepo, jwtManager)
 	userUC := usecase.NewUserUsecase(userRepo)
+	wsUC := usecase.NewWorkspaceUsecase(wsRepo, wsMemberRepo, wsInviteRepo)
+	chUC := usecase.NewChannelUsecase(chRepo, chMemberRepo)
 
 	// Handler + Interceptor
 	interceptors := connect.WithInterceptors(handler.NewAuthInterceptor(jwtManager))
@@ -70,6 +79,8 @@ func main() {
 	// Connect RPC handlers
 	mux.Handle(authv1connect.NewAuthServiceHandler(handler.NewAuthHandler(authUC), interceptors))
 	mux.Handle(userv1connect.NewUserServiceHandler(handler.NewUserHandler(userUC), interceptors))
+	mux.Handle(workspacev1connect.NewWorkspaceServiceHandler(handler.NewWorkspaceHandler(wsUC), interceptors))
+	mux.Handle(channelv1connect.NewChannelServiceHandler(handler.NewChannelHandler(chUC), interceptors))
 
 	srv := infra.NewServer(cfg, mux)
 	if err := infra.ListenAndServeGracefully(srv); err != nil {
