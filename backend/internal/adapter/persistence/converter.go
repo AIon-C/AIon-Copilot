@@ -303,6 +303,38 @@ func reactionDomainToModel(r *domain.Reaction) *model.Reaction {
 	}
 }
 
+func fileModelToDomain(m *model.File) *domain.File {
+	if m == nil {
+		return nil
+	}
+	return &domain.File{
+		ID:          m.ID,
+		WorkspaceID: m.WorkspaceID,
+		UploadedBy:  m.UploadedBy,
+		FileName:    m.FileName,
+		FileKey:     m.FileKey,
+		ContentType: m.ContentType,
+		FileSize:    m.FileSize,
+		CreatedAt:   m.CreatedAt,
+	}
+}
+
+func fileDomainToModel(f *domain.File) *model.File {
+	if f == nil {
+		return nil
+	}
+	return &model.File{
+		ID:          f.ID,
+		WorkspaceID: f.WorkspaceID,
+		UploadedBy:  f.UploadedBy,
+		FileName:    f.FileName,
+		FileKey:     f.FileKey,
+		ContentType: f.ContentType,
+		FileSize:    f.FileSize,
+		CreatedAt:   f.CreatedAt,
+	}
+}
+
 func nowUTC() time.Time {
 	return time.Now().UTC()
 }

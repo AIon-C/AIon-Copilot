@@ -12,6 +12,8 @@ type Config struct {
 	RedisURL    string
 	JWTSecret   string
 	GCSBucket   string
+	GCSEndpoint  string
+	GCSPublicURL string
 	CORSOrigins []string
 }
 
@@ -22,6 +24,8 @@ func LoadConfig() (*Config, error) {
 		RedisURL:    getEnv("REDIS_URL", "redis://localhost:6379"),
 		JWTSecret:   os.Getenv("JWT_SECRET"),
 		GCSBucket:   os.Getenv("GCS_BUCKET"),
+		GCSEndpoint:  os.Getenv("GCS_ENDPOINT"),
+		GCSPublicURL: getEnv("GCS_PUBLIC_URL", os.Getenv("GCS_ENDPOINT")),
 		CORSOrigins: parseCORSOrigins(getEnv("CORS_ORIGINS", "http://localhost:3000")),
 	}
 

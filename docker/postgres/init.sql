@@ -150,3 +150,16 @@ CREATE TABLE IF NOT EXISTS reactions (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_reactions_unique ON reactions(message_id, user_id, emoji_code);
 CREATE INDEX IF NOT EXISTS idx_reactions_message_id ON reactions(message_id);
+
+-- Files table
+CREATE TABLE IF NOT EXISTS files (
+    id UUID PRIMARY KEY,
+    workspace_id UUID NOT NULL,
+    uploaded_by UUID NOT NULL REFERENCES users(id),
+    file_name VARCHAR(255) NOT NULL,
+    file_key TEXT NOT NULL,
+    content_type VARCHAR(100) NOT NULL,
+    file_size BIGINT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_files_workspace_id ON files(workspace_id);
