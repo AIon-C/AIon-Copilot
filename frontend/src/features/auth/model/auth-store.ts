@@ -62,7 +62,7 @@ export const authStore = {
     state = {
       ...state,
       user,
-      isAuthenticated: Boolean(state.tokens.accessToken) || Boolean(user),
+      isAuthenticated: Boolean(state.tokens.accessToken),
       initialized: true,
     };
     emit();
