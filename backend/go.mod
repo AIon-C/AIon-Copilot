@@ -10,6 +10,8 @@ require (
 	github.com/rs/cors v1.11.1
 	golang.org/x/crypto v0.49.0
 	google.golang.org/protobuf v1.36.11
+	gorm.io/driver/postgres v1.6.0
+	gorm.io/gorm v1.31.1
 )
 
 require (
@@ -23,6 +25,4 @@ require (
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/sync v0.20.0 // indirect
 	golang.org/x/text v0.35.0 // indirect
-	gorm.io/driver/postgres v1.6.0 // indirect
-	gorm.io/gorm v1.31.1 // indirect
 )

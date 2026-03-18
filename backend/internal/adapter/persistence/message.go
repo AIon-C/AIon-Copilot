@@ -47,8 +47,9 @@ func (r *messageRepository) ListByChannel(ctx context.Context, chID string, curs
 		limit = 50
 	}
 
-	q := r.db.WithContext(ctx).Model(&model.Message{}).Where("channel_id = ? AND thread_root_id IS NULL", chID)
+	baseQ := r.db.WithContext(ctx).Model(&model.Message{}).Where("channel_id = ? AND thread_root_id IS NULL", chID)
 
+	q := baseQ
 	if cursor != "" {
 		q = q.Where("created_at < (SELECT created_at FROM messages WHERE id = ?)", cursor)
 	}
@@ -75,7 +76,13 @@ func (r *messageRepository) ListByChannel(ctx context.Context, chID string, curs
 		prevCursor = result[0].ID
 	}
 
-	hasMoreBefore := cursor != ""
+	// Check if there are actually newer messages before the cursor
+	var hasMoreBefore bool
+	if cursor != "" && len(result) > 0 {
+		var count int64
+		baseQ.Where("created_at > (SELECT created_at FROM messages WHERE id = ?)", cursor).Count(&count)
+		hasMoreBefore = count > 0
+	}
 
 	return result, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, nil
 }
