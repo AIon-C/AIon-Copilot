@@ -3,6 +3,7 @@ package infra
 import (
 	"fmt"
 	"os"
+	"strings"
 )
 
 type Config struct {
@@ -11,6 +12,7 @@ type Config struct {
 	RedisURL    string
 	JWTSecret   string
 	GCSBucket   string
+	CORSOrigins []string
 }
 
 func LoadConfig() (*Config, error) {
@@ -20,6 +22,7 @@ func LoadConfig() (*Config, error) {
 		RedisURL:    getEnv("REDIS_URL", "redis://localhost:6379"),
 		JWTSecret:   os.Getenv("JWT_SECRET"),
 		GCSBucket:   os.Getenv("GCS_BUCKET"),
+		CORSOrigins: parseCORSOrigins(getEnv("CORS_ORIGINS", "http://localhost:3000")),
 	}
 
 	if cfg.DatabaseURL == "" {
@@ -30,6 +33,14 @@ func LoadConfig() (*Config, error) {
 	}
 
 	return cfg, nil
+}
+
+func parseCORSOrigins(raw string) []string {
+	origins := strings.Split(raw, ",")
+	for i := range origins {
+		origins[i] = strings.TrimSpace(origins[i])
+	}
+	return origins
 }
 
 func getEnv(key, fallback string) string {

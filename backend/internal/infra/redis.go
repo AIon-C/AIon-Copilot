@@ -20,6 +20,7 @@ func NewRedis(redisURL string) (*redis.Client, error) {
 	defer cancel()
 
 	if err := client.Ping(ctx).Err(); err != nil {
+		client.Close()
 		return nil, fmt.Errorf("ping redis: %w", err)
 	}
 
