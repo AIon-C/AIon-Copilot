@@ -1,11 +1,17 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { useSyncExternalStore } from "react";
+import { authStore } from "@/features/auth/model/auth-store";
 import { userService } from "../api/user-service";
-import type { UserModel } from "../model/user-types";
 
 export function useMe() {
-  const [user, setUser] = useState<UserModel | null>(null);
+  const authState = useSyncExternalStore(
+    authStore.subscribe,
+    authStore.getState,
+    authStore.getState,
+  );
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,27 +21,30 @@ export function useMe() {
 
     try {
       const result = await userService.getMe();
-      setUser(result);
+      authStore.setUser(result);
       return result;
     } catch (e) {
       const message =
         e instanceof Error ? e.message : "Failed to fetch current user";
       setError(message);
+      authStore.markInitialized();
       throw e;
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const clearUser = useCallback(() => {
-    setUser(null);
+  const clearMe = useCallback(() => {
+    authStore.setUser(null);
     setError(null);
   }, []);
 
   return {
-    user,
+    user: authState.user,
+    isAuthenticated: authState.isAuthenticated,
+    initialized: authState.initialized,
     fetchMe,
-    clearUser,
+    clearMe,
     loading,
     error,
   };
