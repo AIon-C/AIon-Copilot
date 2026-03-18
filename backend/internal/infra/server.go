@@ -10,6 +10,8 @@ import (
 	"time"
 
 	"github.com/rs/cors"
+	"golang.org/x/net/http2"
+	"golang.org/x/net/http2/h2c"
 )
 
 func NewServer(cfg *Config, handler http.Handler) *http.Server {
@@ -26,17 +28,24 @@ func NewServer(cfg *Config, handler http.Handler) *http.Server {
 			"Content-Type",
 			"Connect-Protocol-Version",
 			"Connect-Timeout-Ms",
+			"Grpc-Timeout",
 			"Authorization",
 		},
 		ExposedHeaders: []string{
 			"Connect-Protocol-Version",
+			"Grpc-Status",
+			"Grpc-Message",
 		},
 		AllowCredentials: true,
 	})
 
+	// h2c enables HTTP/2 cleartext — required for gRPC clients (grpcui, grpcurl)
+	// while still supporting HTTP/1.1 for Connect protocol JSON requests
+	h2cHandler := h2c.NewHandler(c.Handler(handler), &http2.Server{})
+
 	return &http.Server{
 		Addr:         cfg.ServerAddr,
-		Handler:      c.Handler(handler),
+		Handler:      h2cHandler,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 		IdleTimeout:  60 * time.Second,
