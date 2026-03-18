@@ -115,3 +115,38 @@ CREATE TABLE IF NOT EXISTS channel_members (
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_channel_members_ch_user ON channel_members(channel_id, user_id);
 CREATE INDEX IF NOT EXISTS idx_channel_members_user_id ON channel_members(user_id);
+
+-- Messages table
+CREATE TABLE IF NOT EXISTS messages (
+    id UUID PRIMARY KEY,
+    channel_id UUID NOT NULL REFERENCES channels(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id),
+    thread_root_id UUID REFERENCES messages(id) ON DELETE CASCADE,
+    content TEXT NOT NULL,
+    is_edited BOOLEAN NOT NULL DEFAULT FALSE,
+    edited_at TIMESTAMPTZ,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+CREATE INDEX IF NOT EXISTS idx_messages_channel_id ON messages(channel_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_messages_thread_root_id ON messages(thread_root_id) WHERE thread_root_id IS NOT NULL;
+
+-- Message attachments table
+CREATE TABLE IF NOT EXISTS message_attachments (
+    id UUID PRIMARY KEY,
+    message_id UUID NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+    file_id UUID NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_message_attachments_message_id ON message_attachments(message_id);
+
+-- Reactions table
+CREATE TABLE IF NOT EXISTS reactions (
+    id UUID PRIMARY KEY,
+    message_id UUID NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id),
+    emoji_code VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_reactions_unique ON reactions(message_id, user_id, emoji_code);
+CREATE INDEX IF NOT EXISTS idx_reactions_message_id ON reactions(message_id);
