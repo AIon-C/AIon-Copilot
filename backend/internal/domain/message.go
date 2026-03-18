@@ -24,9 +24,14 @@ type MessageAttachment struct {
 	FileID    string
 }
 
+const MaxMessageContentLength = 10000
+
 func (m *Message) Validate() error {
 	if m.Content == "" {
 		return &ValidationError{Field: "content", Message: "must not be empty"}
+	}
+	if len(m.Content) > MaxMessageContentLength {
+		return &ValidationError{Field: "content", Message: "must be at most 10000 bytes"}
 	}
 	return nil
 }

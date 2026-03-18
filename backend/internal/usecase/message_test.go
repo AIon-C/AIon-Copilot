@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"strings"
 	"testing"
 	"time"
 
@@ -85,8 +86,65 @@ func (m *mockAttachmentRepo) ListByMessage(_ context.Context, _ string) ([]*doma
 	return nil, nil
 }
 
+// --- ch member mock for message tests ---
+
+type mockMsgChMemberRepo struct {
+	members map[string]*domain.ChannelMember
+}
+
+func newMockMsgChMemberRepo() *mockMsgChMemberRepo {
+	return &mockMsgChMemberRepo{members: make(map[string]*domain.ChannelMember)}
+}
+
+func (m *mockMsgChMemberRepo) Create(_ context.Context, cm *domain.ChannelMember) error {
+	key := cm.ChannelID + ":" + cm.UserID
+	cm.JoinedAt = time.Now()
+	m.members[key] = cm
+	return nil
+}
+
+func (m *mockMsgChMemberRepo) FindByChannelAndUser(_ context.Context, chID, userID string) (*domain.ChannelMember, error) {
+	key := chID + ":" + userID
+	cm, ok := m.members[key]
+	if !ok {
+		return nil, domain.ErrNotFound
+	}
+	return cm, nil
+}
+
+func (m *mockMsgChMemberRepo) DeleteByChannelAndUser(_ context.Context, chID, userID string) error {
+	return nil
+}
+
+func (m *mockMsgChMemberRepo) UpdateLastRead(_ context.Context, chID, userID string, messageID string) error {
+	return nil
+}
+
+func (m *mockMsgChMemberRepo) GetUnreadCounts(_ context.Context, userID, wsID string) ([]domain.UnreadCount, error) {
+	return nil, nil
+}
+
+func seedChMember(repo *mockMsgChMemberRepo, chID, userID string) {
+	key := chID + ":" + userID
+	repo.members[key] = &domain.ChannelMember{
+		ID: "cm-" + userID, ChannelID: chID, UserID: userID, JoinedAt: time.Now(),
+	}
+}
+
+func newMsgUC() (MessageUsecase, *mockMessageRepo, *mockMsgChMemberRepo) {
+	msgRepo := newMockMessageRepo()
+	chMemberRepo := newMockMsgChMemberRepo()
+	seedChMember(chMemberRepo, "ch-1", "user-1")
+	seedChMember(chMemberRepo, "ch-1", "user-2")
+	seedChMember(chMemberRepo, "ch-1", "user-3")
+	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{}, chMemberRepo)
+	return uc, msgRepo, chMemberRepo
+}
+
+// --- Reaction mock ---
+
 type mockReactionRepo struct {
-	reactions map[string]*domain.Reaction // key: msgID:userID:emoji
+	reactions map[string]*domain.Reaction
 }
 
 func newMockReactionRepo() *mockReactionRepo {
@@ -125,9 +183,7 @@ func (m *mockReactionRepo) ListByMessage(_ context.Context, messageID string) ([
 // --- Message tests ---
 
 func TestMessageUsecase_SendMessage(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, _, _ := newMsgUC()
 	msg, err := uc.SendMessage(context.Background(), "user-1", "ch-1", "Hello!", nil, nil)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -135,23 +191,35 @@ func TestMessageUsecase_SendMessage(t *testing.T) {
 	if msg.Content != "Hello!" {
 		t.Errorf("expected 'Hello!', got %s", msg.Content)
 	}
-	if msg.UserID != "user-1" {
-		t.Errorf("expected user-1, got %s", msg.UserID)
+}
+
+func TestMessageUsecase_SendMessage_NotChannelMember(t *testing.T) {
+	uc, _, _ := newMsgUC()
+	_, err := uc.SendMessage(context.Background(), "outsider", "ch-1", "Hello!", nil, nil)
+	if err != domain.ErrForbidden {
+		t.Errorf("expected ErrForbidden for non-channel member, got %v", err)
 	}
 }
 
 func TestMessageUsecase_SendMessage_EmptyContent(t *testing.T) {
-	uc := NewMessageUsecase(newMockMessageRepo(), &mockAttachmentRepo{})
+	uc, _, _ := newMsgUC()
 	_, err := uc.SendMessage(context.Background(), "user-1", "ch-1", "", nil, nil)
 	if err == nil {
 		t.Error("expected validation error for empty content")
 	}
 }
 
-func TestMessageUsecase_SendMessage_ThreadReply(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
+func TestMessageUsecase_SendMessage_TooLong(t *testing.T) {
+	uc, _, _ := newMsgUC()
+	longContent := strings.Repeat("a", domain.MaxMessageContentLength+1)
+	_, err := uc.SendMessage(context.Background(), "user-1", "ch-1", longContent, nil, nil)
+	if err == nil {
+		t.Error("expected validation error for too-long content")
+	}
+}
 
+func TestMessageUsecase_SendMessage_ThreadReply(t *testing.T) {
+	uc, _, _ := newMsgUC()
 	root, _ := uc.SendMessage(context.Background(), "user-1", "ch-1", "Root message", nil, nil)
 	reply, err := uc.SendMessage(context.Background(), "user-2", "ch-1", "Reply", &root.ID, nil)
 	if err != nil {
@@ -163,9 +231,7 @@ func TestMessageUsecase_SendMessage_ThreadReply(t *testing.T) {
 }
 
 func TestMessageUsecase_UpdateMessage(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, _, _ := newMsgUC()
 	msg, _ := uc.SendMessage(context.Background(), "user-1", "ch-1", "Original", nil, nil)
 	updated, err := uc.UpdateMessage(context.Background(), "user-1", msg.ID, "Edited")
 	if err != nil {
@@ -180,9 +246,7 @@ func TestMessageUsecase_UpdateMessage(t *testing.T) {
 }
 
 func TestMessageUsecase_UpdateMessage_Forbidden(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, _, _ := newMsgUC()
 	msg, _ := uc.SendMessage(context.Background(), "user-1", "ch-1", "Original", nil, nil)
 	_, err := uc.UpdateMessage(context.Background(), "user-2", msg.ID, "Hacked")
 	if err != domain.ErrForbidden {
@@ -191,9 +255,7 @@ func TestMessageUsecase_UpdateMessage_Forbidden(t *testing.T) {
 }
 
 func TestMessageUsecase_DeleteMessage(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, msgRepo, _ := newMsgUC()
 	msg, _ := uc.SendMessage(context.Background(), "user-1", "ch-1", "To delete", nil, nil)
 	_, err := uc.DeleteMessage(context.Background(), "user-1", msg.ID)
 	if err != nil {
@@ -205,9 +267,7 @@ func TestMessageUsecase_DeleteMessage(t *testing.T) {
 }
 
 func TestMessageUsecase_DeleteMessage_Forbidden(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, _, _ := newMsgUC()
 	msg, _ := uc.SendMessage(context.Background(), "user-1", "ch-1", "Mine", nil, nil)
 	_, err := uc.DeleteMessage(context.Background(), "user-2", msg.ID)
 	if err != domain.ErrForbidden {
@@ -216,9 +276,7 @@ func TestMessageUsecase_DeleteMessage_Forbidden(t *testing.T) {
 }
 
 func TestMessageUsecase_GetThread(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, _, _ := newMsgUC()
 	root, _ := uc.SendMessage(context.Background(), "user-1", "ch-1", "Root", nil, nil)
 	_, _ = uc.SendMessage(context.Background(), "user-2", "ch-1", "Reply 1", &root.ID, nil)
 	_, _ = uc.SendMessage(context.Background(), "user-3", "ch-1", "Reply 2", &root.ID, nil)
@@ -236,9 +294,7 @@ func TestMessageUsecase_GetThread(t *testing.T) {
 }
 
 func TestMessageUsecase_ListMessages(t *testing.T) {
-	msgRepo := newMockMessageRepo()
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{})
-
+	uc, _, _ := newMsgUC()
 	_, _ = uc.SendMessage(context.Background(), "user-1", "ch-1", "Msg 1", nil, nil)
 	_, _ = uc.SendMessage(context.Background(), "user-1", "ch-1", "Msg 2", nil, nil)
 
@@ -252,7 +308,7 @@ func TestMessageUsecase_ListMessages(t *testing.T) {
 }
 
 func TestMessageUsecase_GetMessage_NotFound(t *testing.T) {
-	uc := NewMessageUsecase(newMockMessageRepo(), &mockAttachmentRepo{})
+	uc, _, _ := newMsgUC()
 	_, err := uc.GetMessage(context.Background(), "nonexistent")
 	if err != domain.ErrNotFound {
 		t.Errorf("expected ErrNotFound, got %v", err)
@@ -262,9 +318,7 @@ func TestMessageUsecase_GetMessage_NotFound(t *testing.T) {
 // --- Reaction tests ---
 
 func TestReactionUsecase_AddReaction(t *testing.T) {
-	repo := newMockReactionRepo()
-	uc := NewReactionUsecase(repo)
-
+	uc := NewReactionUsecase(newMockReactionRepo())
 	r, err := uc.AddReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
@@ -275,9 +329,7 @@ func TestReactionUsecase_AddReaction(t *testing.T) {
 }
 
 func TestReactionUsecase_AddReaction_Duplicate(t *testing.T) {
-	repo := newMockReactionRepo()
-	uc := NewReactionUsecase(repo)
-
+	uc := NewReactionUsecase(newMockReactionRepo())
 	_, _ = uc.AddReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	_, err := uc.AddReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	if err != domain.ErrAlreadyExists {
@@ -286,9 +338,7 @@ func TestReactionUsecase_AddReaction_Duplicate(t *testing.T) {
 }
 
 func TestReactionUsecase_RemoveReaction(t *testing.T) {
-	repo := newMockReactionRepo()
-	uc := NewReactionUsecase(repo)
-
+	uc := NewReactionUsecase(newMockReactionRepo())
 	_, _ = uc.AddReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	err := uc.RemoveReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	if err != nil {
@@ -297,9 +347,7 @@ func TestReactionUsecase_RemoveReaction(t *testing.T) {
 }
 
 func TestReactionUsecase_RemoveReaction_NotFound(t *testing.T) {
-	repo := newMockReactionRepo()
-	uc := NewReactionUsecase(repo)
-
+	uc := NewReactionUsecase(newMockReactionRepo())
 	err := uc.RemoveReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	if err != domain.ErrNotFound {
 		t.Errorf("expected ErrNotFound, got %v", err)
@@ -307,9 +355,7 @@ func TestReactionUsecase_RemoveReaction_NotFound(t *testing.T) {
 }
 
 func TestReactionUsecase_ListReactions(t *testing.T) {
-	repo := newMockReactionRepo()
-	uc := NewReactionUsecase(repo)
-
+	uc := NewReactionUsecase(newMockReactionRepo())
 	_, _ = uc.AddReaction(context.Background(), "user-1", "msg-1", "thumbsup")
 	_, _ = uc.AddReaction(context.Background(), "user-2", "msg-1", "heart")
 

@@ -156,8 +156,32 @@ func (r *channelMemberRepository) UpdateLastRead(ctx context.Context, chID, user
 }
 
 func (r *channelMemberRepository) GetUnreadCounts(ctx context.Context, userID, wsID string) ([]domain.UnreadCount, error) {
-	// Return empty for now; requires message table to compute properly
-	return nil, nil
+	type row struct {
+		ChannelID string
+		Count     int32
+	}
+	var rows []row
+	err := r.db.WithContext(ctx).Raw(`
+		SELECT cm.channel_id, COUNT(m.id)::int AS count
+		FROM channel_members cm
+		JOIN channels ch ON ch.id = cm.channel_id AND ch.deleted_at IS NULL
+		LEFT JOIN messages m ON m.channel_id = cm.channel_id
+			AND m.created_at > COALESCE(cm.last_read_at, '1970-01-01'::timestamptz)
+			AND m.deleted_at IS NULL
+			AND m.thread_root_id IS NULL
+		WHERE cm.user_id = ? AND ch.workspace_id = ?
+		GROUP BY cm.channel_id
+		HAVING COUNT(m.id) > 0
+	`, userID, wsID).Scan(&rows).Error
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]domain.UnreadCount, len(rows))
+	for i, r := range rows {
+		result[i] = domain.UnreadCount{ChannelID: r.ChannelID, Count: r.Count}
+	}
+	return result, nil
 }
 
 // sanitizeSort returns a safe ORDER BY clause.

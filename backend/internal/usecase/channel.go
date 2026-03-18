@@ -20,21 +20,29 @@ type ChannelUsecase interface {
 }
 
 type channelUsecase struct {
-	chRepo     domain.ChannelRepository
-	memberRepo domain.ChannelMemberRepository
+	chRepo       domain.ChannelRepository
+	memberRepo   domain.ChannelMemberRepository
+	wsMemberRepo domain.WorkspaceMemberRepository
 }
 
 func NewChannelUsecase(
 	chRepo domain.ChannelRepository,
 	memberRepo domain.ChannelMemberRepository,
+	wsMemberRepo domain.WorkspaceMemberRepository,
 ) ChannelUsecase {
 	return &channelUsecase{
-		chRepo:     chRepo,
-		memberRepo: memberRepo,
+		chRepo:       chRepo,
+		memberRepo:   memberRepo,
+		wsMemberRepo: wsMemberRepo,
 	}
 }
 
 func (uc *channelUsecase) CreateChannel(ctx context.Context, userID, wsID, name, description string) (*domain.Channel, error) {
+	// Verify workspace membership
+	if _, err := uc.wsMemberRepo.FindByWorkspaceAndUser(ctx, wsID, userID); err != nil {
+		return nil, domain.ErrForbidden
+	}
+
 	ch := &domain.Channel{
 		ID:          ulid.NewID(),
 		WorkspaceID: wsID,
@@ -79,6 +87,15 @@ func (uc *channelUsecase) UpdateChannel(ctx context.Context, userID, chID string
 		return nil, err
 	}
 
+	// Verify: must be channel member or workspace admin/owner
+	if _, err := uc.memberRepo.FindByChannelAndUser(ctx, chID, userID); err != nil {
+		// Not a channel member — check workspace admin/owner
+		wsMember, wsErr := uc.wsMemberRepo.FindByWorkspaceAndUser(ctx, ch.WorkspaceID, userID)
+		if wsErr != nil || !wsMember.CanInvite() {
+			return nil, domain.ErrForbidden
+		}
+	}
+
 	for k, v := range fields {
 		switch k {
 		case "name":
@@ -99,6 +116,15 @@ func (uc *channelUsecase) UpdateChannel(ctx context.Context, userID, chID string
 }
 
 func (uc *channelUsecase) JoinChannel(ctx context.Context, userID, chID string) (*domain.ChannelMember, error) {
+	// Verify workspace membership via channel
+	ch, err := uc.chRepo.FindByID(ctx, chID)
+	if err != nil {
+		return nil, err
+	}
+	if _, err := uc.wsMemberRepo.FindByWorkspaceAndUser(ctx, ch.WorkspaceID, userID); err != nil {
+		return nil, domain.ErrForbidden
+	}
+
 	member := &domain.ChannelMember{
 		ID:        ulid.NewID(),
 		ChannelID: chID,
