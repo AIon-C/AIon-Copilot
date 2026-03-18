@@ -1,6 +1,5 @@
 import { sendCopilotMessage } from '@/features/messages/api/copilot-client';
-import type { CopilotApiMode, CopilotCreateMessageResult } from '@/features/messages/api/copilot-contract';
-import { getTextFromQuillBody } from '@/features/messages/api/copilot-contract';
+import {getTextFromQuillBody, type CopilotApiMode, type CopilotCreateMessageResult } from '@/features/messages/api/copilot-contract';
 import { createMessage } from '@/mock/api';
 import type { Id } from '@/mock/types';
 import { useMockMutation } from '@/mock/use-mock-mutation';
