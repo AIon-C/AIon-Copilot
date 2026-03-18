@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"connectrpc.com/connect"
+	"connectrpc.com/grpcreflect"
 
 	authv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/auth/v1/authv1connect"
 	channelv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/channel/v1/channelv1connect"
@@ -92,6 +93,19 @@ func main() {
 	mux.Handle(messagev1connect.NewMessageServiceHandler(handler.NewMessageHandler(msgUC), interceptors))
 	mux.Handle(threadv1connect.NewThreadServiceHandler(handler.NewThreadHandler(msgUC), interceptors))
 	mux.Handle(reactionv1connect.NewReactionServiceHandler(handler.NewReactionHandler(reactionUC), interceptors))
+
+	// gRPC Server Reflection (for grpcui / grpcurl)
+	reflector := grpcreflect.NewStaticReflector(
+		authv1connect.AuthServiceName,
+		userv1connect.UserServiceName,
+		workspacev1connect.WorkspaceServiceName,
+		channelv1connect.ChannelServiceName,
+		messagev1connect.MessageServiceName,
+		threadv1connect.ThreadServiceName,
+		reactionv1connect.ReactionServiceName,
+	)
+	mux.Handle(grpcreflect.NewHandlerV1(reflector))
+	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))
 
 	srv := infra.NewServer(cfg, mux)
 	if err := infra.ListenAndServeGracefully(srv); err != nil {

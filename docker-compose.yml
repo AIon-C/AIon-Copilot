@@ -48,6 +48,50 @@ services:
       redis:
         condition: service_healthy
 
+  # gRPC UI — Swagger-like API tester for gRPC/Connect services
+  # Access at http://localhost:8090
+  grpcui:
+    image: fullstorydev/grpcui:latest
+    ports:
+      - "8090:8080"
+    command:
+      - "-plaintext"
+      - "-bind=0.0.0.0"
+      - "-port=8080"
+      - "backend:8080"
+    depends_on:
+      backend:
+        condition: service_started
+    restart: unless-stopped
+
+  # Prometheus — metrics collection (GKE: managed Prometheus)
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    depends_on:
+      backend:
+        condition: service_started
+
+  # Grafana — monitoring dashboard (GKE: Grafana in cluster)
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3002:3000"
+    volumes:
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning:ro
+      - grafana-data:/var/lib/grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+      GF_AUTH_ANONYMOUS_ENABLED: "true"
+    depends_on:
+      prometheus:
+        condition: service_started
+
   agent:
     build:
       context: ./ai-agent
@@ -92,5 +136,7 @@ services:
 volumes:
   pgdata:
   redis-data:
+  prometheus-data:
+  grafana-data:
   node_modules_frontend:
   node_modules_agent:
