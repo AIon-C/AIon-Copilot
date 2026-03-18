@@ -68,6 +68,154 @@ func refreshTokenDomainToModel(rt *domain.RefreshToken) *model.RefreshToken {
 	}
 }
 
+func workspaceModelToDomain(m *model.Workspace) *domain.Workspace {
+	if m == nil {
+		return nil
+	}
+	ws := &domain.Workspace{
+		ID:        m.ID,
+		Name:      m.Name,
+		Slug:      m.Slug,
+		IconURL:   m.IconURL,
+		CreatedAt: m.CreatedAt,
+		UpdatedAt: m.UpdatedAt,
+	}
+	if m.DeletedAt.Valid {
+		t := m.DeletedAt.Time
+		ws.DeletedAt = &t
+	}
+	return ws
+}
+
+func workspaceDomainToModel(ws *domain.Workspace) *model.Workspace {
+	if ws == nil {
+		return nil
+	}
+	return &model.Workspace{
+		ID:        ws.ID,
+		Name:      ws.Name,
+		Slug:      ws.Slug,
+		IconURL:   ws.IconURL,
+		CreatedAt: ws.CreatedAt,
+		UpdatedAt: ws.UpdatedAt,
+	}
+}
+
+func workspaceMemberModelToDomain(m *model.WorkspaceMember) *domain.WorkspaceMember {
+	if m == nil {
+		return nil
+	}
+	return &domain.WorkspaceMember{
+		ID:          m.ID,
+		WorkspaceID: m.WorkspaceID,
+		UserID:      m.UserID,
+		Role:        m.Role,
+		JoinedAt:    m.JoinedAt,
+	}
+}
+
+func workspaceMemberDomainToModel(wm *domain.WorkspaceMember) *model.WorkspaceMember {
+	if wm == nil {
+		return nil
+	}
+	return &model.WorkspaceMember{
+		ID:          wm.ID,
+		WorkspaceID: wm.WorkspaceID,
+		UserID:      wm.UserID,
+		Role:        wm.Role,
+		JoinedAt:    wm.JoinedAt,
+	}
+}
+
+func workspaceInviteModelToDomain(m *model.WorkspaceInvite) *domain.WorkspaceInvite {
+	if m == nil {
+		return nil
+	}
+	return &domain.WorkspaceInvite{
+		ID:          m.ID,
+		WorkspaceID: m.WorkspaceID,
+		Email:       m.Email,
+		Token:       m.Token,
+		ExpiresAt:   m.ExpiresAt,
+		CreatedAt:   m.CreatedAt,
+	}
+}
+
+func workspaceInviteDomainToModel(inv *domain.WorkspaceInvite) *model.WorkspaceInvite {
+	if inv == nil {
+		return nil
+	}
+	return &model.WorkspaceInvite{
+		ID:          inv.ID,
+		WorkspaceID: inv.WorkspaceID,
+		Email:       inv.Email,
+		Token:       inv.Token,
+		ExpiresAt:   inv.ExpiresAt,
+		CreatedAt:   inv.CreatedAt,
+	}
+}
+
+func channelModelToDomain(m *model.Channel) *domain.Channel {
+	if m == nil {
+		return nil
+	}
+	ch := &domain.Channel{
+		ID:          m.ID,
+		WorkspaceID: m.WorkspaceID,
+		Name:        m.Name,
+		Description: m.Description,
+		CreatedBy:   m.CreatedBy,
+		CreatedAt:   m.CreatedAt,
+		UpdatedAt:   m.UpdatedAt,
+	}
+	if m.DeletedAt.Valid {
+		t := m.DeletedAt.Time
+		ch.DeletedAt = &t
+	}
+	return ch
+}
+
+func channelDomainToModel(ch *domain.Channel) *model.Channel {
+	if ch == nil {
+		return nil
+	}
+	return &model.Channel{
+		ID:          ch.ID,
+		WorkspaceID: ch.WorkspaceID,
+		Name:        ch.Name,
+		Description: ch.Description,
+		CreatedBy:   ch.CreatedBy,
+		CreatedAt:   ch.CreatedAt,
+		UpdatedAt:   ch.UpdatedAt,
+	}
+}
+
+func channelMemberModelToDomain(m *model.ChannelMember) *domain.ChannelMember {
+	if m == nil {
+		return nil
+	}
+	return &domain.ChannelMember{
+		ID:         m.ID,
+		ChannelID:  m.ChannelID,
+		UserID:     m.UserID,
+		LastReadAt: m.LastReadAt,
+		JoinedAt:   m.JoinedAt,
+	}
+}
+
+func channelMemberDomainToModel(cm *domain.ChannelMember) *model.ChannelMember {
+	if cm == nil {
+		return nil
+	}
+	return &model.ChannelMember{
+		ID:         cm.ID,
+		ChannelID:  cm.ChannelID,
+		UserID:     cm.UserID,
+		LastReadAt: cm.LastReadAt,
+		JoinedAt:   cm.JoinedAt,
+	}
+}
+
 func nowUTC() time.Time {
 	return time.Now().UTC()
 }
