@@ -60,8 +60,9 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
 
     if (!prompt || isThinking) return;
 
-    setMessages((prev) => [...prev, { id: `user-${Date.now()}`, role: 'user', content: prompt }]);
-    setEditorKey((prevKey) => prevKey + 1);
+    const optimisticUserMessageId = `user-${Date.now()}`;
+
+    setMessages((prev) => [...prev, { id: optimisticUserMessageId, role: 'user', content: prompt }]);
     setIsThinking(true);
 
     try {
@@ -100,7 +101,21 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
       if (result && typeof result === 'object' && 'assistantContent' in result) {
         setMessages((prev) => [...prev, { id: result.assistantMessageId, role: 'assistant', content: result.assistantContent }]);
       }
+
+      setEditorKey((prevKey) => prevKey + 1);
     } catch (error) {
+      setMessages((prev) => {
+        const withoutFailedUserMessage = prev.filter((message) => message.id !== optimisticUserMessageId);
+
+        return [
+          ...withoutFailedUserMessage,
+          {
+            id: `assistant-error-${Date.now()}`,
+            role: 'assistant',
+            content: 'メッセージの送信に失敗しました。ネットワークまたは認証状態を確認して、再度お試しください。',
+          },
+        ];
+      });
       toast.error(getCopilotUserErrorMessage(error));
     } finally {
       setIsThinking(false);
