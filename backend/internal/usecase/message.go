@@ -76,6 +76,8 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 			}
 		}
 		if err := uc.attachmentRepo.CreateBatch(ctx, attachments); err != nil {
+			// Compensate: remove the orphaned message
+			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
 			return nil, err
 		}
 	}

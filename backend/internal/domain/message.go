@@ -2,6 +2,7 @@ package domain
 
 import (
 	"context"
+	"fmt"
 	"time"
 )
 
@@ -31,7 +32,7 @@ func (m *Message) Validate() error {
 		return &ValidationError{Field: "content", Message: "must not be empty"}
 	}
 	if len(m.Content) > MaxMessageContentLength {
-		return &ValidationError{Field: "content", Message: "must be at most 10000 bytes"}
+		return &ValidationError{Field: "content", Message: fmt.Sprintf("must be at most %d bytes", MaxMessageContentLength)}
 	}
 	return nil
 }
