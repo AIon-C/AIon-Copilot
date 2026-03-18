@@ -35,3 +35,26 @@ CREATE TABLE IF NOT EXISTS ai_messages (
 
 CREATE INDEX IF NOT EXISTS idx_ai_messages_thread_id ON ai_messages(ai_thread_id);
 CREATE INDEX IF NOT EXISTS idx_ai_messages_created_at ON ai_messages(ai_thread_id, created_at);
+
+-- Users table
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    display_name VARCHAR(100) NOT NULL,
+    avatar_url TEXT NOT NULL DEFAULT '',
+    password_hash TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email_active ON users(email) WHERE deleted_at IS NULL;
+
+-- Refresh tokens table
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id UUID PRIMARY KEY,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token TEXT NOT NULL UNIQUE,
+    expires_at TIMESTAMPTZ NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user_id ON refresh_tokens(user_id);
