@@ -2,9 +2,15 @@
 
 import { Bot, Loader, User, XIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { copilotApiConfig } from '@/config';
+import { createCopilotThread, getCopilotUserErrorMessage } from '@/features/messages/api/copilot-client';
+import { getTextFromQuillBody } from '@/features/messages/api/copilot-contract';
+import { useCreateMessage } from '@/features/messages/api/use-create-message';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
 
 const Editor = dynamic(() => import('@/components/editor'), {
@@ -33,25 +39,10 @@ interface EditorSubmitPayload {
   image: File | null;
 }
 
-const getTextFromEditorBody = (body: string) => {
-  try {
-    const parsed = JSON.parse(body) as { ops?: Array<{ insert?: unknown }> };
-
-    if (!Array.isArray(parsed.ops)) return '';
-
-    return parsed.ops
-      .map((op) => (typeof op.insert === 'string' ? op.insert : ''))
-      .join('')
-      .trim();
-  } catch {
-    return '';
-  }
-};
-
-const ASSISTANT_REPLY =
-  'これはCopilotのデモです。実際のCopilotは、コードの提案や質問への回答など、さまざまな機能を提供します。何か質問がありますか？';
-
 export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
+  const workspaceId = useWorkspaceId();
+
+  const [threadId, setThreadId] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
   const [messages, setMessages] = useState<ChatMessage[]>([
@@ -62,39 +53,73 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
     },
   ]);
 
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { mutate: createMessage } = useCreateMessage();
 
-  useEffect(() => {
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
-  }, []);
-
-  const handleSubmit = ({ body }: EditorSubmitPayload) => {
-    const prompt = getTextFromEditorBody(body);
+  const handleSubmit = async ({ body }: EditorSubmitPayload) => {
+    const prompt = getTextFromQuillBody(body);
 
     if (!prompt || isThinking) return;
 
-    const userMessage: ChatMessage = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: prompt,
-    };
+    const optimisticUserMessageId = `user-${Date.now()}`;
 
-    setMessages((prev) => [...prev, userMessage]);
-    setEditorKey((prevKey) => prevKey + 1);
+    setMessages((prev) => [...prev, { id: optimisticUserMessageId, role: 'user', content: prompt }]);
     setIsThinking(true);
 
-    timerRef.current = setTimeout(() => {
-      const assistantMessage: ChatMessage = {
-        id: `assistant-${Date.now()}`,
-        role: 'assistant',
-        content: ASSISTANT_REPLY,
-      };
+    try {
+      let activeThreadId = threadId;
 
-      setMessages((prev) => [...prev, assistantMessage]);
+      if (!activeThreadId) {
+        const createdThread = await createCopilotThread({
+          workspaceId,
+          title: prompt.slice(0, 80),
+          mode: copilotApiConfig.mode,
+        });
+
+        activeThreadId = createdThread.id;
+        setThreadId(createdThread.id);
+      }
+
+      const result = await createMessage(
+        {
+          body,
+          workspaceId,
+          copilot: {
+            threadId: activeThreadId,
+            mode: copilotApiConfig.mode,
+            promptText: prompt,
+          },
+        },
+        {
+          throwError: true,
+        },
+      );
+
+      if (result && typeof result === 'object' && 'fallbackUsed' in result && result.fallbackUsed) {
+        toast.message('実API未稼働のため、stub応答に切り替えました。');
+      }
+
+      if (result && typeof result === 'object' && 'assistantContent' in result) {
+        setMessages((prev) => [...prev, { id: result.assistantMessageId, role: 'assistant', content: result.assistantContent }]);
+      }
+
+      setEditorKey((prevKey) => prevKey + 1);
+    } catch (error) {
+      setMessages((prev) => {
+        const withoutFailedUserMessage = prev.filter((message) => message.id !== optimisticUserMessageId);
+
+        return [
+          ...withoutFailedUserMessage,
+          {
+            id: `assistant-error-${Date.now()}`,
+            role: 'assistant',
+            content: 'メッセージの送信に失敗しました。ネットワークまたは認証状態を確認して、再度お試しください。',
+          },
+        ];
+      });
+      toast.error(getCopilotUserErrorMessage(error));
+    } finally {
       setIsThinking(false);
-    }, 450);
+    }
   };
 
   return (

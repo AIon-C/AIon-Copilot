@@ -48,3 +48,19 @@ export const siteConfig: Metadata = {
 export const links = {
   sourceCode: 'https://github.com/sanidhyy/slack-clone',
 } as const;
+
+const resolveCopilotMode = () => {
+  const mode = process.env.NEXT_PUBLIC_COPILOT_API_MODE;
+  if (mode === 'mock' || mode === 'stub' || mode === 'real') return mode;
+  return 'real';
+};
+
+const resolveCopilotTimeout = () => {
+  const parsed = Number(process.env.NEXT_PUBLIC_COPILOT_API_TIMEOUT_MS);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 15000;
+};
+
+export const copilotApiConfig = {
+  mode: resolveCopilotMode(),
+  timeoutMs: resolveCopilotTimeout(),
+} as const;
