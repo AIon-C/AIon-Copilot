@@ -75,7 +75,7 @@ export function mapChannelMember(
   };
 }
 
-export function mepJoinChannelResponse(
+export function mapJoinChannelResponse(
   response: JoinChannelResponse,
 ): ChannelMemberModel | null {
   return mapChannelMember(response.membership);
