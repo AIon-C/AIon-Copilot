@@ -1,5 +1,5 @@
 import { User } from '@/gen/chatapp/model/v1/user_pb';
-import { GetMeResponse, UpdateProfileResponse } from '@/gen/chatapp/user/v1/user_service_pb';
+import type { GetMeResponse, UpdateProfileResponse } from '@/gen/chatapp/user/v1/user_service_pb';
 
 import { UserModel } from '../model/user-types';
 
