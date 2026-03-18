@@ -4,7 +4,7 @@ import { authStore } from "../model/auth-store";
 import { authSession } from "@/lib/auth/auth-session";
 import { authClient } from "./auth-client";
 import { create } from "@bufbuild/protobuf";
-import { LogInRequestSchema, RefreshTokenRequestSchema, SignUpRequestSchema } from "@/gen/chatapp/auth/v1/auth_service_pb";
+import { LogInRequestSchema, LogoutRequestSchema, RefreshTokenRequestSchema, SignUpRequestSchema } from "@/gen/chatapp/auth/v1/auth_service_pb";
 import { mapAuthResponse, mapRefreshResponse } from "../utils/auth-mapper";
 import { toGrpcClientError } from "@/lib/grpc/error";
 import { Code } from "@connectrpc/connect";
@@ -64,6 +64,21 @@ export const authService = {
       return applyAuthResult(mapAuthResponse(response));
     } catch (error) {
       throw toGrpcClientError(error)
+    }
+  },
+
+  async logout(): Promise<void> {
+    try {
+      await authClient.logout(create(LogoutRequestSchema, {}));
+      clearLocalAuth();
+    } catch (error) {
+      const grpcError = toGrpcClientError(error);
+
+      if (grpcError.code === Code.Unauthenticated) {
+        clearLocalAuth();
+      }
+
+      throw grpcError;
     }
   },
 
