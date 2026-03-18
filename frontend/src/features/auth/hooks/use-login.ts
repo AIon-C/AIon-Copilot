@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { AuthResult, LogInInput } from "../model/auth-types";
-import { authService } from "../api/auth-service";
+import { useCallback, useState } from 'react';
+
+import { authService } from '../api/auth-service';
+import { AuthResult, LogInInput } from '../model/auth-types';
 
 export function useLogin() {
   const [loading, setLoading] = useState(false);
@@ -15,8 +16,7 @@ export function useLogin() {
     try {
       return await authService.logIn(input);
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to login";
+      const message = e instanceof Error ? e.message : 'Failed to login';
       setError(message);
       throw e;
     } finally {

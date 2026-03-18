@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { authService } from "../api/auth-service";
-import type { AuthResult, SignUpInput } from "../model/auth-types";
+import { useCallback, useState } from 'react';
+
+import { authService } from '../api/auth-service';
+import type { AuthResult, SignUpInput } from '../model/auth-types';
 
 export function useSignUp() {
   const [loading, setLoading] = useState(false);
@@ -15,8 +16,7 @@ export function useSignUp() {
     try {
       return await authService.signUp(input);
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to sign up";
+      const message = e instanceof Error ? e.message : 'Failed to sign up';
       setError(message);
       throw e;
     } finally {

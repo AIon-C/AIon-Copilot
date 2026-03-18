@@ -1,16 +1,23 @@
-import { tokenStore } from "@/lib/auth/token-store";
-import { AuthResult, AuthTokens, LogInInput, RefreshInput, SignUpInput } from "../model/auth-types";
-import { authStore } from "../model/auth-store";
-import { authSession } from "@/lib/auth/auth-session";
-import { authClient } from "./auth-client";
-import { create } from "@bufbuild/protobuf";
-import { LogInRequestSchema, LogoutRequestSchema, RefreshTokenRequestSchema, SignUpRequestSchema } from "@/gen/chatapp/auth/v1/auth_service_pb";
-import { mapAuthResponse, mapRefreshResponse } from "../utils/auth-mapper";
-import { toGrpcClientError } from "@/lib/grpc/error";
-import { Code } from "@connectrpc/connect";
+import { create } from '@bufbuild/protobuf';
+import { Code } from '@connectrpc/connect';
+
+import {
+  LogInRequestSchema,
+  LogoutRequestSchema,
+  RefreshTokenRequestSchema,
+  SignUpRequestSchema,
+} from '@/gen/chatapp/auth/v1/auth_service_pb';
+import { authSession } from '@/lib/auth/auth-session';
+import { tokenStore } from '@/lib/auth/token-store';
+import { toGrpcClientError } from '@/lib/grpc/error';
+
+import { authStore } from '../model/auth-store';
+import { AuthResult, AuthTokens, LogInInput, RefreshInput, SignUpInput } from '../model/auth-types';
+import { mapAuthResponse, mapRefreshResponse } from '../utils/auth-mapper';
+import { authClient } from './auth-client';
 
 function createClientReqeustId(): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID();
   }
   return `signup-${Date.now()}`;
@@ -63,7 +70,7 @@ export const authService = {
 
       return applyAuthResult(mapAuthResponse(response));
     } catch (error) {
-      throw toGrpcClientError(error)
+      throw toGrpcClientError(error);
     }
   },
 
@@ -89,10 +96,10 @@ export const authService = {
 
       if (!refreshToken) {
         clearLocalAuth();
-        throw new Error("Refresh token is missing");
+        throw new Error('Refresh token is missing');
       }
 
-      authStore.setRefreshing(true)
+      authStore.setRefreshing(true);
 
       try {
         const response = await authClient.refreshToken(
@@ -101,10 +108,7 @@ export const authService = {
           }),
         );
 
-        const nextTokens = mapRefreshResponse(
-          response,
-          currentTokens.refreshToken,
-        );
+        const nextTokens = mapRefreshResponse(response, currentTokens.refreshToken);
 
         return applyAuthTokens(nextTokens);
       } catch (error) {

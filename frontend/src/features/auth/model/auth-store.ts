@@ -1,10 +1,5 @@
-import type {
-  AuthResult,
-  AuthState,
-  AuthTokens,
-  AuthUser,
-} from "./auth-types";
-import { emptyAuthState } from "./auth-types";
+import type { AuthResult, AuthState, AuthTokens, AuthUser } from './auth-types';
+import { emptyAuthState } from './auth-types';
 
 type Listener = () => void;
 
@@ -27,13 +22,8 @@ export const authStore = {
     };
   },
 
-  setState(
-    updater:
-      | Partial<AuthState>
-      | ((prev: AuthState) => Partial<AuthState> | AuthState),
-  ): void {
-    const next =
-      typeof updater === "function" ? updater(state) : updater;
+  setState(updater: Partial<AuthState> | ((prev: AuthState) => Partial<AuthState> | AuthState)): void {
+    const next = typeof updater === 'function' ? updater(state) : updater;
 
     state = {
       ...state,

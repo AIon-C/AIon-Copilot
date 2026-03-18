@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { authService } from "../api/auth-service";
+import { useCallback, useState } from 'react';
+
+import { authService } from '../api/auth-service';
 
 export function useLogout() {
   const [loading, setLoading] = useState(false);
@@ -14,8 +15,7 @@ export function useLogout() {
     try {
       await authService.logout();
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to logout";
+      const message = e instanceof Error ? e.message : 'Failed to logout';
       setError(message);
       throw e;
     } finally {
