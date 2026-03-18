@@ -3,9 +3,12 @@ package handler
 import (
 	"context"
 
+	"connectrpc.com/connect"
+
 	modelv1 "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/model/v1"
 	threadv1 "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/thread/v1"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/usecase"
+	"github.com/AIon-C/AIon-Copilot/backend/pkg/auth"
 )
 
 type threadHandler struct {
@@ -17,6 +20,10 @@ func NewThreadHandler(msgUC usecase.MessageUsecase) *threadHandler {
 }
 
 func (h *threadHandler) GetThread(ctx context.Context, req *threadv1.GetThreadRequest) (*threadv1.GetThreadResponse, error) {
+	if _, ok := auth.UserIDFromContext(ctx); !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+	}
+
 	root, replies, err := h.msgUC.GetThread(ctx, req.GetThreadRootId())
 	if err != nil {
 		return nil, toConnectError(err)
