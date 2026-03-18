@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/AIon-C/AIon-Copilot/backend/internal/domain"
@@ -10,7 +11,7 @@ import (
 
 type MessageUsecase interface {
 	SendMessage(ctx context.Context, userID, channelID, content string, threadRootID *string, fileIDs []string) (*domain.Message, error)
-	ListMessages(ctx context.Context, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error)
+	ListMessages(ctx context.Context, userID, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error)
 	GetMessage(ctx context.Context, id string) (*domain.Message, error)
 	UpdateMessage(ctx context.Context, userID, msgID, content string) (*domain.Message, error)
 	DeleteMessage(ctx context.Context, userID, msgID string) (*domain.Message, error)
@@ -44,7 +45,10 @@ func NewMessageUsecase(
 func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, content string, threadRootID *string, fileIDs []string) (*domain.Message, error) {
 	// Verify channel membership
 	if _, err := uc.chMemberRepo.FindByChannelAndUser(ctx, channelID, userID); err != nil {
-		return nil, domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, domain.ErrForbidden
+		}
+		return nil, err
 	}
 
 	msg := &domain.Message{
@@ -72,6 +76,8 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 			}
 		}
 		if err := uc.attachmentRepo.CreateBatch(ctx, attachments); err != nil {
+			// Compensate: remove the orphaned message
+			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
 			return nil, err
 		}
 	}
@@ -79,7 +85,15 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 	return msg, nil
 }
 
-func (uc *messageUsecase) ListMessages(ctx context.Context, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error) {
+func (uc *messageUsecase) ListMessages(ctx context.Context, userID, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error) {
+	// Verify channel membership
+	if _, err := uc.chMemberRepo.FindByChannelAndUser(ctx, channelID, userID); err != nil {
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, "", "", false, false, domain.ErrForbidden
+		}
+		return nil, "", "", false, false, err
+	}
+
 	return uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
 }
 

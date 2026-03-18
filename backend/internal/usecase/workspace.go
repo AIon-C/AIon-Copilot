@@ -4,6 +4,7 @@ import (
 	"context"
 	"crypto/rand"
 	"encoding/hex"
+	"errors"
 	"strings"
 	"time"
 
@@ -81,7 +82,10 @@ func (uc *workspaceUsecase) GetWorkspace(ctx context.Context, id string) (*domai
 func (uc *workspaceUsecase) UpdateWorkspace(ctx context.Context, userID, wsID string, fields map[string]string) (*domain.Workspace, error) {
 	member, err := uc.memberRepo.FindByWorkspaceAndUser(ctx, wsID, userID)
 	if err != nil {
-		return nil, domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, domain.ErrForbidden
+		}
+		return nil, err
 	}
 	if !member.CanInvite() {
 		return nil, domain.ErrForbidden
@@ -114,7 +118,10 @@ func (uc *workspaceUsecase) UpdateWorkspace(ctx context.Context, userID, wsID st
 func (uc *workspaceUsecase) InviteMember(ctx context.Context, userID, wsID, email string) (string, error) {
 	member, err := uc.memberRepo.FindByWorkspaceAndUser(ctx, wsID, userID)
 	if err != nil {
-		return "", domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return "", domain.ErrForbidden
+		}
+		return "", err
 	}
 	if !member.CanInvite() {
 		return "", domain.ErrForbidden
@@ -178,7 +185,10 @@ func (uc *workspaceUsecase) GetInviteInfo(ctx context.Context, inviteCode string
 func (uc *workspaceUsecase) RemoveMember(ctx context.Context, userID, wsID, targetUserID string) error {
 	member, err := uc.memberRepo.FindByWorkspaceAndUser(ctx, wsID, userID)
 	if err != nil {
-		return domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return domain.ErrForbidden
+		}
+		return err
 	}
 	if !member.CanRemove() {
 		return domain.ErrForbidden

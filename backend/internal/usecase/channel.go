@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/AIon-C/AIon-Copilot/backend/internal/domain"
 	"github.com/AIon-C/AIon-Copilot/backend/pkg/ulid"
@@ -40,7 +41,10 @@ func NewChannelUsecase(
 func (uc *channelUsecase) CreateChannel(ctx context.Context, userID, wsID, name, description string) (*domain.Channel, error) {
 	// Verify workspace membership
 	if _, err := uc.wsMemberRepo.FindByWorkspaceAndUser(ctx, wsID, userID); err != nil {
-		return nil, domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, domain.ErrForbidden
+		}
+		return nil, err
 	}
 
 	ch := &domain.Channel{
@@ -89,9 +93,18 @@ func (uc *channelUsecase) UpdateChannel(ctx context.Context, userID, chID string
 
 	// Verify: must be channel member or workspace admin/owner
 	if _, err := uc.memberRepo.FindByChannelAndUser(ctx, chID, userID); err != nil {
+		if !errors.Is(err, domain.ErrNotFound) {
+			return nil, err
+		}
 		// Not a channel member — check workspace admin/owner
 		wsMember, wsErr := uc.wsMemberRepo.FindByWorkspaceAndUser(ctx, ch.WorkspaceID, userID)
-		if wsErr != nil || !wsMember.CanInvite() {
+		if wsErr != nil {
+			if errors.Is(wsErr, domain.ErrNotFound) {
+				return nil, domain.ErrForbidden
+			}
+			return nil, wsErr
+		}
+		if !wsMember.CanInvite() {
 			return nil, domain.ErrForbidden
 		}
 	}
@@ -122,7 +135,10 @@ func (uc *channelUsecase) JoinChannel(ctx context.Context, userID, chID string) 
 		return nil, err
 	}
 	if _, err := uc.wsMemberRepo.FindByWorkspaceAndUser(ctx, ch.WorkspaceID, userID); err != nil {
-		return nil, domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, domain.ErrForbidden
+		}
+		return nil, err
 	}
 
 	member := &domain.ChannelMember{
