@@ -1,9 +1,11 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { authStore } from "@/features/auth/model/auth-store";
-import { userService } from "../api/user-service";
-import type { UpdateProfileInput } from "../model/user-types";
+import { useCallback, useState } from 'react';
+
+import { authStore } from '@/features/auth/model/auth-store';
+
+import { userService } from '../api/user-service';
+import type { UpdateProfileInput } from '../model/user-types';
 
 export function useUpdateProfile() {
   const [loading, setLoading] = useState(false);
@@ -18,8 +20,7 @@ export function useUpdateProfile() {
       authStore.setUser(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to update profile";
+      const message = e instanceof Error ? e.message : 'Failed to update profile';
       setError(message);
       throw e;
     } finally {

@@ -1,4 +1,4 @@
-import type { UserModel } from "@/features/user/model/user-types";
+import type { UserModel } from '@/features/user/model/user-types';
 
 export type AuthTokens = {
   accessToken: string | null;

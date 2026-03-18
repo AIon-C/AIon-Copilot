@@ -1,6 +1,7 @@
-import { User } from "@/gen/chatapp/model/v1/user_pb";
-import { UserModel } from "../model/user-types";
-import { GetMeResponse, UpdateProfileResponse } from "@/gen/chatapp/user/v1/user_service_pb";
+import { User } from '@/gen/chatapp/model/v1/user_pb';
+import { GetMeResponse, UpdateProfileResponse } from '@/gen/chatapp/user/v1/user_service_pb';
+
+import { UserModel } from '../model/user-types';
 
 export function mapUser(user?: User): UserModel | null {
   if (!user) {
@@ -21,8 +22,6 @@ export function mapGetMeResponse(response: GetMeResponse): UserModel | null {
   return mapUser(response.user);
 }
 
-export function mapUpdateProfileResponse(
-  response: UpdateProfileResponse,
-): UserModel | null {
+export function mapUpdateProfileResponse(response: UpdateProfileResponse): UserModel | null {
   return mapUser(response.user);
 }

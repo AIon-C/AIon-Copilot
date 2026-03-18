@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { userService } from "../api/user-service";
-import type { ChangePasswordInput } from "../model/user-types";
+import { useCallback, useState } from 'react';
+
+import { userService } from '../api/user-service';
+import type { ChangePasswordInput } from '../model/user-types';
 
 export function useChangePassword() {
   const [loading, setLoading] = useState(false);
@@ -18,8 +19,7 @@ export function useChangePassword() {
       await userService.changePassword(input);
       setSucceeded(true);
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to change password";
+      const message = e instanceof Error ? e.message : 'Failed to change password';
       setError(message);
       throw e;
     } finally {
