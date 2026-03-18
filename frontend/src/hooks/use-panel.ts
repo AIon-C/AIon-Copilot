@@ -1,6 +1,6 @@
 import { useQueryState } from 'nuqs';
 
-import { useProfileMemberId } from '@/features/members/store/use-profile-member-id';
+import { useProfileMemberId } from '@/features/user/store/use-profile-member-id';
 import { useParentMessageId } from '@/features/messages/store/use-parent-message-id';
 
 export const usePanel = () => {

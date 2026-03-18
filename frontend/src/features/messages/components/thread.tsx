@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 
 import { Message } from '@/components/message';
 import { Button } from '@/components/ui/button';
-import { useCurrentMember } from '@/features/members/api/use-current-member';
+import { useCurrentMember } from '@/features/user/api/use-current-member';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useGetMessage } from '@/features/messages/api/use-get-message';
 import { useGetMessages } from '@/features/messages/api/use-get-messages';

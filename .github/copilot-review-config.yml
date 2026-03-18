@@ -1,0 +1,22 @@
+review:
+  instructions:
+    - path: "backend/**"
+      instructions: |
+        Go の Clean Architecture プロジェクト。
+        - errors.Is で ErrNotFound を判別し、ErrForbidden に変換するパターンを確認
+        - usecase 層にビジネスロジックが閉じているか確認
+        - SQL インジェクション、認証チェック漏れに注意
+        - 新しいユースケースにはテストが必要
+    - path: "frontend/**"
+      instructions: |
+        Next.js 15 + React 19 + TypeScript プロジェクト。
+        - 型安全性を確認
+        - Tailwind CSS / Shadcn UI パターンに従っているか
+    - path: "ai-agent/**"
+      instructions: |
+        Hono + Mastra の AI エージェント。Clean Architecture。
+        - ポート/アダプターの境界を確認
+        - エラーハンドリングが適切か
+    - path: "proto/**"
+      instructions: |
+        変更時は backend/gen/ と frontend/src/gen/ の再生成が含まれているか確認
