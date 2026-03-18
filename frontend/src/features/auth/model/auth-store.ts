@@ -62,6 +62,8 @@ export const authStore = {
     state = {
       ...state,
       user,
+      isAuthenticated: Boolean(state.tokens.accessToken),
+      initialized: true,
     };
     emit();
   },
@@ -70,6 +72,14 @@ export const authStore = {
     state = {
       ...state,
       isRefreshing,
+    };
+    emit();
+  },
+
+  markInitialized(): void {
+    state = {
+      ...state,
+      initialized: true,
     };
     emit();
   },

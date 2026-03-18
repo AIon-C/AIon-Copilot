@@ -1,16 +1,12 @@
+import type { UserModel } from '@/features/user/model/user-types';
+
 export type AuthTokens = {
   accessToken: string | null;
   refreshToken: string | null;
   expiresAt: Date | null;
 };
 
-export type AuthUser = {
-  id: string;
-  email: string;
-  displayName: string;
-  avatarUrl: string | null;
-  raw?: unknown;
-};
+export type AuthUser = UserModel;
 
 export type AuthResult = {
   user: AuthUser | null;
@@ -55,6 +51,6 @@ export function emptyAuthState(): AuthState {
     tokens: emptyAuthTokens(),
     isAuthenticated: false,
     isRefreshing: false,
-    initialized: true,
+    initialized: false,
   };
 }
