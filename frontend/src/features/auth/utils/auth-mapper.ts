@@ -40,15 +40,14 @@ export function mapAuthUser(user?: User): AuthUser | null {
   }
 
   const raw = user as Record<string, unknown>;
+  const displayName = raw.displayName ?? raw.name;
+  const avatar = raw.avatarUrl ?? raw.imageUrl ?? raw.iconUrl;
 
   return {
     id: asString(raw.id),
     email: asString(raw.email),
-    displayName: asString(raw.displayName ?? raw.name),
-    avatarUrl:
-      raw.avatarUrl == null
-        ? null
-        : asString(raw.avatarUrl ?? raw.imageUrl ?? raw.iconUrl),
+    displayName: asString(displayName),
+    avatarUrl: avatar == null ? null : asString(avatar),
     raw: user,
   };
 }
