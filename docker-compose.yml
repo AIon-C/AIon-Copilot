@@ -28,6 +28,18 @@ services:
       timeout: 5s
       retries: 5
 
+  # fake-gcs-server — local GCS emulator (GKE: Cloud Storage)
+  fake-gcs:
+    image: fsouza/fake-gcs-server:latest
+    ports:
+      - "4443:4443"
+    command:
+      - "-scheme=http"
+      - "-port=4443"
+      - "-external-url=http://localhost:4443"
+    volumes:
+      - gcs-data:/storage
+
   backend:
     build:
       context: ./backend
@@ -41,12 +53,16 @@ services:
       DATABASE_URL: postgres://postgres:postgres@postgres:5432/chatapp?sslmode=disable
       REDIS_URL: redis://redis:6379
       JWT_SECRET: ${JWT_SECRET}
-      GCS_BUCKET: ${GCS_BUCKET}
+      GCS_BUCKET: chatapp-files
+      GCS_ENDPOINT: http://fake-gcs:4443
+      GCS_PUBLIC_URL: http://localhost:4443
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+      fake-gcs:
+        condition: service_started
 
   # gRPC UI — Swagger-like API tester for gRPC/Connect services
   # Access at http://localhost:8090
@@ -136,6 +152,7 @@ services:
 volumes:
   pgdata:
   redis-data:
+  gcs-data:
   prometheus-data:
   grafana-data:
   node_modules_frontend:

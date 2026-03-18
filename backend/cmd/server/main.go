@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,11 +11,13 @@ import (
 
 	authv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/auth/v1/authv1connect"
 	channelv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/channel/v1/channelv1connect"
+	filev1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/file/v1/filev1connect"
 	messagev1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/message/v1/messagev1connect"
 	reactionv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/reaction/v1/reactionv1connect"
 	threadv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/thread/v1/threadv1connect"
 	userv1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/user/v1/userv1connect"
 	workspacev1connect "github.com/AIon-C/AIon-Copilot/backend/gen/go/chatapp/workspace/v1/workspacev1connect"
+	"github.com/AIon-C/AIon-Copilot/backend/internal/adapter/external"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/adapter/handler"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/adapter/persistence"
 	"github.com/AIon-C/AIon-Copilot/backend/internal/infra"
@@ -50,6 +53,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Storage (GCS / fake-gcs-server)
+	storageClient, err := infra.NewStorageClient(context.Background(), cfg.GCSEndpoint)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Failed to init storage client: %v\n", err)
+		os.Exit(1)
+	}
+	defer storageClient.Close()
+	objectStorage := external.NewGCSStorage(storageClient, cfg.GCSEndpoint, cfg.GCSPublicURL)
+
 	// Repository
 	userRepo := persistence.NewUserRepository(gormDB)
 	refreshTokenRepo := persistence.NewRefreshTokenRepository(gormDB)
@@ -61,6 +73,7 @@ func main() {
 	msgRepo := persistence.NewMessageRepository(gormDB)
 	msgAttachmentRepo := persistence.NewMessageAttachmentRepository(gormDB)
 	reactionRepo := persistence.NewReactionRepository(gormDB)
+	fileRepo := persistence.NewFileRepository(gormDB)
 
 	// JWT
 	jwtManager, err := auth.NewJWTManager(cfg.JWTSecret, "chatapp")
@@ -76,6 +89,7 @@ func main() {
 	chUC := usecase.NewChannelUsecase(chRepo, chMemberRepo)
 	msgUC := usecase.NewMessageUsecase(msgRepo, msgAttachmentRepo)
 	reactionUC := usecase.NewReactionUsecase(reactionRepo)
+	fileUC := usecase.NewFileUsecase(fileRepo, objectStorage, cfg.GCSBucket)
 
 	// Handler + Interceptor
 	interceptors := connect.WithInterceptors(handler.NewAuthInterceptor(jwtManager))
@@ -93,6 +107,7 @@ func main() {
 	mux.Handle(messagev1connect.NewMessageServiceHandler(handler.NewMessageHandler(msgUC), interceptors))
 	mux.Handle(threadv1connect.NewThreadServiceHandler(handler.NewThreadHandler(msgUC), interceptors))
 	mux.Handle(reactionv1connect.NewReactionServiceHandler(handler.NewReactionHandler(reactionUC), interceptors))
+	mux.Handle(filev1connect.NewFileServiceHandler(handler.NewFileHandler(fileUC), interceptors))
 
 	// gRPC Server Reflection (for grpcui / grpcurl)
 	reflector := grpcreflect.NewStaticReflector(
@@ -103,6 +118,7 @@ func main() {
 		messagev1connect.MessageServiceName,
 		threadv1connect.ThreadServiceName,
 		reactionv1connect.ReactionServiceName,
+		filev1connect.FileServiceName,
 	)
 	mux.Handle(grpcreflect.NewHandlerV1(reflector))
 	mux.Handle(grpcreflect.NewHandlerV1Alpha(reflector))

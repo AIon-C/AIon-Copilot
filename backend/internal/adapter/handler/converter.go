@@ -126,6 +126,22 @@ func messageToProto(msg *domain.Message) *modelv1.Message {
 	return pb
 }
 
+func fileToProto(f *domain.File) *modelv1.File {
+	if f == nil {
+		return nil
+	}
+	return &modelv1.File{
+		Id:          f.ID,
+		WorkspaceId: f.WorkspaceID,
+		UploadedBy:  f.UploadedBy,
+		FileName:    f.FileName,
+		FileKey:     f.FileKey,
+		ContentType: f.ContentType,
+		FileSize:    f.FileSize,
+		CreatedAt:   timestamppb.New(f.CreatedAt),
+	}
+}
+
 func reactionToProto(r *domain.Reaction) *modelv1.Reaction {
 	if r == nil {
 		return nil
