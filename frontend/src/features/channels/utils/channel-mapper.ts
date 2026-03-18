@@ -2,7 +2,6 @@ import { Channel } from "@/gen/chatapp/model/v1/channel_pb";
 import { Timestamp } from "@bufbuild/protobuf/wkt";
 import { ChannelMemberModel, ChannelModel, UnreadCountModel } from "../model/channel-types";
 import { GetChannelResponse, GetUnreadCountsResponse, JoinChannelResponse, ListChannelsResponse, SearchChannelsResponse, UnreadCount } from "@/gen/chatapp/channel/v1/channel_service_pb";
-import { channel } from "diagnostics_channel";
 import { ChannelMember } from "@/gen/chatapp/model/v1/channel_member_pb";
 
 function toDate(timestamp?: Timestamp): Date | null {
