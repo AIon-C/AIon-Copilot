@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/AIon-C/AIon-Copilot/backend/internal/domain"
@@ -44,7 +45,10 @@ func NewMessageUsecase(
 func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, content string, threadRootID *string, fileIDs []string) (*domain.Message, error) {
 	// Verify channel membership
 	if _, err := uc.chMemberRepo.FindByChannelAndUser(ctx, channelID, userID); err != nil {
-		return nil, domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, domain.ErrForbidden
+		}
+		return nil, err
 	}
 
 	msg := &domain.Message{
@@ -82,7 +86,10 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 func (uc *messageUsecase) ListMessages(ctx context.Context, userID, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error) {
 	// Verify channel membership
 	if _, err := uc.chMemberRepo.FindByChannelAndUser(ctx, channelID, userID); err != nil {
-		return nil, "", "", false, false, domain.ErrForbidden
+		if errors.Is(err, domain.ErrNotFound) {
+			return nil, "", "", false, false, domain.ErrForbidden
+		}
+		return nil, "", "", false, false, err
 	}
 
 	return uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
