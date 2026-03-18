@@ -104,7 +104,8 @@
     "react-verification-input": "^4.2.2",
     "sonner": "^1.7.4",
     "tailwind-merge": "^2.6.1",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "@bufbuild/protobuf": "^2.11.0"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
