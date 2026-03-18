@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { UnreadCountModel } from "../model/channel-types";
-import { channelService } from "../api/channel-service";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import { UnreadCountModel } from '../model/channel-types';
 
 export function useUnreadCounts() {
   const [unreadCounts, setUnreadCounts] = useState<UnreadCountModel[]>([]);
@@ -16,10 +17,9 @@ export function useUnreadCounts() {
     try {
       const result = await channelService.getUnreadCounts(workspaceId);
       setUnreadCounts(result);
-      return result
+      return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to fetch unread counts";
+      const message = e instanceof Error ? e.message : 'Failed to fetch unread counts';
       setError(message);
       throw e;
     } finally {

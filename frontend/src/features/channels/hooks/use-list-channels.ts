@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { ChannelModel, ListChannelsInput } from "../model/channel-types";
-import { channelService } from "../api/channel-service";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import { ChannelModel, ListChannelsInput } from '../model/channel-types';
 
 export function useListChannels() {
   const [channels, setChannels] = useState<ChannelModel[]>([]);
@@ -18,9 +19,8 @@ export function useListChannels() {
       setChannels(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to list channels";
-      setError(message)
+      const message = e instanceof Error ? e.message : 'Failed to list channels';
+      setError(message);
       throw e;
     } finally {
       setLoading(false);
@@ -32,5 +32,5 @@ export function useListChannels() {
     fetchChannels,
     loading,
     error,
-  }
+  };
 }

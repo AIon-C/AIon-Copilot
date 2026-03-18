@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { channelService } from "../api/channel-service";
-import type {
-  ChannelModel,
-  SearchChannelsInput,
-} from "../model/channel-types";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import type { ChannelModel, SearchChannelsInput } from '../model/channel-types';
 
 export function useSearchChannels() {
   const [channels, setChannels] = useState<ChannelModel[]>([]);
@@ -21,8 +19,7 @@ export function useSearchChannels() {
       setChannels(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to search channels";
+      const message = e instanceof Error ? e.message : 'Failed to search channels';
       setError(message);
       throw e;
     } finally {

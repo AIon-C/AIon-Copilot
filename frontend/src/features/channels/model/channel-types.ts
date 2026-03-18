@@ -1,7 +1,4 @@
-import type {
-  ListChannelsRequest,
-  SearchChannelsRequest,
-} from "@/gen/chatapp/channel/v1/channel_service_pb";
+import type { ListChannelsRequest, SearchChannelsRequest } from '@/gen/chatapp/channel/v1/channel_service_pb';
 
 export type ChannelModel = {
   id: string;
@@ -29,14 +26,14 @@ export type UnreadCountModel = {
 
 export type ListChannelsInput = {
   workspaceId: string;
-  page?: ListChannelsRequest["page"];
-  sort?: ListChannelsRequest["sort"];
+  page?: ListChannelsRequest['page'];
+  sort?: ListChannelsRequest['sort'];
 };
 
 export type SearchChannelsInput = {
   workspaceId: string;
   query: string;
-  page?: SearchChannelsRequest["page"];
+  page?: SearchChannelsRequest['page'];
 };
 
 export type CreateChannelInput = {

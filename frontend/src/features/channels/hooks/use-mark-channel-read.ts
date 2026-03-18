@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { channelService } from "../api/channel-service";
-import type { MarkChannelReadInput } from "../model/channel-types";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import type { MarkChannelReadInput } from '../model/channel-types';
 
 export function useMarkChannelRead() {
   const [loading, setLoading] = useState(false);
@@ -15,8 +16,7 @@ export function useMarkChannelRead() {
     try {
       await channelService.markChannelRead(input);
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to mark channel as read";
+      const message = e instanceof Error ? e.message : 'Failed to mark channel as read';
       setError(message);
       throw e;
     } finally {

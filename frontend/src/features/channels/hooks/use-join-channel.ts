@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { channelService } from "../api/channel-service";
-import type {
-  ChannelMemberModel,
-  JoinChannelInput,
-} from "../model/channel-types";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import type { ChannelMemberModel, JoinChannelInput } from '../model/channel-types';
 
 export function useJoinChannel() {
   const [membership, setMembership] = useState<ChannelMemberModel | null>(null);
@@ -21,8 +19,7 @@ export function useJoinChannel() {
       setMembership(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to join channel";
+      const message = e instanceof Error ? e.message : 'Failed to join channel';
       setError(message);
       throw e;
     } finally {

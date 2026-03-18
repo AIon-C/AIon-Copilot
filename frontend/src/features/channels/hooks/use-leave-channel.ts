@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { channelService } from "../api/channel-service";
-import type { LeaveChannelInput } from "../model/channel-types";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import type { LeaveChannelInput } from '../model/channel-types';
 
 export function useLeaveChannel() {
   const [loading, setLoading] = useState(false);
@@ -15,8 +16,7 @@ export function useLeaveChannel() {
     try {
       await channelService.leaveChannel(input);
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to leave channel";
+      const message = e instanceof Error ? e.message : 'Failed to leave channel';
       setError(message);
       throw e;
     } finally {

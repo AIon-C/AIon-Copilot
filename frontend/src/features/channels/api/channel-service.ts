@@ -1,5 +1,5 @@
-import { create } from "@bufbuild/protobuf";
-import { toGrpcClientError } from "@/lib/grpc/error";
+import { create } from '@bufbuild/protobuf';
+
 import {
   CreateChannelRequestSchema,
   GetChannelRequestSchema,
@@ -9,8 +9,9 @@ import {
   ListChannelsRequestSchema,
   MarkChannelReadRequestSchema,
   SearchChannelsRequestSchema,
-} from "@/gen/chatapp/channel/v1/channel_service_pb";
-import { channelClient } from "./channel-client";
+} from '@/gen/chatapp/channel/v1/channel_service_pb';
+import { toGrpcClientError } from '@/lib/grpc/error';
+
 import type {
   ChannelMemberModel,
   ChannelModel,
@@ -22,17 +23,12 @@ import type {
   MarkChannelReadInput,
   SearchChannelsInput,
   UnreadCountModel,
-} from "../model/channel-types";
-import {
-  mapChannel,
-  mapChannelResponse,
-  mapChannels,
-  mapJoinChannelResponse,
-  mapUnreadCounts,
-} from "../utils/channel-mapper";
+} from '../model/channel-types';
+import { mapChannel, mapChannelResponse, mapChannels, mapJoinChannelResponse, mapUnreadCounts } from '../utils/channel-mapper';
+import { channelClient } from './channel-client';
 
 function createClientRequestId(prefix: string): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return `${prefix}-${crypto.randomUUID()}`;
   }
   return `${prefix}-${Date.now()}`;
@@ -105,9 +101,8 @@ export const channelService = {
         create(CreateChannelRequestSchema, {
           workspaceId: input.workspaceId,
           name: input.name,
-          description: input.description ?? "",
-          clientRequestId:
-            input.clientRequestId ?? createClientRequestId("create-channel"),
+          description: input.description ?? '',
+          clientRequestId: input.clientRequestId ?? createClientRequestId('create-channel'),
         }),
       );
 
@@ -122,8 +117,7 @@ export const channelService = {
       const response = await channelClient.joinChannel(
         create(JoinChannelRequestSchema, {
           channelId: input.channelId,
-          clientRequestId:
-            input.clientRequestId ?? createClientRequestId("join-channel"),
+          clientRequestId: input.clientRequestId ?? createClientRequestId('join-channel'),
         }),
       );
 

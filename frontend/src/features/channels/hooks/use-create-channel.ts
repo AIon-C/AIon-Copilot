@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { channelService } from "../api/channel-service";
-import type {
-  ChannelModel,
-  CreateChannelInput,
-} from "../model/channel-types";
+import { useCallback, useState } from 'react';
+
+import { channelService } from '../api/channel-service';
+import type { ChannelModel, CreateChannelInput } from '../model/channel-types';
 
 export function useCreateChannel() {
   const [createdChannel, setCreatedChannel] = useState<ChannelModel | null>(null);
@@ -21,8 +19,7 @@ export function useCreateChannel() {
       setCreatedChannel(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to create channel";
+      const message = e instanceof Error ? e.message : 'Failed to create channel';
       setError(message);
       throw e;
     } finally {
