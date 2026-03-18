@@ -30,9 +30,10 @@ jobs:
       - run: go build ./...
       - run: go vet ./...
       - run: go test ./... -count=1 -race
-      - uses: golangci/golangci-lint-action@v6
-        with:
-          working-directory: backend
+      # TODO: golangci-lint v1.64.8 は Go 1.24 ビルドのため Go 1.25 非対応。対応版リリース後に有効化
+      # - uses: golangci/golangci-lint-action@v6
+      #   with:
+      #     working-directory: backend
 
   frontend:
     runs-on: ubuntu-latest

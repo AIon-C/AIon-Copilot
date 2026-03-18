@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/command';
 import { links } from '@/config';
 import { useGetChannels } from '@/features/channels/api/use-get-channels';
-import { useGetMembers } from '@/features/members/api/use-get-members';
+import { useGetMembers } from '@/features/user/api/use-get-members';
 import { useGetWorkspace } from '@/features/workspaces/api/use-get-workspace';
 import { usePanel } from '@/hooks/use-panel';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';

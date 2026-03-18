@@ -1,7 +1,7 @@
 import { Loader } from 'lucide-react';
 
 import { MessageList } from '@/components/message-list';
-import { useGetMember } from '@/features/members/api/use-get-member';
+import { useGetMember } from '@/features/user/api/use-get-member';
 import { useGetMessages } from '@/features/messages/api/use-get-messages';
 import { useMemberId } from '@/hooks/use-member-id';
 import { usePanel } from '@/hooks/use-panel';
