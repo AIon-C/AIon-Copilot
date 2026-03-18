@@ -10,7 +10,7 @@ import (
 
 type MessageUsecase interface {
 	SendMessage(ctx context.Context, userID, channelID, content string, threadRootID *string, fileIDs []string) (*domain.Message, error)
-	ListMessages(ctx context.Context, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error)
+	ListMessages(ctx context.Context, userID, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error)
 	GetMessage(ctx context.Context, id string) (*domain.Message, error)
 	UpdateMessage(ctx context.Context, userID, msgID, content string) (*domain.Message, error)
 	DeleteMessage(ctx context.Context, userID, msgID string) (*domain.Message, error)
@@ -79,7 +79,12 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 	return msg, nil
 }
 
-func (uc *messageUsecase) ListMessages(ctx context.Context, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error) {
+func (uc *messageUsecase) ListMessages(ctx context.Context, userID, channelID, cursor string, limit int) ([]*domain.Message, string, string, bool, bool, error) {
+	// Verify channel membership
+	if _, err := uc.chMemberRepo.FindByChannelAndUser(ctx, channelID, userID); err != nil {
+		return nil, "", "", false, false, domain.ErrForbidden
+	}
+
 	return uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
 }
 

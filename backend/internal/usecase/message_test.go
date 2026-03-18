@@ -298,12 +298,20 @@ func TestMessageUsecase_ListMessages(t *testing.T) {
 	_, _ = uc.SendMessage(context.Background(), "user-1", "ch-1", "Msg 1", nil, nil)
 	_, _ = uc.SendMessage(context.Background(), "user-1", "ch-1", "Msg 2", nil, nil)
 
-	msgs, _, _, _, _, err := uc.ListMessages(context.Background(), "ch-1", "", 50)
+	msgs, _, _, _, _, err := uc.ListMessages(context.Background(), "user-1", "ch-1", "", 50)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}
 	if len(msgs) != 2 {
 		t.Errorf("expected 2 messages, got %d", len(msgs))
+	}
+}
+
+func TestMessageUsecase_ListMessages_NotChannelMember(t *testing.T) {
+	uc, _, _ := newMsgUC()
+	_, _, _, _, _, err := uc.ListMessages(context.Background(), "outsider", "ch-1", "", 50)
+	if err != domain.ErrForbidden {
+		t.Errorf("expected ErrForbidden for non-channel member, got %v", err)
 	}
 }
 

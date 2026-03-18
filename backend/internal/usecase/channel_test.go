@@ -231,6 +231,46 @@ func TestChannelUsecase_UpdateChannel_Forbidden(t *testing.T) {
 	}
 }
 
+func TestChannelUsecase_UpdateChannel_ByWsAdmin(t *testing.T) {
+	chRepo := newMockChannelRepo()
+	memberRepo := newMockChMemberRepo()
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	seedWsMember(wsRepo, "ws-1", "user-admin", "admin")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
+
+	// user-1 creates channel (and auto-joins)
+	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "")
+
+	// user-admin is a workspace admin but NOT a channel member — should succeed
+	updated, err := uc.UpdateChannel(context.Background(), "user-admin", ch.ID, map[string]string{
+		"name": "renamed",
+	})
+	if err != nil {
+		t.Fatalf("workspace admin should be allowed to update channel: %v", err)
+	}
+	if updated.Name != "renamed" {
+		t.Errorf("expected 'renamed', got %s", updated.Name)
+	}
+}
+
+func TestChannelUsecase_UpdateChannel_WsMemberOnly(t *testing.T) {
+	chRepo := newMockChannelRepo()
+	memberRepo := newMockChMemberRepo()
+	wsRepo := newMockChWsMemberRepo()
+	seedWsMember(wsRepo, "ws-1", "user-1", "owner")
+	seedWsMember(wsRepo, "ws-1", "user-regular", "member")
+	uc := NewChannelUsecase(chRepo, memberRepo, wsRepo)
+
+	ch, _ := uc.CreateChannel(context.Background(), "user-1", "ws-1", "general", "")
+
+	// user-regular is a workspace member (not admin) and NOT a channel member — should fail
+	_, err := uc.UpdateChannel(context.Background(), "user-regular", ch.ID, map[string]string{"name": "hacked"})
+	if err != domain.ErrForbidden {
+		t.Errorf("expected ErrForbidden for regular ws member not in channel, got %v", err)
+	}
+}
+
 func TestChannelUsecase_JoinChannel_WsMemberRequired(t *testing.T) {
 	chRepo := newMockChannelRepo()
 	memberRepo := newMockChMemberRepo()

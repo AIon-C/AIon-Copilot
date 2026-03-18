@@ -40,13 +40,18 @@ func (h *messageHandler) SendMessage(ctx context.Context, req *messagev1.SendMes
 }
 
 func (h *messageHandler) ListMessages(ctx context.Context, req *messagev1.ListMessagesRequest) (*messagev1.ListMessagesResponse, error) {
+	userID, ok := auth.UserIDFromContext(ctx)
+	if !ok {
+		return nil, connect.NewError(connect.CodeUnauthenticated, nil)
+	}
+
 	cursor := req.GetPage().GetCursor()
 	limit := int(req.GetPage().GetLimit())
 	if limit <= 0 || limit > 100 {
 		limit = 50
 	}
 
-	msgs, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, err := h.uc.ListMessages(ctx, req.GetChannelId(), cursor, limit)
+	msgs, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, err := h.uc.ListMessages(ctx, userID, req.GetChannelId(), cursor, limit)
 	if err != nil {
 		return nil, toConnectError(err)
 	}

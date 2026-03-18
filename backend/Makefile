@@ -1,4 +1,4 @@
-.PHONY: build test vet run docker-up docker-down docker-restart
+.PHONY: build test vet lint run docker-up docker-down docker-restart
 
 build:
 	go build ./...
@@ -8,6 +8,9 @@ test:
 
 vet:
 	go vet ./...
+
+lint:
+	golangci-lint run ./...
 
 run:
 	go run ./cmd/server
