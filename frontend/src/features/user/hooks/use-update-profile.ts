@@ -1,11 +1,11 @@
 "use client";
 
 import { useCallback, useState } from "react";
+import { authStore } from "@/features/auth/model/auth-store";
 import { userService } from "../api/user-service";
-import type { UpdateProfileInput, UserModel } from "../model/user-types";
+import type { UpdateProfileInput } from "../model/user-types";
 
 export function useUpdateProfile() {
-  const [user, setUser] = useState<UserModel | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -15,7 +15,7 @@ export function useUpdateProfile() {
 
     try {
       const result = await userService.updateProfile(input);
-      setUser(result);
+      authStore.setUser(result);
       return result;
     } catch (e) {
       const message =
@@ -27,15 +27,8 @@ export function useUpdateProfile() {
     }
   }, []);
 
-  const clearUpdatedUser = useCallback(() => {
-    setUser(null);
-    setError(null);
-  }, []);
-
   return {
-    user,
     updateProfile,
-    clearUpdatedUser,
     loading,
     error,
   };
