@@ -53,11 +53,12 @@ export function mapAuthUser(user?: User): AuthUser | null {
   };
 }
 
-export function mapAuthTokens(input: {
-  accessToken: string;
-  refreshToken: string;
-  expiresAt?: Timestamp;
-}): AuthTokens {
+type ProtoTokenSource =
+  | Pick<SignUpResponse, "accessToken" | "refreshToken" | "expiresAt">
+  | Pick<LogInResponse, "accessToken" | "refreshToken" | "expiresAt">
+  | Pick<RefreshTokenResponse, "accessToken" | "refreshToken" | "expiresAt">;
+
+export function mapAuthTokens(input: ProtoTokenSource): AuthTokens {
   return {
     accessToken: input.accessToken || null,
     refreshToken: input.refreshToken || null,
@@ -78,9 +79,10 @@ export function mapRefreshResponse(
   response: RefreshTokenResponse,
   fallbackRefreshToken: string | null,
 ): AuthTokens {
+  const tokens = mapAuthTokens(response);
+
   return {
-    accessToken: response.accessToken || null,
-    refreshToken: response.refreshToken || fallbackRefreshToken,
-    expiresAt: toDate(response.expiresAt),
+    ...tokens,
+    refreshToken: tokens.refreshToken || fallbackRefreshToken,
   };
 }
