@@ -116,7 +116,7 @@ export const authService = {
 
         throw grpcError;
       } finally {
-        authStore.setRefreshing(true);
+        authStore.setRefreshing(false);
       }
     });
   },
