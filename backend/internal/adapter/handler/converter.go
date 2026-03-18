@@ -99,6 +99,46 @@ func channelMemberToProto(cm *domain.ChannelMember) *modelv1.ChannelMember {
 	return pb
 }
 
+func messageToProto(msg *domain.Message) *modelv1.Message {
+	if msg == nil {
+		return nil
+	}
+	pb := &modelv1.Message{
+		Id:        msg.ID,
+		ChannelId: msg.ChannelID,
+		UserId:    msg.UserID,
+		Content:   msg.Content,
+		IsEdited:  msg.IsEdited,
+		Metadata: &commonv1.AuditMetadata{
+			CreatedAt: timestamppb.New(msg.CreatedAt),
+			UpdatedAt: timestamppb.New(msg.UpdatedAt),
+		},
+	}
+	if msg.ThreadRootID != nil {
+		pb.ThreadRootId = msg.ThreadRootID
+	}
+	if msg.EditedAt != nil {
+		pb.EditedAt = timestamppb.New(*msg.EditedAt)
+	}
+	if msg.DeletedAt != nil {
+		pb.Metadata.DeletedAt = timestamppb.New(*msg.DeletedAt)
+	}
+	return pb
+}
+
+func reactionToProto(r *domain.Reaction) *modelv1.Reaction {
+	if r == nil {
+		return nil
+	}
+	return &modelv1.Reaction{
+		Id:        r.ID,
+		MessageId: r.MessageID,
+		UserId:    r.UserID,
+		EmojiCode: r.EmojiCode,
+		CreatedAt: timestamppb.New(r.CreatedAt),
+	}
+}
+
 func toTimestamppb(t time.Time) *timestamppb.Timestamp {
 	if t.IsZero() {
 		return nil

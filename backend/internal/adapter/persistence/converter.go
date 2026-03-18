@@ -216,6 +216,93 @@ func channelMemberDomainToModel(cm *domain.ChannelMember) *model.ChannelMember {
 	}
 }
 
+func messageModelToDomain(m *model.Message) *domain.Message {
+	if m == nil {
+		return nil
+	}
+	msg := &domain.Message{
+		ID:           m.ID,
+		ChannelID:    m.ChannelID,
+		UserID:       m.UserID,
+		ThreadRootID: m.ThreadRootID,
+		Content:      m.Content,
+		IsEdited:     m.IsEdited,
+		EditedAt:     m.EditedAt,
+		CreatedAt:    m.CreatedAt,
+		UpdatedAt:    m.UpdatedAt,
+	}
+	if m.DeletedAt.Valid {
+		t := m.DeletedAt.Time
+		msg.DeletedAt = &t
+	}
+	return msg
+}
+
+func messageDomainToModel(msg *domain.Message) *model.Message {
+	if msg == nil {
+		return nil
+	}
+	return &model.Message{
+		ID:           msg.ID,
+		ChannelID:    msg.ChannelID,
+		UserID:       msg.UserID,
+		ThreadRootID: msg.ThreadRootID,
+		Content:      msg.Content,
+		IsEdited:     msg.IsEdited,
+		EditedAt:     msg.EditedAt,
+		CreatedAt:    msg.CreatedAt,
+		UpdatedAt:    msg.UpdatedAt,
+	}
+}
+
+func messageAttachmentModelToDomain(m *model.MessageAttachment) *domain.MessageAttachment {
+	if m == nil {
+		return nil
+	}
+	return &domain.MessageAttachment{
+		ID:        m.ID,
+		MessageID: m.MessageID,
+		FileID:    m.FileID,
+	}
+}
+
+func messageAttachmentDomainToModel(a *domain.MessageAttachment) *model.MessageAttachment {
+	if a == nil {
+		return nil
+	}
+	return &model.MessageAttachment{
+		ID:        a.ID,
+		MessageID: a.MessageID,
+		FileID:    a.FileID,
+	}
+}
+
+func reactionModelToDomain(m *model.Reaction) *domain.Reaction {
+	if m == nil {
+		return nil
+	}
+	return &domain.Reaction{
+		ID:        m.ID,
+		MessageID: m.MessageID,
+		UserID:    m.UserID,
+		EmojiCode: m.EmojiCode,
+		CreatedAt: m.CreatedAt,
+	}
+}
+
+func reactionDomainToModel(r *domain.Reaction) *model.Reaction {
+	if r == nil {
+		return nil
+	}
+	return &model.Reaction{
+		ID:        r.ID,
+		MessageID: r.MessageID,
+		UserID:    r.UserID,
+		EmojiCode: r.EmojiCode,
+		CreatedAt: r.CreatedAt,
+	}
+}
+
 func nowUTC() time.Time {
 	return time.Now().UTC()
 }
