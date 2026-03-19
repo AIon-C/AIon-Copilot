@@ -24,6 +24,7 @@ patches:
       spec:
         template:
           spec:
+            serviceAccountName: backend
             containers:
               - name: backend
                 imagePullPolicy: IfNotPresent
