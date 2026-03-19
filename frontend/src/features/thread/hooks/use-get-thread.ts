@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { threadService } from "../api/thread-service";
-import type { GetThreadInput, ThreadModel } from "../model/thread-types";
+import { useCallback, useState } from 'react';
+
+import { threadService } from '../api/thread-service';
+import type { GetThreadInput, ThreadModel } from '../model/thread-types';
 
 export function useGetThread() {
   const [thread, setThread] = useState<ThreadModel | null>(null);
@@ -18,7 +19,7 @@ export function useGetThread() {
       setThread(result);
       return result;
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Failed to get thread";
+      const message = e instanceof Error ? e.message : 'Failed to get thread';
       setError(message);
       throw e;
     } finally {
