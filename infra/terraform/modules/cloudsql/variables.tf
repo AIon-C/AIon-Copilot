@@ -19,6 +19,11 @@ variable "private_vpc_connection" {
   type = any
 }
 
+variable "edition" {
+  type    = string
+  default = "ENTERPRISE"
+}
+
 variable "tier" {
   type    = string
   default = "db-custom-2-4096"

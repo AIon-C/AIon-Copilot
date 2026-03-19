@@ -7,6 +7,7 @@ resource "google_sql_database_instance" "postgres" {
   depends_on = [var.private_vpc_connection]
 
   settings {
+    edition           = var.edition
     tier              = var.tier
     availability_type = var.availability_type
     disk_size         = var.disk_size
@@ -16,11 +17,6 @@ resource "google_sql_database_instance" "postgres" {
       ipv4_enabled                                  = false
       private_network                               = var.network_id
       enable_private_path_for_google_cloud_services = true
-    }
-
-    database_flags {
-      name  = "cloudsql.enable_pgvector"
-      value = "on"
     }
 
     backup_configuration {
