@@ -1,12 +1,14 @@
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { Message } from "@/gen/chatapp/model/v1/message_pb";
+import type { Timestamp } from '@bufbuild/protobuf/wkt';
+
 import type {
   DeleteMessageResponse,
   GetMessageResponse,
   ListMessagesResponse,
   SendMessageResponse,
   UpdateMessageResponse,
-} from "@/gen/chatapp/message/v1/message_service_pb";
+} from '@/gen/chatapp/message/v1/message_service_pb';
+import type { Message } from '@/gen/chatapp/model/v1/message_pb';
+
 import type {
   DeleteMessageResult,
   GetMessageResult,
@@ -14,17 +16,14 @@ import type {
   MessageModel,
   SendMessageResult,
   UpdateMessageResult,
-} from "../model/message-types";
+} from '../model/message-types';
 
 function toDate(timestamp?: Timestamp): Date | null {
   if (!timestamp) {
     return null;
   }
 
-  const seconds =
-    typeof timestamp.seconds === "bigint"
-      ? Number(timestamp.seconds)
-      : Number(timestamp.seconds ?? 0);
+  const seconds = typeof timestamp.seconds === 'bigint' ? Number(timestamp.seconds) : Number(timestamp.seconds ?? 0);
 
   const nanos = Number(timestamp.nanos ?? 0);
 
@@ -51,34 +50,24 @@ export function mapMessage(message?: Message): MessageModel | null {
 
 export function mapMessages(response: ListMessagesResponse): ListMessagesResult {
   return {
-    messages: response.messages
-      .map((item) => mapMessage(item))
-      .filter((item): item is MessageModel => item !== null),
+    messages: response.messages.map((item) => mapMessage(item)).filter((item): item is MessageModel => item !== null),
     page: response.page,
     raw: response,
   };
 }
 
-export function mapGetMessageResponse(
-  response: GetMessageResponse,
-): GetMessageResult {
+export function mapGetMessageResponse(response: GetMessageResponse): GetMessageResult {
   return mapMessage(response.message);
 }
 
-export function mapSendMessageResponse(
-  response: SendMessageResponse,
-): SendMessageResult {
+export function mapSendMessageResponse(response: SendMessageResponse): SendMessageResult {
   return mapMessage(response.message);
 }
 
-export function mapUpdateMessageResponse(
-  response: UpdateMessageResponse,
-): UpdateMessageResult {
+export function mapUpdateMessageResponse(response: UpdateMessageResponse): UpdateMessageResult {
   return mapMessage(response.message);
 }
 
-export function mapDeleteMessageResponse(
-  response: DeleteMessageResponse,
-): DeleteMessageResult {
+export function mapDeleteMessageResponse(response: DeleteMessageResponse): DeleteMessageResult {
   return mapMessage(response.message);
 }

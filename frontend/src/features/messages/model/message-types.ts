@@ -1,8 +1,4 @@
-import type {
-  GetMessageResponse,
-  ListMessagesRequest,
-  ListMessagesResponse,
-} from "@/gen/chatapp/message/v1/message_service_pb";
+import type { GetMessageResponse, ListMessagesRequest, ListMessagesResponse } from '@/gen/chatapp/message/v1/message_service_pb';
 
 export type MessageModel = {
   id: string;
@@ -18,12 +14,12 @@ export type MessageModel = {
 
 export type ListMessagesInput = {
   channelId: string;
-  page?: ListMessagesRequest["page"];
+  page?: ListMessagesRequest['page'];
 };
 
 export type ListMessagesResult = {
   messages: MessageModel[];
-  page?: ListMessagesResponse["page"];
+  page?: ListMessagesResponse['page'];
   raw?: unknown;
 };
 

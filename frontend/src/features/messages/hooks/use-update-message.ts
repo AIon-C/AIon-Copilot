@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { messageService } from "../api/message-service";
-import type { MessageModel, UpdateMessageInput } from "../model/message-types";
+import { useCallback, useState } from 'react';
+
+import { messageService } from '../api/message-service';
+import type { MessageModel, UpdateMessageInput } from '../model/message-types';
 
 export function useUpdateMessage() {
   const [message, setMessage] = useState<MessageModel | null>(null);
@@ -18,8 +19,7 @@ export function useUpdateMessage() {
       setMessage(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to update message";
+      const message = e instanceof Error ? e.message : 'Failed to update message';
       setError(message);
       throw e;
     } finally {

@@ -1,5 +1,5 @@
-import { create } from "@bufbuild/protobuf";
-import { toGrpcClientError } from "@/lib/grpc/error";
+import { create } from '@bufbuild/protobuf';
+
 import {
   DeleteMessageRequestSchema,
   GetMessageRequestSchema,
@@ -7,8 +7,9 @@ import {
   SendMessageRequestSchema,
   SendTypingIndicatorRequestSchema,
   UpdateMessageRequestSchema,
-} from "@/gen/chatapp/message/v1/message_service_pb";
-import { messageClient } from "./message-client";
+} from '@/gen/chatapp/message/v1/message_service_pb';
+import { toGrpcClientError } from '@/lib/grpc/error';
+
 import type {
   DeleteMessageInput,
   DeleteMessageResult,
@@ -21,17 +22,18 @@ import type {
   SendTypingIndicatorInput,
   UpdateMessageInput,
   UpdateMessageResult,
-} from "../model/message-types";
+} from '../model/message-types';
 import {
   mapDeleteMessageResponse,
   mapGetMessageResponse,
   mapMessages,
   mapSendMessageResponse,
   mapUpdateMessageResponse,
-} from "../utils/message-mapper";
+} from '../utils/message-mapper';
+import { messageClient } from './message-client';
 
 function createClientMessageId(prefix: string): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return `${prefix}-${crypto.randomUUID()}`;
   }
 
@@ -42,7 +44,7 @@ function buildMessageUpdateMaskPaths(input: UpdateMessageInput): string[] {
   const paths: string[] = [];
 
   if (input.content !== undefined) {
-    paths.push("content");
+    paths.push('content');
   }
 
   return paths;
@@ -85,11 +87,8 @@ export const messageService = {
           channelId: input.channelId,
           content: input.content,
           fileIds: input.fileIds ?? [],
-          clientMessageId:
-            input.clientMessageId ?? createClientMessageId("message"),
-          ...(input.threadRootId !== undefined
-            ? { threadRootId: input.threadRootId }
-            : {}),
+          clientMessageId: input.clientMessageId ?? createClientMessageId('message'),
+          ...(input.threadRootId !== undefined ? { threadRootId: input.threadRootId } : {}),
         }),
       );
 
@@ -103,7 +102,7 @@ export const messageService = {
     const paths = buildMessageUpdateMaskPaths(input);
 
     if (paths.length === 0) {
-      throw new Error("No message fields to update");
+      throw new Error('No message fields to update');
     }
 
     try {
@@ -144,9 +143,7 @@ export const messageService = {
       await messageClient.sendTypingIndicator(
         create(SendTypingIndicatorRequestSchema, {
           channelId: input.channelId,
-          ...(input.threadRootId !== undefined
-            ? { threadRootId: input.threadRootId }
-            : {}),
+          ...(input.threadRootId !== undefined ? { threadRootId: input.threadRootId } : {}),
         }),
       );
     } catch (error) {
