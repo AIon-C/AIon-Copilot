@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useGetMessage } from '@/features/messages/api/use-get-message';
 import { useGetMessages } from '@/features/messages/api/use-get-messages';
-import { useGenerateUploadUrl } from '@/features/upload/api/use-generate-upload-url';
+import { useGenerateUploadUrl } from '@/features/file/api/use-generate-upload-url';
 import { useCurrentMember } from '@/features/user/api/use-current-member';
 import { useChannelId } from '@/hooks/use-channel-id';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
