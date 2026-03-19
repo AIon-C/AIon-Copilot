@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { reactionService } from "../api/reaction-service";
-import type {
-  RemoveReactionInput,
-  RemoveReactionResult,
-} from "../model/reaction-types";
+import { useCallback, useState } from 'react';
+
+import { reactionService } from '../api/reaction-service';
+import type { RemoveReactionInput, RemoveReactionResult } from '../model/reaction-types';
 
 export function useRemoveReaction() {
   const [result, setResult] = useState<RemoveReactionResult | null>(null);
@@ -21,8 +19,7 @@ export function useRemoveReaction() {
       setResult(response);
       return response;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to remove reaction";
+      const message = e instanceof Error ? e.message : 'Failed to remove reaction';
       setError(message);
       throw e;
     } finally {

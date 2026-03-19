@@ -1,26 +1,16 @@
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { Reaction } from "@/gen/chatapp/model/v1/reaction_pb";
-import type {
-  AddReactionResponse,
-  ListReactionsResponse,
-  RemoveReactionResponse,
-} from "@/gen/chatapp/reaction/v1/reaction_service_pb";
-import type {
-  AddReactionResult,
-  ListReactionsResult,
-  ReactionModel,
-  RemoveReactionResult,
-} from "../model/reaction-types";
+import type { Timestamp } from '@bufbuild/protobuf/wkt';
+
+import type { Reaction } from '@/gen/chatapp/model/v1/reaction_pb';
+import type { AddReactionResponse, ListReactionsResponse, RemoveReactionResponse } from '@/gen/chatapp/reaction/v1/reaction_service_pb';
+
+import type { AddReactionResult, ListReactionsResult, ReactionModel, RemoveReactionResult } from '../model/reaction-types';
 
 function toDate(timestamp?: Timestamp): Date | null {
   if (!timestamp) {
     return null;
   }
 
-  const seconds =
-    typeof timestamp.seconds === "bigint"
-      ? Number(timestamp.seconds)
-      : Number(timestamp.seconds ?? 0);
+  const seconds = typeof timestamp.seconds === 'bigint' ? Number(timestamp.seconds) : Number(timestamp.seconds ?? 0);
 
   const nanos = Number(timestamp.nanos ?? 0);
 
@@ -42,23 +32,15 @@ export function mapReaction(reaction?: Reaction): ReactionModel | null {
   };
 }
 
-export function mapAddReactionResponse(
-  response: AddReactionResponse,
-): AddReactionResult {
+export function mapAddReactionResponse(response: AddReactionResponse): AddReactionResult {
   return mapReaction(response.reaction);
 }
 
-export function mapListReactionsResponse(
-  response: ListReactionsResponse,
-): ListReactionsResult {
-  return response.reactions
-    .map((item) => mapReaction(item))
-    .filter((item): item is ReactionModel => item !== null);
+export function mapListReactionsResponse(response: ListReactionsResponse): ListReactionsResult {
+  return response.reactions.map((item) => mapReaction(item)).filter((item): item is ReactionModel => item !== null);
 }
 
-export function mapRemoveReactionResponse(
-  response: RemoveReactionResponse,
-): RemoveReactionResult {
+export function mapRemoveReactionResponse(response: RemoveReactionResponse): RemoveReactionResult {
   return {
     messageId: response.messageId,
     raw: response,

@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { reactionService } from "../api/reaction-service";
-import type {
-  ListReactionsInput,
-  ReactionModel,
-} from "../model/reaction-types";
+import { useCallback, useState } from 'react';
+
+import { reactionService } from '../api/reaction-service';
+import type { ListReactionsInput, ReactionModel } from '../model/reaction-types';
 
 export function useListReactions() {
   const [reactions, setReactions] = useState<ReactionModel[]>([]);
@@ -21,8 +19,7 @@ export function useListReactions() {
       setReactions(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to list reactions";
+      const message = e instanceof Error ? e.message : 'Failed to list reactions';
       setError(message);
       throw e;
     } finally {

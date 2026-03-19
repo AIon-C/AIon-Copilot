@@ -1,11 +1,12 @@
-import { create } from "@bufbuild/protobuf";
-import { toGrpcClientError } from "@/lib/grpc/error";
+import { create } from '@bufbuild/protobuf';
+
 import {
   AddReactionRequestSchema,
   ListReactionsRequestSchema,
   RemoveReactionRequestSchema,
-} from "@/gen/chatapp/reaction/v1/reaction_service_pb";
-import { reactionClient } from "./reaction-client";
+} from '@/gen/chatapp/reaction/v1/reaction_service_pb';
+import { toGrpcClientError } from '@/lib/grpc/error';
+
 import type {
   AddReactionInput,
   AddReactionResult,
@@ -13,12 +14,9 @@ import type {
   ListReactionsResult,
   RemoveReactionInput,
   RemoveReactionResult,
-} from "../model/reaction-types";
-import {
-  mapAddReactionResponse,
-  mapListReactionsResponse,
-  mapRemoveReactionResponse,
-} from "../utils/reaction-mapper";
+} from '../model/reaction-types';
+import { mapAddReactionResponse, mapListReactionsResponse, mapRemoveReactionResponse } from '../utils/reaction-mapper';
+import { reactionClient } from './reaction-client';
 
 export const reactionService = {
   async addReaction(input: AddReactionInput): Promise<AddReactionResult> {
@@ -36,9 +34,7 @@ export const reactionService = {
     }
   },
 
-  async removeReaction(
-    input: RemoveReactionInput,
-  ): Promise<RemoveReactionResult> {
+  async removeReaction(input: RemoveReactionInput): Promise<RemoveReactionResult> {
     try {
       const response = await reactionClient.removeReaction(
         create(RemoveReactionRequestSchema, {
@@ -53,9 +49,7 @@ export const reactionService = {
     }
   },
 
-  async listReactions(
-    input: ListReactionsInput,
-  ): Promise<ListReactionsResult> {
+  async listReactions(input: ListReactionsInput): Promise<ListReactionsResult> {
     try {
       const response = await reactionClient.listReactions(
         create(ListReactionsRequestSchema, {

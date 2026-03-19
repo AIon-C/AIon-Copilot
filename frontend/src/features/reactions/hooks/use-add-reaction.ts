@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { reactionService } from "../api/reaction-service";
-import type {
-  AddReactionInput,
-  ReactionModel,
-} from "../model/reaction-types";
+import { useCallback, useState } from 'react';
+
+import { reactionService } from '../api/reaction-service';
+import type { AddReactionInput, ReactionModel } from '../model/reaction-types';
 
 export function useAddReaction() {
   const [reaction, setReaction] = useState<ReactionModel | null>(null);
@@ -21,8 +19,7 @@ export function useAddReaction() {
       setReaction(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to add reaction";
+      const message = e instanceof Error ? e.message : 'Failed to add reaction';
       setError(message);
       throw e;
     } finally {
