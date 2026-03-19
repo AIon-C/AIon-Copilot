@@ -53,5 +53,3 @@ export type GetMessageResult = MessageModel | null;
 export type SendMessageResult = MessageModel | null;
 export type UpdateMessageResult = MessageModel | null;
 export type DeleteMessageResult = MessageModel | null;
-
-export type RawGetMessageResponse = GetMessageResponse;
