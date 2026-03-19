@@ -4,9 +4,9 @@ import { Loader } from 'lucide-react';
 import type { PropsWithChildren } from 'react';
 
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/components/ui/resizable';
-import { Profile } from '@/features/user/components/profile';
 import { AiChatPanel } from '@/features/messages/components/copilot-chat-panel';
 import { Thread } from '@/features/messages/components/thread';
+import { Profile } from '@/features/user/components/profile';
 import { usePanel } from '@/hooks/use-panel';
 import type { Id } from '@/mock/types';
 
