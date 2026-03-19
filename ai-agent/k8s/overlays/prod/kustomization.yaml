@@ -24,6 +24,7 @@ patches:
       spec:
         template:
           spec:
+            serviceAccountName: ai-agent
             containers:
               - name: ai-agent
                 imagePullPolicy: IfNotPresent
@@ -38,6 +39,8 @@ patches:
       data:
         NODE_ENV: "production"
         REDIS_URL: "redis://redis:6379"
+        GCP_PROJECT_ID: "aion-copilot-prod"
+        GCP_LOCATION: "asia-northeast1"
   - target:
       kind: Secret
       name: ai-agent-secret
