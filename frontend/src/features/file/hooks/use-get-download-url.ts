@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { fileService } from "../api/file-service";
-import type {
-  GetDownloadUrlInput,
-  GetDownloadUrlResult,
-} from "../model/file-types";
+import { useCallback, useState } from 'react';
+
+import { fileService } from '../api/file-service';
+import type { GetDownloadUrlInput, GetDownloadUrlResult } from '../model/file-types';
 
 export function useGetDownloadUrl() {
   const [download, setDownload] = useState<GetDownloadUrlResult | null>(null);
@@ -21,8 +19,7 @@ export function useGetDownloadUrl() {
       setDownload(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to get download url";
+      const message = e instanceof Error ? e.message : 'Failed to get download url';
       setError(message);
       throw e;
     } finally {

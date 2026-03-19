@@ -6,8 +6,8 @@ import type Quill from 'quill';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useGenerateUploadUrl } from '@/features/file/api/use-generate-upload-url';
+import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import type { Id } from '@/mock/types';
 

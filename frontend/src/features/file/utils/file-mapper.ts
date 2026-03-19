@@ -1,26 +1,16 @@
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import type { File } from "@/gen/chatapp/model/v1/file_pb";
-import type {
-  CompleteUploadResponse,
-  CreateUploadSessionResponse,
-  GetDownloadUrlResponse,
-} from "@/gen/chatapp/file/v1/file_service_pb";
-import type {
-  CompleteUploadResult,
-  CreateUploadSessionResult,
-  FileModel,
-  GetDownloadUrlResult,
-} from "../model/file-types";
+import type { Timestamp } from '@bufbuild/protobuf/wkt';
+
+import type { CompleteUploadResponse, CreateUploadSessionResponse, GetDownloadUrlResponse } from '@/gen/chatapp/file/v1/file_service_pb';
+import type { File } from '@/gen/chatapp/model/v1/file_pb';
+
+import type { CompleteUploadResult, CreateUploadSessionResult, FileModel, GetDownloadUrlResult } from '../model/file-types';
 
 function toDate(timestamp?: Timestamp): Date | null {
   if (!timestamp) {
     return null;
   }
 
-  const seconds =
-    typeof timestamp.seconds === "bigint"
-      ? Number(timestamp.seconds)
-      : Number(timestamp.seconds ?? 0);
+  const seconds = typeof timestamp.seconds === 'bigint' ? Number(timestamp.seconds) : Number(timestamp.seconds ?? 0);
 
   const nanos = Number(timestamp.nanos ?? 0);
 
@@ -28,7 +18,7 @@ function toDate(timestamp?: Timestamp): Date | null {
 }
 
 function toNumber(value?: number | bigint): number {
-  if (typeof value === "bigint") {
+  if (typeof value === 'bigint') {
     return Number(value);
   }
 
@@ -53,9 +43,7 @@ export function mapFile(file?: File): FileModel | null {
   };
 }
 
-export function mapCreateUploadSessionResponse(
-  response: CreateUploadSessionResponse,
-): CreateUploadSessionResult {
+export function mapCreateUploadSessionResponse(response: CreateUploadSessionResponse): CreateUploadSessionResult {
   return {
     uploadUrl: response.uploadUrl,
     fileId: response.fileId,
@@ -64,15 +52,11 @@ export function mapCreateUploadSessionResponse(
   };
 }
 
-export function mapCompleteUploadResponse(
-  response: CompleteUploadResponse,
-): CompleteUploadResult {
+export function mapCompleteUploadResponse(response: CompleteUploadResponse): CompleteUploadResult {
   return mapFile(response.file);
 }
 
-export function mapGetDownloadUrlResponse(
-  response: GetDownloadUrlResponse,
-): GetDownloadUrlResult {
+export function mapGetDownloadUrlResponse(response: GetDownloadUrlResponse): GetDownloadUrlResult {
   return {
     downloadUrl: response.downloadUrl,
     expiresAt: toDate(response.expiresAt),

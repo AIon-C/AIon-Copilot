@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { fileService } from "../api/file-service";
-import type { CompleteUploadInput, FileModel } from "../model/file-types";
+import { useCallback, useState } from 'react';
+
+import { fileService } from '../api/file-service';
+import type { CompleteUploadInput, FileModel } from '../model/file-types';
 
 export function useCompleteUpload() {
   const [file, setFile] = useState<FileModel | null>(null);
@@ -18,8 +19,7 @@ export function useCompleteUpload() {
       setFile(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to complete upload";
+      const message = e instanceof Error ? e.message : 'Failed to complete upload';
       setError(message);
       throw e;
     } finally {

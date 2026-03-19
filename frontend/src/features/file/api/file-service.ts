@@ -1,12 +1,13 @@
-import { create } from "@bufbuild/protobuf";
-import { toGrpcClientError } from "@/lib/grpc/error";
+import { create } from '@bufbuild/protobuf';
+
 import {
   AbortUploadRequestSchema,
   CompleteUploadRequestSchema,
   CreateUploadSessionRequestSchema,
   GetDownloadUrlRequestSchema,
-} from "@/gen/chatapp/file/v1/file_service_pb";
-import { fileClient } from "./file-client";
+} from '@/gen/chatapp/file/v1/file_service_pb';
+import { toGrpcClientError } from '@/lib/grpc/error';
+
 import type {
   AbortUploadInput,
   CompleteUploadInput,
@@ -15,15 +16,12 @@ import type {
   CreateUploadSessionResult,
   GetDownloadUrlInput,
   GetDownloadUrlResult,
-} from "../model/file-types";
-import {
-  mapCompleteUploadResponse,
-  mapCreateUploadSessionResponse,
-  mapGetDownloadUrlResponse,
-} from "../utils/file-mapper";
+} from '../model/file-types';
+import { mapCompleteUploadResponse, mapCreateUploadSessionResponse, mapGetDownloadUrlResponse } from '../utils/file-mapper';
+import { fileClient } from './file-client';
 
 function createClientRequestId(prefix: string): string {
-  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return `${prefix}-${crypto.randomUUID()}`;
   }
 
@@ -31,9 +29,7 @@ function createClientRequestId(prefix: string): string {
 }
 
 export const fileService = {
-  async createUploadSession(
-    input: CreateUploadSessionInput,
-  ): Promise<CreateUploadSessionResult> {
+  async createUploadSession(input: CreateUploadSessionInput): Promise<CreateUploadSessionResult> {
     try {
       const response = await fileClient.createUploadSession(
         create(CreateUploadSessionRequestSchema, {
@@ -41,9 +37,8 @@ export const fileService = {
           fileName: input.fileName,
           contentType: input.contentType,
           fileSize: input.fileSize,
-          checksumSha256: input.checksumSha256 ?? "",
-          clientRequestId:
-            input.clientRequestId ?? createClientRequestId("upload"),
+          checksumSha256: input.checksumSha256 ?? '',
+          clientRequestId: input.clientRequestId ?? createClientRequestId('upload'),
         }),
       );
 
@@ -53,9 +48,7 @@ export const fileService = {
     }
   },
 
-  async completeUpload(
-    input: CompleteUploadInput,
-  ): Promise<CompleteUploadResult> {
+  async completeUpload(input: CompleteUploadInput): Promise<CompleteUploadResult> {
     try {
       const response = await fileClient.completeUpload(
         create(CompleteUploadRequestSchema, {
@@ -81,9 +74,7 @@ export const fileService = {
     }
   },
 
-  async getDownloadUrl(
-    input: GetDownloadUrlInput,
-  ): Promise<GetDownloadUrlResult> {
+  async getDownloadUrl(input: GetDownloadUrlInput): Promise<GetDownloadUrlResult> {
     try {
       const response = await fileClient.getDownloadUrl(
         create(GetDownloadUrlRequestSchema, {

@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { fileService } from "../api/file-service";
-import type { AbortUploadInput } from "../model/file-types";
+import { useCallback, useState } from 'react';
+
+import { fileService } from '../api/file-service';
+import type { AbortUploadInput } from '../model/file-types';
 
 export function useAbortUpload() {
   const [loading, setLoading] = useState(false);
@@ -15,7 +16,7 @@ export function useAbortUpload() {
     try {
       await fileService.abortUpload(input);
     } catch (e) {
-      const message = e instanceof Error ? e.message : "Failed to abort upload";
+      const message = e instanceof Error ? e.message : 'Failed to abort upload';
       setError(message);
       throw e;
     } finally {
