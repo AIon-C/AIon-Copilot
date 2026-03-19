@@ -1,8 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { workspaceService } from "../api/workspace-service";
-import type { InviteInfoModel } from "../model/workspace-types";
+import { useCallback, useState } from 'react';
+
+import { workspaceService } from '../api/workspace-service';
+import type { InviteInfoModel } from '../model/workspace-types';
 
 export function useGetInviteInfo() {
   const [inviteInfo, setInviteInfo] = useState<InviteInfoModel | null>(null);
@@ -18,8 +19,7 @@ export function useGetInviteInfo() {
       setInviteInfo(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to get invite info";
+      const message = e instanceof Error ? e.message : 'Failed to get invite info';
       setError(message);
       throw e;
     } finally {

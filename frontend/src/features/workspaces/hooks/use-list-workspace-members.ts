@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { workspaceService } from "../api/workspace-service";
-import type {
-  ListWorkspaceMembersInput,
-  WorkspaceMemberModel,
-} from "../model/workspace-types";
+import { useCallback, useState } from 'react';
+
+import { workspaceService } from '../api/workspace-service';
+import type { ListWorkspaceMembersInput, WorkspaceMemberModel } from '../model/workspace-types';
 
 export function useListWorkspaceMembers() {
   const [members, setMembers] = useState<WorkspaceMemberModel[]>([]);
@@ -21,8 +19,7 @@ export function useListWorkspaceMembers() {
       setMembers(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to list workspace members";
+      const message = e instanceof Error ? e.message : 'Failed to list workspace members';
       setError(message);
       throw e;
     } finally {

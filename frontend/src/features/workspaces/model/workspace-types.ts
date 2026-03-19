@@ -1,7 +1,4 @@
-import type {
-  ListWorkspaceMembersRequest,
-  ListWorkspacesRequest,
-} from "@/gen/chatapp/workspace/v1/workspace_service_pb";
+import type { ListWorkspaceMembersRequest, ListWorkspacesRequest } from '@/gen/chatapp/workspace/v1/workspace_service_pb';
 
 export type WorkspaceModel = {
   id: string;
@@ -26,7 +23,7 @@ export type InviteInfoModel = {
 };
 
 export type ListWorkspacesInput = {
-  page?: ListWorkspacesRequest["page"];
+  page?: ListWorkspacesRequest['page'];
 };
 
 export type GetWorkspaceInput = {
@@ -58,7 +55,7 @@ export type JoinWorkspaceByInviteInput = {
 
 export type ListWorkspaceMembersInput = {
   workspaceId: string;
-  page?: ListWorkspaceMembersRequest["page"];
+  page?: ListWorkspaceMembersRequest['page'];
 };
 
 export type RemoveWorkspaceMemberInput = {

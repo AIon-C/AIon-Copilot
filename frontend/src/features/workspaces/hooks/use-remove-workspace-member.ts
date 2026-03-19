@@ -1,11 +1,9 @@
-"use client";
+'use client';
 
-import { useCallback, useState } from "react";
-import { workspaceService } from "../api/workspace-service";
-import type {
-  UpdateWorkspaceInput,
-  WorkspaceModel,
-} from "../model/workspace-types";
+import { useCallback, useState } from 'react';
+
+import { workspaceService } from '../api/workspace-service';
+import type { UpdateWorkspaceInput, WorkspaceModel } from '../model/workspace-types';
 
 export function useUpdateWorkspace() {
   const [workspace, setWorkspace] = useState<WorkspaceModel | null>(null);
@@ -21,8 +19,7 @@ export function useUpdateWorkspace() {
       setWorkspace(result);
       return result;
     } catch (e) {
-      const message =
-        e instanceof Error ? e.message : "Failed to update workspace";
+      const message = e instanceof Error ? e.message : 'Failed to update workspace';
       setError(message);
       throw e;
     } finally {
