@@ -25,6 +25,9 @@ patches:
         template:
           spec:
             serviceAccountName: ai-agent
+            securityContext:
+              runAsNonRoot: true
+              runAsUser: 1000
             containers:
               - name: ai-agent
                 imagePullPolicy: IfNotPresent
@@ -50,6 +53,6 @@ patches:
       metadata:
         name: ai-agent-secret
       stringData:
-        DATABASE_URL: "REPLACE_WITH_CLOUD_SQL_URL"
-        JWT_SECRET: "REPLACE_WITH_PRODUCTION_SECRET"
-        GOOGLE_GENERATIVE_AI_API_KEY: "REPLACE_WITH_PRODUCTION_KEY"
+        DATABASE_URL: "postgres://chatapp:uy0RRp4YPWfR829y%2FohCHYIV1tytrTOS@10.192.0.3:5432/chatapp"
+        JWT_SECRET: "kWgVSLL15WnDy1BvADBUxf84XD/umZ2vPfOeIOsClu8="
+        GOOGLE_GENERATIVE_AI_API_KEY: "AIzaSyDCfPYe_qwryhfxN9nWNeYm94eab37CPAA"
