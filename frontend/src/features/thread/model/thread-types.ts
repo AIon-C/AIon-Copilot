@@ -1,4 +1,4 @@
-import type { MessageModel } from "@/features/messages/model/message-types";
+import type { MessageModel } from "@/features/message/model/message-types";
 
 export type ThreadModel = {
   rootMessage: MessageModel | null;
