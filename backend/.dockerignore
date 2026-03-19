@@ -2,9 +2,11 @@
 .gitignore
 .env
 .env.*
-node_modules/
-dist/
+.air.toml
+tmp/
 k8s/
 *.md
 Dockerfile
 Dockerfile.*
+Makefile
+**/*_test.go

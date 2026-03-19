@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+data:
+  SERVER_ADDR: ":8080"
+  REDIS_URL: "redis://host.docker.internal:6379"
+  GCS_BUCKET: "chatapp-files"
+  GCS_ENDPOINT: "http://host.docker.internal:4443"
+  GCS_PUBLIC_URL: "http://localhost:4443"
+  CORS_ORIGINS: "http://localhost:3000"

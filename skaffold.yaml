@@ -1,0 +1,33 @@
+apiVersion: skaffold/v4beta11
+kind: Config
+metadata:
+  name: aion-copilot
+
+build:
+  artifacts:
+    - image: backend
+      context: backend
+      docker:
+        dockerfile: Dockerfile
+    - image: ai-agent
+      context: ai-agent
+      docker:
+        dockerfile: Dockerfile.dev
+
+manifests:
+  kustomize:
+    paths:
+      - backend/k8s/overlays/dev
+      - ai-agent/k8s/overlays/dev
+
+portForward:
+  - resourceType: service
+    resourceName: backend
+    namespace: aion-copilot
+    port: 8080
+    localPort: 8080
+  - resourceType: service
+    resourceName: ai-agent
+    namespace: aion-copilot
+    port: 3001
+    localPort: 3001

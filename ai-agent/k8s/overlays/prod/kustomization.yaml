@@ -1,0 +1,52 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../base
+
+replicas:
+  - name: ai-agent
+    count: 2
+
+images:
+  - name: ai-agent
+    newName: asia-northeast1-docker.pkg.dev/aion-copilot/aion-copilot/ai-agent
+
+patches:
+  - target:
+      kind: Deployment
+      name: ai-agent
+    patch: |
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: ai-agent
+      spec:
+        template:
+          spec:
+            containers:
+              - name: ai-agent
+                imagePullPolicy: IfNotPresent
+  - target:
+      kind: ConfigMap
+      name: ai-agent-config
+    patch: |
+      apiVersion: v1
+      kind: ConfigMap
+      metadata:
+        name: ai-agent-config
+      data:
+        NODE_ENV: "production"
+        REDIS_URL: "redis://redis:6379"
+  - target:
+      kind: Secret
+      name: ai-agent-secret
+    patch: |
+      apiVersion: v1
+      kind: Secret
+      metadata:
+        name: ai-agent-secret
+      stringData:
+        DATABASE_URL: "REPLACE_WITH_CLOUD_SQL_URL"
+        JWT_SECRET: "REPLACE_WITH_PRODUCTION_SECRET"
+        GOOGLE_GENERATIVE_AI_API_KEY: "REPLACE_WITH_PRODUCTION_KEY"
