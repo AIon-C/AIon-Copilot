@@ -14,7 +14,7 @@ export type CreateUploadSessionInput = {
   workspaceId: string;
   fileName: string;
   contentType: string;
-  fileSize: number | bigint;
+  fileSize: bigint;
   checksumSha256?: string;
   clientRequestId?: string;
 };
