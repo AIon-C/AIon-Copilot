@@ -1,8 +1,5 @@
 import { copilotApiConfig } from '@/config';
-<<<<<<< HEAD:frontend/src/features/messages/api/copilot-client.ts
 import { tokenStore } from '@/lib/auth/token-store';
-=======
->>>>>>> bff0d4e (Squashed 'frontend/' changes from fbd138a..cd85ee1):src/features/messages/api/copilot-client.ts
 import type { Id } from '@/mock/types';
 
 import type { AiAskRequestDto, AiMessageDto, AiThreadDto, CopilotApiMode, CopilotCreateMessageResult } from './copilot-contract';
@@ -80,15 +77,12 @@ const parseErrorMessage = async (response: Response) => {
   }
 };
 
-<<<<<<< HEAD:frontend/src/features/messages/api/copilot-client.ts
 const buildProxyAuthHeaders = (): Record<string, string> => {
   const accessToken = tokenStore.getAccessToken();
   if (!accessToken) return {};
   return { Authorization: `Bearer ${accessToken}` };
 };
 
-=======
->>>>>>> bff0d4e (Squashed 'frontend/' changes from fbd138a..cd85ee1):src/features/messages/api/copilot-client.ts
 const requestJson = async <T>(path: string, options: Omit<RequestInit, 'headers'> & { headers?: Record<string, string> }): Promise<T> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), parseTimeoutMs());
@@ -96,10 +90,7 @@ const requestJson = async <T>(path: string, options: Omit<RequestInit, 'headers'
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-<<<<<<< HEAD:frontend/src/features/messages/api/copilot-client.ts
       ...buildProxyAuthHeaders(),
-=======
->>>>>>> bff0d4e (Squashed 'frontend/' changes from fbd138a..cd85ee1):src/features/messages/api/copilot-client.ts
       ...options.headers,
     };
 
@@ -137,10 +128,7 @@ const requestSse = async (path: string, payload: AiAskRequestDto): Promise<Copil
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
-<<<<<<< HEAD:frontend/src/features/messages/api/copilot-client.ts
       ...buildProxyAuthHeaders(),
-=======
->>>>>>> bff0d4e (Squashed 'frontend/' changes from fbd138a..cd85ee1):src/features/messages/api/copilot-client.ts
     };
 
     const response = await fetch(`/api/copilot${path}`, {
