@@ -43,6 +43,12 @@ export type CreateChannelInput = {
   clientRequestId?: string;
 };
 
+export type UpdateChannelInput = {
+  id: string;
+  name?: string;
+  description?: string;
+};
+
 export type GetChannelInput = {
   channelId: string;
 };

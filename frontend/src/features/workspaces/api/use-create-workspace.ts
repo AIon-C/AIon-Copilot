@@ -1,6 +1,7 @@
-import { createWorkspace } from '@/mock/api';
 import type { Id } from '@/mock/types';
 import { useMockMutation } from '@/mock/use-mock-mutation';
+
+import { workspaceService } from './workspace-service';
 
 type RequestType = {
   name: string;
@@ -9,5 +10,8 @@ type RequestType = {
 type ResponseType = Id<'workspaces'> | null;
 
 export const useCreateWorkspace = () => {
-  return useMockMutation<RequestType, ResponseType>((values) => createWorkspace(values));
+  return useMockMutation<RequestType, ResponseType>(async (values) => {
+    const workspace = await workspaceService.createWorkspace(values);
+    return (workspace?.id as Id<'workspaces'> | undefined) ?? null;
+  });
 };
