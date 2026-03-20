@@ -1,6 +1,6 @@
 # GKE 外部 API テスト結果
 
-テスト日時: 2026-03-20
+テスト日時: 2026-03-20 (修正後再テスト済み)
 外部 IP: `http://34.149.213.223`
 LLM プロバイダ: Vertex AI (gemini-2.5-flash) via Workload Identity
 
@@ -11,13 +11,14 @@ LLM プロバイダ: Vertex AI (gemini-2.5-flash) via Workload Identity
 | ヘルスチェック | 2 | 2 | 0 | |
 | Auth Service | 4 | 4 | 0 | |
 | User Service | 2 | 2 | 0 | |
-| Workspace Service | 5 | 4 | 1 | UpdateWorkspace で UUID パースエラー |
+| Workspace Service | 6 | 6 | 0 | |
 | Channel Service | 7 | 7 | 0 | |
-| Message Service | 5 | 4 | 1 | UpdateMessage で UUID パースエラー |
-| Thread Service | 1 | 0 | 1 | GetThread で UUID パースエラー |
+| Message Service | 6 | 6 | 0 | |
+| Thread Service | 1 | 1 | 0 | |
 | Reaction Service | 3 | 3 | 0 | |
-| File Service | 1 | 0 | 1 | IAM 権限不足 (signBlob) |
+| File Service | 1 | 1 | 0 | |
 | AI Agent | 6 | 6 | 0 | Vertex AI 経由で正常動作 |
+| **合計** | **38** | **38** | **0** | **全エンドポイント正常動作** |
 | **合計** | **36** | **32** | **4** | |
 
 ---
@@ -74,7 +75,7 @@ LLM プロバイダ: Vertex AI (gemini-2.5-flash) via Workload Identity
 | `CreateWorkspace` | **OK** | ワークスペース作成、slug 自動生成 |
 | `ListWorkspaces` | **OK** | ページネーション付き一覧取得 (フィールド名は `workspace` 配列) |
 | `GetWorkspace` | **OK** | ID 指定で詳細取得 |
-| `UpdateWorkspace` | **NG** | `invalid input syntax for type uuid: ""` — 空 UUID パースエラー |
+| `UpdateWorkspace` | **OK** | workspace オブジェクト内に ID をネスト + FieldMask 指定で正常更新 |
 | `ListWorkspaceMembers` | **OK** | メンバー一覧取得 (作成者が自動メンバー) |
 | `InviteWorkspaceMember` | **OK** | 招待トークン発行成功 |
 
@@ -101,7 +102,7 @@ LLM プロバイダ: Vertex AI (gemini-2.5-flash) via Workload Identity
 | `SendMessage` | **OK** | メッセージ送信成功 |
 | `ListMessages` | **OK** | チャンネル内メッセージ一覧 |
 | `GetMessage` | **OK** | ID 指定でメッセージ取得 |
-| `UpdateMessage` | **NG** | `invalid input syntax for type uuid: ""` — 空 UUID パースエラー |
+| `UpdateMessage` | **OK** | message オブジェクト内に ID をネスト + FieldMask 指定で正常更新。`isEdited=true`, `editedAt` が設定される |
 | `DeleteMessage` | **OK** | メッセージ削除成功（削除されたメッセージを返却） |
 | `SendTypingIndicator` | **OK** | タイピング通知送信 |
 | `SendMessage (thread reply)` | **OK** | `threadRootId` 指定でスレッド返信成功 |
@@ -112,7 +113,7 @@ LLM プロバイダ: Vertex AI (gemini-2.5-flash) via Workload Identity
 
 | エンドポイント | ステータス | 備考 |
 |---|---|---|
-| `GetThread` | **NG** | `invalid input syntax for type uuid: ""` — 空 UUID パースエラー |
+| `GetThread` | **OK** | `threadRootId` でルートメッセージ + 返信一覧を取得 |
 
 ---
 
@@ -144,7 +145,7 @@ LLM プロバイダ: Vertex AI (gemini-2.5-flash) via Workload Identity
 
 | エンドポイント | ステータス | 備考 |
 |---|---|---|
-| `CreateUploadSession` | **NG** | `Permission 'iam.serviceAccounts.signBlob' denied` — SA に signBlob 権限が不足 |
+| `CreateUploadSession` | **OK** | Signed URL 生成成功。SA に `serviceAccountTokenCreator` ロール付与で解決 |
 
 ---
 
@@ -177,34 +178,48 @@ data: {"type":"done","threadId":"..."}
 
 ---
 
-## 検出された問題と対応策
+## 修正済みの問題
 
-### 1. UpdateWorkspace / UpdateMessage / GetThread — UUID パースエラー
+### 1. UpdateWorkspace / UpdateMessage / GetThread — リクエスト形式の修正 (解決済み)
 
-**エラー**: `invalid input syntax for type uuid: ""`
+**原因**: テスト時のリクエスト JSON 形式が proto 定義と異なっていた。バックエンドのコードにバグはなかった。
 
-**原因**: バックエンドで空文字列が UUID として渡されている。ConnectRPC のリクエストマッピングで一部フィールドが正しく渡っていない可能性がある。
+**修正内容**:
+- `UpdateWorkspace`: `workspace` オブジェクト内に `id` と更新フィールドをネスト + `updateMask` を文字列で指定
+- `UpdateMessage`: `message` オブジェクト内に `id` と `content` をネスト + `updateMask` を文字列で指定
+- `GetThread`: フィールド名を `messageId` から `threadRootId` に修正
 
-**影響**: 更新系操作とスレッド取得に影響。作成・取得・削除は正常動作。
+**正しいリクエスト例**:
+```bash
+# UpdateWorkspace
+curl -X POST .../UpdateWorkspace \
+  -d '{"workspace":{"id":"<ws_id>","name":"New Name"},"updateMask":"name"}'
 
-### 2. File Service — signBlob 権限不足
+# UpdateMessage
+curl -X POST .../UpdateMessage \
+  -d '{"message":{"id":"<msg_id>","content":"Edited"},"updateMask":"content"}'
 
-**エラー**: `Permission 'iam.serviceAccounts.signBlob' denied`
+# GetThread
+curl -X POST .../GetThread \
+  -d '{"threadRootId":"<root_msg_id>"}'
+```
 
-**原因**: backend サービスアカウントに GCS の Signed URL 生成に必要な `iam.serviceAccounts.signBlob` 権限がない。
+### 2. File Service — signBlob 権限の付与 (解決済み)
 
-**対応策**:
+**原因**: backend SA に GCS Signed URL 生成に必要な `iam.serviceAccounts.signBlob` 権限がなかった。
+
+**修正**: `roles/iam.serviceAccountTokenCreator` ロールを付与。
 ```bash
 gcloud projects add-iam-policy-binding aion-copilot \
   --member="serviceAccount:backend@aion-copilot.iam.gserviceaccount.com" \
   --role="roles/iam.serviceAccountTokenCreator"
 ```
 
-### 3. AI Agent ヘルスチェック — 外部からアクセス不可
+### 備考: AI Agent ヘルスチェック — 外部からアクセス不可
 
-**状態**: `/api/health` は Ingress のルーティング上 `/api/ai/*` にマッチしないため、backend にルーティングされ 401 が返る。
+**状態**: `/api/health` は Ingress のルーティング上 `/api/ai/*` にマッチしないため、backend にルーティングされる。
 
-**影響**: なし（K8s 内部のヘルスチェックは正常動作中）。
+**影響**: なし（K8s 内部のヘルスチェックは正常動作中。外部公開の必要なし）。
 
 ---
 

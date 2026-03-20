@@ -196,7 +196,7 @@ curl -X POST http://localhost:18080/chatapp.workspace.v1.WorkspaceService/GetWor
 curl -X POST http://localhost:18080/chatapp.workspace.v1.WorkspaceService/UpdateWorkspace \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <token>" \
-  -d '{"workspaceId": "<workspace_id>", "name": "Updated Name"}'
+  -d '{"workspace": {"id": "<workspace_id>", "name": "Updated Name"}, "updateMask": "name"}'
 ```
 
 #### InviteWorkspaceMember - メンバー招待
@@ -379,7 +379,7 @@ curl -X POST http://localhost:18080/chatapp.message.v1.MessageService/GetMessage
 curl -X POST http://localhost:18080/chatapp.message.v1.MessageService/UpdateMessage \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <token>" \
-  -d '{"messageId": "<message_id>", "content": "編集後のメッセージ"}'
+  -d '{"message": {"id": "<message_id>", "content": "編集後のメッセージ"}, "updateMask": "content"}'
 ```
 
 #### DeleteMessage - メッセージ削除
@@ -410,7 +410,7 @@ curl -X POST http://localhost:18080/chatapp.message.v1.MessageService/SendTyping
 curl -X POST http://localhost:18080/chatapp.thread.v1.ThreadService/GetThread \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer <token>" \
-  -d '{"messageId": "<root_message_id>"}'
+  -d '{"threadRootId": "<root_message_id>"}'
 ```
 
 ---
