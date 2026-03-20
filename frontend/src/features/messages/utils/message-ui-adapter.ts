@@ -117,7 +117,7 @@ export function toUiMessage(
     workspaceId: options?.workspaceId ?? '',
     channelId: message.channelId || undefined,
     conversationId: undefined,
-    parentMessageId: message.threadRootId ?? undefined,
+    parentMessageId: message.threadRootId || undefined,
     threadCount: undefined,
     threadImage: undefined,
     threadName: undefined,

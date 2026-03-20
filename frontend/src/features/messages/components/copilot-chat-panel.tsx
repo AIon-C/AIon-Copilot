@@ -2,7 +2,7 @@
 
 import { Bot, Loader, User, XIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -10,8 +10,10 @@ import { copilotApiConfig } from '@/config';
 import { createCopilotThread, getCopilotUserErrorMessage } from '@/features/messages/api/copilot-client';
 import { getTextFromQuillBody } from '@/features/messages/api/copilot-contract';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
+import { usePanel } from '@/hooks/use-panel';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
+import type { Id } from '@/mock/types';
 
 const Editor = dynamic(() => import('@/components/editor'), {
   ssr: false,
@@ -32,6 +34,8 @@ interface ChatMessage {
 
 interface AiChatPanelProps {
   onClose: () => void;
+  channelId?: Id<'channels'>;
+  threadRootId?: Id<'messages'>;
 }
 
 interface EditorSubmitPayload {
@@ -39,21 +43,57 @@ interface EditorSubmitPayload {
   image: File | null;
 }
 
-export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    id: 'assistant-initial',
+    role: 'assistant',
+    content: 'Welcome to Copilot!! Ask me anything.',
+  },
+];
+
+export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelProps) => {
   const workspaceId = useWorkspaceId();
+  const hasThreadContext = !!threadRootId;
+  const { copilotContextMessageId, onSetCopilotContextMessage } = usePanel();
 
   const [threadId, setThreadId] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'assistant-initial',
-      role: 'assistant',
-      content: 'Welcome to Copilot!! Ask me anything.',
-    },
-  ]);
+  const [contextMode, setContextMode] = useState<'main' | 'thread'>(hasThreadContext ? 'thread' : 'main');
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
+
+  const effectiveThreadRootId = contextMode === 'thread' ? threadRootId : undefined;
+  const contextType = effectiveThreadRootId ? 'thread' : channelId ? 'main' : 'free';
 
   const { mutate: createMessage } = useCreateMessage();
+
+  const handleSelectMainContext = () => {
+    setContextMode('main');
+    onSetCopilotContextMessage(null);
+  };
+
+  const handleSelectThreadContext = () => {
+    if (!threadRootId) return;
+
+    if (contextMode === 'thread' && copilotContextMessageId === threadRootId) {
+      setContextMode('main');
+      onSetCopilotContextMessage(null);
+      return;
+    }
+
+    setContextMode('thread');
+    onSetCopilotContextMessage(threadRootId);
+  };
+
+  useEffect(() => {
+    setContextMode(hasThreadContext ? 'thread' : 'main');
+  }, [hasThreadContext]);
+
+  useEffect(() => {
+    setThreadId(null);
+    setMessages(INITIAL_MESSAGES);
+    setEditorKey((prevKey) => prevKey + 1);
+  }, [channelId, effectiveThreadRootId]);
 
   const handleSubmit = async ({ body }: EditorSubmitPayload) => {
     const prompt = getTextFromQuillBody(body);
@@ -72,6 +112,8 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
         const createdThread = await createCopilotThread({
           workspaceId,
           title: prompt.slice(0, 80),
+          channelId,
+          threadRootId: effectiveThreadRootId,
           mode: copilotApiConfig.mode,
         });
 
@@ -125,12 +167,41 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
-        <p className="text-lg font-bold">Copilot</p>
+        <div>
+          <p className="text-lg font-bold">Copilot</p>
+          <p className="text-xs text-muted-foreground">Context: {contextType}</p>
+        </div>
 
         <Button onClick={onClose} size="iconSm" variant="ghost">
           <XIcon className="size-5 stroke-[1.5]" />
         </Button>
       </div>
+
+      {hasThreadContext && (
+        <div className="flex items-center gap-2 border-b px-4 py-2">
+          <Button
+            type="button"
+            size="sm"
+            variant={contextMode === 'main' ? 'default' : 'outline'}
+            onClick={handleSelectMainContext}
+            disabled={isThinking}
+          >
+            Main
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={contextMode === 'thread' ? 'default' : 'outline'}
+            onClick={handleSelectThreadContext}
+            disabled={isThinking}
+          >
+            Thread
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            {contextMode === 'thread' ? `Using thread context (${threadRootId?.slice(0, 8)}...)` : 'Using main channel context'}
+          </span>
+        </div>
+      )}
 
       <div className="messages-scrollbar flex-1 space-y-3 overflow-y-auto bg-muted/20 p-4">
         {messages.map((message) => (
