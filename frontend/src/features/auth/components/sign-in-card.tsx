@@ -35,12 +35,11 @@ export const SignInCard = ({ onChangeFlowAction }: SignInCardProps) => {
 
       router.replace('/');
     } catch {
-      // error state is managed inside useLogin
+      throw error;
     }
   };
 
   const handleOAuthSignIn = async (provider: 'google' | 'github') => {
-    // 今の proto に OAuth API がなければ、ここは未実装でOK
     console.warn(`${provider} OAuth is not implemented yet.`);
   };
 
