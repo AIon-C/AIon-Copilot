@@ -1,4 +1,5 @@
 import { copilotApiConfig } from '@/config';
+import { tokenStore } from '@/lib/auth/token-store';
 import type { Id } from '@/mock/types';
 
 import type { AiAskRequestDto, AiMessageDto, AiThreadDto, CopilotApiMode, CopilotCreateMessageResult } from './copilot-contract';
@@ -76,6 +77,12 @@ const parseErrorMessage = async (response: Response) => {
   }
 };
 
+const buildProxyAuthHeaders = (): Record<string, string> => {
+  const accessToken = tokenStore.getAccessToken();
+  if (!accessToken) return {};
+  return { Authorization: `Bearer ${accessToken}` };
+};
+
 const requestJson = async <T>(path: string, options: Omit<RequestInit, 'headers'> & { headers?: Record<string, string> }): Promise<T> => {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), parseTimeoutMs());
@@ -83,6 +90,7 @@ const requestJson = async <T>(path: string, options: Omit<RequestInit, 'headers'
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      ...buildProxyAuthHeaders(),
       ...options.headers,
     };
 
@@ -120,6 +128,7 @@ const requestSse = async (path: string, payload: AiAskRequestDto): Promise<Copil
   try {
     const headers: Record<string, string> = {
       'Content-Type': 'application/json',
+      ...buildProxyAuthHeaders(),
     };
 
     const response = await fetch(`/api/copilot${path}`, {
