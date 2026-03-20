@@ -4,7 +4,15 @@ export const siteConfig: Metadata = {
   title: 'AIon Copilot',
   description:
     'AIon Copilot is an AI-powered assistant designed to help developers build a Slack clone application. It provides explanations, and guidance throughout the development process, making it easier for developers to create a feature-rich and user-friendly Slack clone.',
+  icons: {
+    icon: '/logo.png',
+  },
   keywords: [
+    'AIon Copilot',
+    'AIon',
+    'copilot',
+    'AI assistant',
+    'Slack clone',
     'reactjs',
     'nextjs',
     'next-auth',
