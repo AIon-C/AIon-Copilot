@@ -32,6 +32,16 @@ func (m *mockFileRepo) FindByID(_ context.Context, id string) (*domain.File, err
 	return f, nil
 }
 
+func (m *mockFileRepo) FindByIDs(_ context.Context, ids []string) ([]*domain.File, error) {
+	var result []*domain.File
+	for _, id := range ids {
+		if f, ok := m.files[id]; ok {
+			result = append(result, f)
+		}
+	}
+	return result, nil
+}
+
 // --- mock storage ---
 
 type mockObjectStorage struct {

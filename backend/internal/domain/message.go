@@ -17,6 +17,7 @@ type Message struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    *time.Time
+	Attachments  []*File
 }
 
 type MessageAttachment struct {
@@ -53,4 +54,5 @@ type MessageRepository interface {
 type MessageAttachmentRepository interface {
 	CreateBatch(ctx context.Context, attachments []*MessageAttachment) error
 	ListByMessage(ctx context.Context, messageID string) ([]*MessageAttachment, error)
+	ListByMessages(ctx context.Context, messageIDs []string) ([]*MessageAttachment, error)
 }

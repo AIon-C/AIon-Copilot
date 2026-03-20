@@ -90,7 +90,7 @@ func main() {
 	userUC := usecase.NewUserUsecase(userRepo)
 	wsUC := usecase.NewWorkspaceUsecase(wsRepo, wsMemberRepo, wsInviteRepo)
 	chUC := usecase.NewChannelUsecase(chRepo, chMemberRepo, wsMemberRepo)
-	msgUC := usecase.NewMessageUsecase(msgRepo, msgAttachmentRepo, chMemberRepo, eventBus)
+	msgUC := usecase.NewMessageUsecase(msgRepo, msgAttachmentRepo, chMemberRepo, fileRepo, eventBus)
 	reactionUC := usecase.NewReactionUsecase(reactionRepo)
 	fileUC := usecase.NewFileUsecase(fileRepo, objectStorage, cfg.GCSBucket)
 

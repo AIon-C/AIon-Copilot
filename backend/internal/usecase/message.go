@@ -28,6 +28,7 @@ type messageUsecase struct {
 	msgRepo        domain.MessageRepository
 	attachmentRepo domain.MessageAttachmentRepository
 	chMemberRepo   domain.ChannelMemberRepository
+	fileRepo       domain.FileRepository
 	eventBus       domain.EventBus
 }
 
@@ -35,12 +36,14 @@ func NewMessageUsecase(
 	msgRepo domain.MessageRepository,
 	attachmentRepo domain.MessageAttachmentRepository,
 	chMemberRepo domain.ChannelMemberRepository,
+	fileRepo domain.FileRepository,
 	eventBus domain.EventBus,
 ) MessageUsecase {
 	return &messageUsecase{
 		msgRepo:        msgRepo,
 		attachmentRepo: attachmentRepo,
 		chMemberRepo:   chMemberRepo,
+		fileRepo:       fileRepo,
 		eventBus:       eventBus,
 	}
 }
@@ -70,6 +73,17 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 	}
 
 	if len(fileIDs) > 0 {
+		// Validate that all referenced files exist before creating attachments
+		files, err := uc.fileRepo.FindByIDs(ctx, fileIDs)
+		if err != nil {
+			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
+			return nil, err
+		}
+		if len(files) != len(fileIDs) {
+			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
+			return nil, &domain.ValidationError{Field: "file_ids", Message: "one or more attachments not found"}
+		}
+
 		attachments := make([]*domain.MessageAttachment, len(fileIDs))
 		for i, fid := range fileIDs {
 			attachments[i] = &domain.MessageAttachment{
@@ -79,10 +93,22 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 			}
 		}
 		if err := uc.attachmentRepo.CreateBatch(ctx, attachments); err != nil {
-			// Compensate: remove the orphaned message
 			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
 			return nil, err
 		}
+
+		// Preserve client-specified order
+		fileMap := make(map[string]*domain.File, len(files))
+		for _, f := range files {
+			fileMap[f.ID] = f
+		}
+		orderedFiles := make([]*domain.File, 0, len(fileIDs))
+		for _, fid := range fileIDs {
+			if f, ok := fileMap[fid]; ok {
+				orderedFiles = append(orderedFiles, f)
+			}
+		}
+		msg.Attachments = orderedFiles
 	}
 
 	// Broadcast real-time event (fire-and-forget)
@@ -108,11 +134,21 @@ func (uc *messageUsecase) ListMessages(ctx context.Context, userID, channelID, c
 		return nil, "", "", false, false, err
 	}
 
-	return uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
+	msgs, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, err := uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
+	if err != nil {
+		return nil, "", "", false, false, err
+	}
+	uc.resolveAttachments(ctx, msgs)
+	return msgs, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, nil
 }
 
 func (uc *messageUsecase) GetMessage(ctx context.Context, id string) (*domain.Message, error) {
-	return uc.msgRepo.FindByID(ctx, id)
+	msg, err := uc.msgRepo.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	uc.resolveAttachments(ctx, []*domain.Message{msg})
+	return msg, nil
 }
 
 func (uc *messageUsecase) UpdateMessage(ctx context.Context, userID, msgID, content string) (*domain.Message, error) {
@@ -138,6 +174,8 @@ func (uc *messageUsecase) UpdateMessage(ctx context.Context, userID, msgID, cont
 		return nil, err
 	}
 
+	uc.resolveAttachments(ctx, []*domain.Message{msg})
+
 	if uc.eventBus != nil {
 		_ = uc.eventBus.Publish(ctx, msg.ChannelID, &domain.Event{
 			Type:      domain.EventMessageUpdated,
@@ -160,6 +198,8 @@ func (uc *messageUsecase) DeleteMessage(ctx context.Context, userID, msgID strin
 	if msg.UserID != userID {
 		return nil, domain.ErrForbidden
 	}
+
+	uc.resolveAttachments(ctx, []*domain.Message{msg})
 
 	if err := uc.msgRepo.SoftDelete(ctx, msgID); err != nil {
 		return nil, err
@@ -189,7 +229,60 @@ func (uc *messageUsecase) GetThread(ctx context.Context, rootID string) (*domain
 		return nil, nil, err
 	}
 
+	allMsgs := append([]*domain.Message{root}, replies...)
+	uc.resolveAttachments(ctx, allMsgs)
+
 	return root, replies, nil
+}
+
+// resolveAttachments fetches file metadata for message attachments in batch (2 queries total).
+func (uc *messageUsecase) resolveAttachments(ctx context.Context, msgs []*domain.Message) {
+	if len(msgs) == 0 {
+		return
+	}
+
+	msgIDs := make([]string, len(msgs))
+	for i, m := range msgs {
+		msgIDs[i] = m.ID
+	}
+
+	// Single query for all attachments across all messages
+	attachments, err := uc.attachmentRepo.ListByMessages(ctx, msgIDs)
+	if err != nil || len(attachments) == 0 {
+		return
+	}
+
+	allFileIDs := make([]string, 0, len(attachments))
+	msgAttachments := make(map[string][]string, len(msgs))
+	for _, a := range attachments {
+		allFileIDs = append(allFileIDs, a.FileID)
+		msgAttachments[a.MessageID] = append(msgAttachments[a.MessageID], a.FileID)
+	}
+
+	// Single query for all files
+	files, err := uc.fileRepo.FindByIDs(ctx, allFileIDs)
+	if err != nil {
+		return
+	}
+
+	fileMap := make(map[string]*domain.File, len(files))
+	for _, f := range files {
+		fileMap[f.ID] = f
+	}
+
+	for _, msg := range msgs {
+		fileIDs := msgAttachments[msg.ID]
+		if len(fileIDs) == 0 {
+			continue
+		}
+		resolved := make([]*domain.File, 0, len(fileIDs))
+		for _, fid := range fileIDs {
+			if f, ok := fileMap[fid]; ok {
+				resolved = append(resolved, f)
+			}
+		}
+		msg.Attachments = resolved
+	}
 }
 
 // --- ReactionUsecase ---

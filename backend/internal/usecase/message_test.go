@@ -86,6 +86,10 @@ func (m *mockAttachmentRepo) ListByMessage(_ context.Context, _ string) ([]*doma
 	return nil, nil
 }
 
+func (m *mockAttachmentRepo) ListByMessages(_ context.Context, _ []string) ([]*domain.MessageAttachment, error) {
+	return nil, nil
+}
+
 // --- ch member mock for message tests ---
 
 type mockMsgChMemberRepo struct {
@@ -137,7 +141,7 @@ func newMsgUC() (MessageUsecase, *mockMessageRepo, *mockMsgChMemberRepo) {
 	seedChMember(chMemberRepo, "ch-1", "user-1")
 	seedChMember(chMemberRepo, "ch-1", "user-2")
 	seedChMember(chMemberRepo, "ch-1", "user-3")
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{}, chMemberRepo, nil)
+	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{}, chMemberRepo, newMockFileRepo(), nil)
 	return uc, msgRepo, chMemberRepo
 }
 

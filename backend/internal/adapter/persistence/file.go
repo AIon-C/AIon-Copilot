@@ -36,3 +36,18 @@ func (r *fileRepository) FindByID(ctx context.Context, id string) (*domain.File,
 	}
 	return fileModelToDomain(&m), nil
 }
+
+func (r *fileRepository) FindByIDs(ctx context.Context, ids []string) ([]*domain.File, error) {
+	if len(ids) == 0 {
+		return nil, nil
+	}
+	var models []model.File
+	if err := r.db.WithContext(ctx).Where("id IN ?", ids).Find(&models).Error; err != nil {
+		return nil, err
+	}
+	result := make([]*domain.File, len(models))
+	for i := range models {
+		result[i] = fileModelToDomain(&models[i])
+	}
+	return result, nil
+}
