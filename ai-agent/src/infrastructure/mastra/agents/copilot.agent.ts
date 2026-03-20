@@ -1,17 +1,28 @@
 import { Agent } from "@mastra/core/agent";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
+import { createVertex } from "@ai-sdk/google-vertex";
 import { memory } from "../memory.js";
 import { createFetchContextTool } from "../tools/fetch-context.tool.js";
 import { createDetectTopicTool } from "../tools/detect-topic.tool.js";
 import { config } from "../../../shared/config.js";
 
-const google = createGoogleGenerativeAI({
-  apiKey: config.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
-});
+function createModel() {
+  if (config.GCP_PROJECT_ID) {
+    const vertex = createVertex({
+      project: config.GCP_PROJECT_ID,
+      location: config.GCP_LOCATION ?? "asia-northeast1",
+    });
+    return vertex("gemini-2.5-flash");
+  }
+  const google = createGoogleGenerativeAI({
+    apiKey: config.GOOGLE_GENERATIVE_AI_API_KEY ?? "",
+  });
+  return google("gemini-2.5-flash");
+}
 
 export function createCopilotAgent(
   fetchContextTool: ReturnType<typeof createFetchContextTool>,
-  detectTopicTool: ReturnType<typeof createDetectTopicTool>, 
+  detectTopicTool: ReturnType<typeof createDetectTopicTool>,
 ) {
   return new Agent({
     id: "copilot",
@@ -27,7 +38,7 @@ export function createCopilotAgent(
 - コードを含む回答はMarkdownコードブロックで囲んでください
 - 特定メッセージに言及する場合は発言者名を明示してください
 - 必要に応じて fetch-context ツールでチャットの会話ログを取得してください`,
-    model: google("gemini-2.5-flash"),
+    model: createModel(),
     tools: {
       fetchContext: fetchContextTool,
       detectTopic: detectTopicTool,
