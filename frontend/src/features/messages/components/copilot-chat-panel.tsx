@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { ShinyText } from '@/components/ui/shiny-text';
 import { copilotApiConfig } from '@/config';
 import { createCopilotThread, getCopilotUserErrorMessage } from '@/features/messages/api/copilot-client';
 import { getTextFromQuillBody } from '@/features/messages/api/copilot-contract';
@@ -168,7 +169,9 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
     <div className="flex h-full flex-col">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
         <div>
-          <p className="text-lg font-bold">Copilot</p>
+          <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+            Copilot
+          </ShinyText>
           <p className="text-xs text-muted-foreground">Context: {contextType}</p>
         </div>
 

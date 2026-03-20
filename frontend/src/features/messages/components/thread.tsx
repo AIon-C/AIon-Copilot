@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { Message } from '@/components/message';
 import { Button } from '@/components/ui/button';
+import { ShinyText } from '@/components/ui/shiny-text';
 import { fileService } from '@/features/file/api/file-service';
 import { useGenerateUploadUrl } from '@/features/file/api/use-generate-upload-url';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
@@ -189,7 +190,9 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
     return (
       <div className="flex h-full flex-col">
         <div className="flex h-[49px] items-center justify-between border-b px-4">
-          <p className="text-lg font-bold">Thread</p>
+          <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+            Thread
+          </ShinyText>
 
           <Button onClick={onClose} size="iconSm" variant="ghost">
             <XIcon className="size-5 stroke-[1.5]" />
@@ -207,7 +210,9 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
     return (
       <div className="flex h-full flex-col">
         <div className="flex h-[49px] items-center justify-between border-b px-4">
-          <p className="text-lg font-bold">Thread</p>
+          <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+            Thread
+          </ShinyText>
 
           <Button onClick={onClose} size="iconSm" variant="ghost">
             <XIcon className="size-5 stroke-[1.5]" />
@@ -225,7 +230,9 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
-        <p className="text-lg font-bold">Thread</p>
+        <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+          Thread
+        </ShinyText>
 
         <Button onClick={onClose} size="iconSm" variant="ghost">
           <XIcon className="size-5 stroke-[1.5]" />

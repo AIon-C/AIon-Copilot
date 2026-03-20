@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ShinyText } from '@/components/ui/shiny-text';
 import { Doc } from '@/mock/types';
 
 import { InviteModal } from './invite-modal';
@@ -35,7 +36,9 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="transparent" className="w-auto overflow-hidden p-1.5 text-lg font-semibold text-slate-100 hover:text-cyan-200" size="sm">
-              <span className="truncate">{workspace.name}</span>
+              <ShinyText className="max-w-[180px] truncate" color="#e2e8f0" shineColor="#ffffff" speed={2.4} spread={110}>
+                {workspace.name}
+              </ShinyText>
               <ChevronDown className="ml-1 size-4 shrink-0" />
             </Button>
           </DropdownMenuTrigger>

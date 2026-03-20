@@ -8,6 +8,7 @@ import { FaChevronDown } from 'react-icons/fa';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
+import { ShinyText } from '@/components/ui/shiny-text';
 import {
   Dialog,
   DialogClose,
@@ -102,7 +103,12 @@ export const Header = ({ channelName }: HeaderProps) => {
       <Dialog>
         <DialogTrigger asChild>
           <Button disabled={memberLoading} variant="ghost" className="w-auto overflow-hidden px-2 text-lg font-semibold" size="sm">
-            <span className="truncate"># {channelName}</span>
+            <span className="flex min-w-0 items-center">
+              #
+              <ShinyText className="ml-1 truncate" color="#e2e8f0" shineColor="#ffffff" speed={2.2} spread={120}>
+                {channelName}
+              </ShinyText>
+            </span>
             <FaChevronDown className="ml-2 size-2.5" />
           </Button>
         </DialogTrigger>
