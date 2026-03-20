@@ -29,9 +29,9 @@ export const memory = new Memory({
   }),
   embedder: createEmbedder(),
   options: {
-    lastMessages: 40,
+    lastMessages: 15,
     semanticRecall: {
-      topK: 5,
+      topK: 8,
       messageRange: 3,
     },
     workingMemory: {

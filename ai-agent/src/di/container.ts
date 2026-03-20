@@ -22,6 +22,12 @@ export function buildContainer() {
   // Database pool
   const pgPool = new pg.Pool({ connectionString: config.DATABASE_URL });
 
+  // Prevent unhandled 'error' events from crashing the process
+  // (e.g., Cloud SQL terminating idle connections)
+  pgPool.on("error", (err) => {
+    console.error("Unexpected pg pool error:", err.message);
+  });
+
   // Port implementations（Mastra Toolsが内部で使用）
   const contextCache = new RedisContextCacheImpl();
   const chatContext = new GoBackendChatContextImpl();
@@ -30,7 +36,7 @@ export function buildContainer() {
 
   // Mastra Tools
   const fetchContextTool = createFetchContextTool(contextCache, chatContext);
-  const detectTopicTool = createDetectTopicTool(topicDetector);
+  const detectTopicTool = createDetectTopicTool(topicDetector, contextCache);
 
   // Mastra Agent（Memory + Tools 統合）
   const agent = createCopilotAgent(fetchContextTool, detectTopicTool);

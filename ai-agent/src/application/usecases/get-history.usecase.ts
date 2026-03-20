@@ -15,4 +15,16 @@ export class GetHistoryUseCase {
     if (thread.userId !== userId) throw new ForbiddenError();
     return this.messageStore.findByThread(threadId);
   }
+
+  async executePaginated(
+    threadId: string,
+    userId: string,
+    limit: number,
+    offset: number,
+  ): Promise<{ messages: AiMessage[]; total: number }> {
+    const thread = await this.threadStore.findById(threadId);
+    if (!thread) throw new NotFoundError("Thread", threadId);
+    if (thread.userId !== userId) throw new ForbiddenError();
+    return this.messageStore.findByThreadPaginated(threadId, limit, offset);
+  }
 }

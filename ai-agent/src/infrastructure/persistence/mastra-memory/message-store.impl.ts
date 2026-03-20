@@ -37,6 +37,26 @@ export class PgMessageStoreImpl implements MessageStorePort {
     return result.rows.map((row) => this.mapRow(row));
   }
 
+  async findByThreadPaginated(
+    threadId: string,
+    limit: number,
+    offset: number,
+  ): Promise<{ messages: AiMessage[]; total: number }> {
+    const [dataResult, countResult] = await Promise.all([
+      this.pool.query(
+        "SELECT * FROM ai_messages WHERE ai_thread_id = $1 ORDER BY created_at ASC LIMIT $2 OFFSET $3",
+        [threadId, limit, offset],
+      ),
+      this.pool.query("SELECT COUNT(*)::int AS total FROM ai_messages WHERE ai_thread_id = $1", [
+        threadId,
+      ]),
+    ]);
+    return {
+      messages: dataResult.rows.map((row) => this.mapRow(row)),
+      total: countResult.rows[0].total,
+    };
+  }
+
   async deleteByThread(threadId: string): Promise<void> {
     await this.pool.query("DELETE FROM ai_messages WHERE ai_thread_id = $1", [threadId]);
   }
