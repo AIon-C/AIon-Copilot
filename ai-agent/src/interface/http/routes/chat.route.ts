@@ -45,10 +45,32 @@ export function createChatRoute(askUseCase: AskUseCase, historyUseCase: GetHisto
     });
   });
 
-  // GET /api/ai/threads/:id/messages
+  // GET /api/ai/threads/:id/messages?limit=50&offset=0
   app.get("/threads/:id/messages", async (c) => {
     const userId = c.get("userId");
     const threadId = c.req.param("id");
+    const limitParam = c.req.query("limit");
+    const offsetParam = c.req.query("offset");
+
+    // If pagination params are provided, use paginated query
+    if (limitParam !== undefined) {
+      const limit = Math.min(Math.max(Number(limitParam) || 50, 1), 100);
+      const offset = Math.max(Number(offsetParam) || 0, 0);
+      const result = await historyUseCase.executePaginated(threadId, userId, limit, offset);
+      return c.json({
+        messages: result.messages.map((m) => ({
+          id: m.id,
+          role: m.role,
+          content: m.content,
+          metadata: m.metadata,
+          createdAt: m.createdAt.toISOString(),
+        })),
+        total: result.total,
+        hasMore: offset + result.messages.length < result.total,
+      });
+    }
+
+    // Backward compatible: return all messages
     const messages = await historyUseCase.execute(threadId, userId);
     return c.json({
       messages: messages.map((m) => ({

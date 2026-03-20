@@ -37,7 +37,16 @@ export function createCopilotAgent(
 - 日本語で質問された場合は日本語で、英語の場合は英語で回答してください
 - コードを含む回答はMarkdownコードブロックで囲んでください
 - 特定メッセージに言及する場合は発言者名を明示してください
-- 必要に応じて fetch-context ツールでチャットの会話ログを取得してください`,
+
+## Tool Usage
+- ユーザーの質問がチャンネルやスレッドの会話内容に関する場合は、まず fetch-context ツールで会話ログを取得してください
+- fetch-context で取得した会話ログが長い場合、detect-topic ツールで話題の境界を検出し、関連する部分のみを参照してください
+- 会話内容に関係ない一般的な質問（技術的な質問、翻訳など）にはツールを使わず直接回答してください
+
+## Response Format
+- 回答は簡潔に。不要な前置きや繰り返しは避けてください
+- リスト形式が適切な場合はMarkdownリストを使用してください
+- 長い回答は見出し（##）で構造化してください`,
     model: createModel(),
     tools: {
       fetchContext: fetchContextTool,
