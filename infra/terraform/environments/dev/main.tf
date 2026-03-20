@@ -43,7 +43,7 @@ module "cloudsql" {
   region                 = var.region
   network_id             = module.network.network_id
   private_vpc_connection = module.network.private_vpc_connection
-  tier                   = "db-custom-2-4096"
+  tier                   = "db-f1-micro"
   availability_type      = "ZONAL"
   disk_size              = 20
   deletion_protection    = false
