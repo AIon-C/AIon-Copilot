@@ -1,4 +1,4 @@
-import { type Scope, determineScope } from "./scope.js";
+import { determineScope, type Scope } from "./scope.js";
 
 export interface AiThread {
   id: string;

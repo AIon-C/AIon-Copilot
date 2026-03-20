@@ -1,7 +1,7 @@
-import type { ThreadStorePort } from "../../domain/ports/thread-store.port.js";
 import type { MessageStorePort } from "../../domain/ports/message-store.port.js";
+import type { ThreadStorePort } from "../../domain/ports/thread-store.port.js";
 import type { AiThread, CreateThreadInput } from "../../domain/types/index.js";
-import { NotFoundError, ForbiddenError, ValidationError } from "../../shared/errors.js";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../shared/errors.js";
 
 export class ManageThreadUseCase {
   constructor(

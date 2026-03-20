@@ -119,8 +119,7 @@ export const openApiSpec = {
       get: {
         tags: ["Threads"],
         summary: "スレッド一覧取得",
-        description:
-          "認証ユーザーのスレッド一覧を更新日時の降順で返します。",
+        description: "認証ユーザーのスレッド一覧を更新日時の降順で返します。",
         security: [{ BearerAuth: [] }],
         responses: {
           "200": {
@@ -196,8 +195,7 @@ export const openApiSpec = {
       delete: {
         tags: ["Threads"],
         summary: "スレッド削除",
-        description:
-          "指定スレッドとそれに紐づく全メッセージを削除します (CASCADE)。",
+        description: "指定スレッドとそれに紐づく全メッセージを削除します (CASCADE)。",
         security: [{ BearerAuth: [] }],
         parameters: [{ $ref: "#/components/parameters/ThreadId" }],
         responses: {
@@ -264,8 +262,7 @@ export const openApiSpec = {
       get: {
         tags: ["Messages"],
         summary: "メッセージ履歴取得",
-        description:
-          "指定スレッドのメッセージ一覧を作成日時の昇順で返します。",
+        description: "指定スレッドのメッセージ一覧を作成日時の昇順で返します。",
         security: [{ BearerAuth: [] }],
         parameters: [{ $ref: "#/components/parameters/ThreadId" }],
         responses: {
@@ -300,8 +297,7 @@ export const openApiSpec = {
         type: "http",
         scheme: "bearer",
         bearerFormat: "JWT",
-        description:
-          "HS256署名のJWTトークン。`sub` claimにユーザーIDを設定。",
+        description: "HS256署名のJWTトークン。`sub` claimにユーザーIDを設定。",
       },
     },
     parameters: {
@@ -334,15 +330,13 @@ export const openApiSpec = {
             type: "string",
             format: "uuid",
             nullable: true,
-            description:
-              "チャンネルID (channelスコープ / threadスコープ時に指定)",
+            description: "チャンネルID (channelスコープ / threadスコープ時に指定)",
           },
           threadRootId: {
             type: "string",
             format: "uuid",
             nullable: true,
-            description:
-              "スレッドルートメッセージID (threadスコープ時に指定。channelIdも必須)",
+            description: "スレッドルートメッセージID (threadスコープ時に指定。channelIdも必須)",
           },
         },
       },
@@ -369,8 +363,7 @@ export const openApiSpec = {
       },
       Scope: {
         type: "object",
-        description:
-          "スコープ情報。type によって含まれるフィールドが異なる。",
+        description: "スコープ情報。type によって含まれるフィールドが異なる。",
         required: ["type"],
         properties: {
           type: {

@@ -1,5 +1,5 @@
-import type { Pool } from "pg";
 import { Hono } from "hono";
+import type { Pool } from "pg";
 import { getRedisClient } from "../../../infrastructure/persistence/redis/client.js";
 import { logger } from "../../../shared/logger.js";
 

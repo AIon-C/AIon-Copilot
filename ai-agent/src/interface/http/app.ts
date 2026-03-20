@@ -1,16 +1,16 @@
-import type { Pool } from "pg";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
-import type { ManageThreadUseCase } from "../../application/usecases/manage-thread.usecase.js";
+import type { Pool } from "pg";
 import type { AskUseCase } from "../../application/usecases/ask.usecase.js";
 import type { GetHistoryUseCase } from "../../application/usecases/get-history.usecase.js";
-import { jwtAuth } from "./middleware/jwt-auth.js";
+import type { ManageThreadUseCase } from "../../application/usecases/manage-thread.usecase.js";
 import { errorHandler } from "./middleware/error-handler.js";
+import { jwtAuth } from "./middleware/jwt-auth.js";
 import { requestLogger } from "./middleware/request-logger.js";
-import { createThreadsRoute } from "./routes/threads.route.js";
 import { createChatRoute } from "./routes/chat.route.js";
 import { createHealthRoute } from "./routes/health.route.js";
 import { createReadinessRoute } from "./routes/readiness.route.js";
+import { createThreadsRoute } from "./routes/threads.route.js";
 import { createSwaggerRoute } from "./swagger/swagger.route.js";
 
 export function createApp(deps: {

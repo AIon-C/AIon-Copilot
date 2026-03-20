@@ -52,7 +52,10 @@ export class GoBackendChatContextImpl implements ChatContextPort {
       const data = (await response.json()) as Record<string, unknown>;
       return this.mapResponse(data);
     } catch (err) {
-      logger.error({ err, channelId, threadRootId }, "Failed to fetch thread messages from Go Backend");
+      logger.error(
+        { err, channelId, threadRootId },
+        "Failed to fetch thread messages from Go Backend",
+      );
       throw new ServiceUnavailableError("Go Backend");
     }
   }

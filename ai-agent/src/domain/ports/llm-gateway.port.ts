@@ -24,10 +24,7 @@ export interface LLMGenerateOptions {
 }
 
 export interface LLMGatewayPort {
-  stream(
-    messages: LLMMessage[],
-    options?: LLMStreamOptions,
-  ): Promise<LLMStreamResult>;
+  stream(messages: LLMMessage[], options?: LLMStreamOptions): Promise<LLMStreamResult>;
 
   generate(
     messages: LLMMessage[],
