@@ -13,11 +13,11 @@ interface SidebarButtonProps {
 export const SidebarButton = ({ icon: Icon, label, isActive = false }: SidebarButtonProps) => {
   return (
     <div className="group flex cursor-pointer flex-col items-center justify-center gap-y-0.5">
-      <Button variant="transparent" className={cn('size-9 p-2 group-hover:bg-accent/20', isActive && 'bg-accent/20')}>
-        <Icon className="size-5 text-white transition-all group-hover:scale-110" />
+      <Button variant="transparent" className={cn('size-9 p-2 group-hover:bg-cyan-400/20', isActive && 'bg-cyan-400/20')}>
+        <Icon className="size-5 text-slate-100 transition-all group-hover:scale-110 group-hover:text-cyan-200" />
       </Button>
 
-      <span className="text-[11px] text-white group-hover:text-accent">{label}</span>
+      <span className="text-[11px] text-slate-300 group-hover:text-cyan-200">{label}</span>
     </div>
   );
 };

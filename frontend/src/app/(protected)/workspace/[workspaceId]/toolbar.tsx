@@ -4,7 +4,6 @@ import { Bot, PanelLeft, Search } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import { FaGithub } from 'react-icons/fa';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -99,18 +98,18 @@ export const Toolbar = () => {
   }, [onKeyDown]);
 
   return (
-    <nav className="flex h-10 items-center justify-between bg-[#481349] p-1.5">
+    <nav className="flex h-10 items-center justify-between border-b border-cyan-400/20 bg-[#020617]/95 p-1.5 backdrop-blur">
       <div className="flex flex-1 items-center">
         <Button
           variant="transparent"
           size="sm"
           onClick={onToggleWorkspaceSidebar}
-          className="h-7 gap-1.5 text-white"
+          className="h-7 gap-1.5 text-slate-100 hover:text-cyan-200"
           aria-label={workspaceSidebarOpen ? 'Close channels panel' : 'Open channels panel'}
         >
           <PanelLeft className="size-4" />
           Channels
-          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-white/30 px-1.5 font-mono text-[10px] font-medium text-white/90">
+          <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-cyan-300/30 bg-cyan-400/10 px-1.5 font-mono text-[10px] font-medium text-cyan-100">
             <span className="text-xs">Ctrl</span>B
           </kbd>
         </Button>
@@ -118,19 +117,19 @@ export const Toolbar = () => {
 
       <div className="min-w-[280px] max-w-[642px] shrink grow-[2]">
         <div className="flex items-center gap-2">
-          <Button onClick={() => setOpen(true)} size="sm" className="h-7 flex-1 justify-start bg-accent/25 px-2 hover:bg-accent/25">
-            <Search className="mr-2 size-4 text-white" />
-            <span className="text-xs text-white">Search {data?.name ?? 'workspace'}...</span>
+          <Button onClick={() => setOpen(true)} size="sm" className="h-7 flex-1 justify-start border border-cyan-400/30 bg-slate-900/70 px-2 hover:bg-slate-900">
+            <Search className="mr-2 size-4 text-slate-200" />
+            <span className="text-xs text-slate-200">Search {data?.name ?? 'workspace'}...</span>
 
-            <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-90">
+            <kbd className="pointer-events-none ml-auto inline-flex h-5 select-none items-center gap-1 rounded border border-cyan-300/30 bg-cyan-400/10 px-1.5 font-mono text-[10px] font-medium text-cyan-100 opacity-90">
               <span className="text-xs">⌘</span>K
             </kbd>
           </Button>
 
-          <Button variant="transparent" size="sm" onClick={onToggleAiChat} className="h-7 gap-1.5 text-white">
+          <Button variant="transparent" size="sm" onClick={onToggleAiChat} className="h-7 gap-1.5 text-slate-100 hover:text-cyan-200">
             <Bot className="size-4" />
             Copilot
-            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-white/30 px-1.5 font-mono text-[10px] font-medium text-white/90">
+            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border border-cyan-300/30 bg-cyan-400/10 px-1.5 font-mono text-[10px] font-medium text-cyan-100">
               <span className="text-xs">Ctrl</span>
               <span className="text-xs">⇧</span>B
             </kbd>

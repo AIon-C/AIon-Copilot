@@ -30,7 +30,7 @@ export const Toolbar = ({
 }: ToolbarProps) => {
   return (
     <div className="absolute right-5 top-0">
-      <div className="rounded-md border bg-white opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
+      <div className="rounded-md border border-slate-700 bg-slate-900/95 opacity-0 shadow-sm transition-opacity group-hover:opacity-100">
         <EmojiPopover hint="Add reaction" onEmojiSelect={handleReaction}>
           <Button variant="ghost" size="iconSm" disabled={isPending}>
             <Smile className="size-4" />
@@ -51,7 +51,7 @@ export const Toolbar = ({
             variant="ghost"
             size="iconSm"
             disabled={isPending}
-            className={isCopilotContextActive ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-700' : undefined}
+            className={isCopilotContextActive ? 'bg-cyan-400/15 text-cyan-200 hover:bg-cyan-400/20 hover:text-cyan-100' : undefined}
           >
             <Bot className="size-4" />
           </Button>

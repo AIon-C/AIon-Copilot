@@ -34,7 +34,7 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
       <div className="flex h-[49px] items-center justify-between gap-0.5 px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="transparent" className="w-auto overflow-hidden p-1.5 text-lg font-semibold" size="sm">
+            <Button variant="transparent" className="w-auto overflow-hidden p-1.5 text-lg font-semibold text-slate-100 hover:text-cyan-200" size="sm">
               <span className="truncate">{workspace.name}</span>
               <ChevronDown className="ml-1 size-4 shrink-0" />
             </Button>
@@ -42,7 +42,7 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
 
           <DropdownMenuContent side="bottom" align="start" className="w-64">
             <DropdownMenuItem className="cursor-pointer capitalize">
-              <div className="relative mr-2 flex size-9 items-center justify-center overflow-hidden rounded-md bg-[#616061] text-xl font-semibold text-white">
+              <div className="relative mr-2 flex size-9 items-center justify-center overflow-hidden rounded-md border border-cyan-400/30 bg-slate-900 text-xl font-semibold text-cyan-100">
                 {workspace.name.charAt(0).toUpperCase()}
               </div>
 

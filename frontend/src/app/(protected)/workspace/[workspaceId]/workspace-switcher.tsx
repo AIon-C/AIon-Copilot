@@ -29,7 +29,7 @@ export const WorkspaceSwitcher = () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button className="relative size-9 overflow-hidden bg-[#ABABAB] text-lg font-semibold text-slate-800 hover:bg-[#ABABAB]/80">
+        <Button className="relative size-9 overflow-hidden border border-cyan-400/40 bg-cyan-300/20 text-lg font-semibold text-cyan-100 hover:bg-cyan-300/30">
           {workspaceLoading ? <Loader className="size-5 shrink-0 animate-spin" /> : workspace?.name.charAt(0).toUpperCase()}
         </Button>
       </DropdownMenuTrigger>
@@ -50,7 +50,7 @@ export const WorkspaceSwitcher = () => {
             className="cursor-pointer overflow-hidden capitalize"
             onClick={() => router.push(`/workspace/${workspace._id}`)}
           >
-            <div className="relative mr-2 flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md bg-[#616061] text-xl font-semibold text-white">
+            <div className="relative mr-2 flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md border border-cyan-400/30 bg-slate-900 text-xl font-semibold text-cyan-100">
               {workspace.name.charAt(0).toUpperCase()}
             </div>
             <p className="truncate">{workspace.name}</p>
@@ -58,7 +58,7 @@ export const WorkspaceSwitcher = () => {
         ))}
 
         <DropdownMenuItem className="cursor-pointer" onClick={() => setOpen(true)}>
-          <div className="relative mr-2 flex size-9 items-center justify-center overflow-hidden rounded-md bg-[#F2F2F2] text-xl font-semibold text-slate-800">
+          <div className="relative mr-2 flex size-9 items-center justify-center overflow-hidden rounded-md border border-emerald-400/40 bg-emerald-400/20 text-xl font-semibold text-emerald-100">
             <Plus />
           </div>
           Create a new workspace

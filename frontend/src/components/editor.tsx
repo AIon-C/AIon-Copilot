@@ -193,7 +193,7 @@ const Editor = ({
 
       <div
         className={cn(
-          'flex flex-col overflow-hidden rounded-md border border-slate-200 bg-white transition focus-within:border-slate-300 focus-within:shadow-sm',
+          'flex flex-col overflow-hidden rounded-md border border-slate-700 bg-slate-900/90 transition focus-within:border-slate-500 focus-within:shadow-sm',
           disabled && 'opacity-50',
         )}
       >
@@ -209,7 +209,7 @@ const Editor = ({
 
                     imageElementRef.current!.value = '';
                   }}
-                  className="absolute -right-2.5 -top-2.5 z-[4] hidden size-6 items-center justify-center rounded-full border-2 border-white bg-black/70 text-white hover:bg-black group-hover/image:flex"
+                  className="absolute -right-2.5 -top-2.5 z-[4] hidden size-6 items-center justify-center rounded-full border-2 border-slate-500 bg-slate-900/90 text-slate-100 hover:bg-slate-800 group-hover/image:flex"
                 >
                   <XIcon className="size-3.5" />
                 </button>
@@ -263,7 +263,7 @@ const Editor = ({
                   });
                 }}
                 size="sm"
-                className="bg-[#007a5a] text-white hover:bg-[#007a5a]/80"
+                className="bg-cyan-400 text-slate-900 hover:bg-cyan-300"
               >
                 Save
               </Button>
@@ -284,7 +284,7 @@ const Editor = ({
               }}
               className={cn(
                 'ml-auto',
-                isEmpty ? 'bg-white text-muted-foreground hover:bg-white/80' : 'bg-[#007a5a] text-white hover:bg-[#007a5a]/80',
+                isEmpty ? 'bg-slate-800 text-slate-400 hover:bg-slate-700' : 'bg-cyan-400 text-slate-900 hover:bg-cyan-300',
               )}
               size="iconSm"
             >

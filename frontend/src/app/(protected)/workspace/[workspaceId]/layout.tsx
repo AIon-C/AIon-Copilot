@@ -59,7 +59,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
             collapsedSize={0}
             defaultSize={workspaceSidebarOpen ? DEFAULT_WORKSPACE_SIDEBAR_SIZE : 0}
             minSize={11}
-            className="bg-[#5E2C5F]"
+            className="bg-[#0f172a]/95"
             onResize={(size) => {
               workspaceSidebarSizeRef.current = size;
             }}

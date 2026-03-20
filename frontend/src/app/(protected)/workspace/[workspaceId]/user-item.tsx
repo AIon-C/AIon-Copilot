@@ -10,8 +10,8 @@ import type { Id } from '@/mock/types';
 const userItemVariants = cva('flex items-center gap-1.5 justify-start font-normal h-7 px-4 text-sm overflow-hidden', {
   variants: {
     variant: {
-      default: 'text-[#f9EDFFCC]',
-      active: 'text-[#481349] bg-white/90 hover:bg-white/90',
+      default: 'text-slate-300 hover:text-cyan-300',
+      active: 'bg-cyan-400/15 text-cyan-200 hover:bg-cyan-400/15',
     },
   },
   defaultVariants: {
