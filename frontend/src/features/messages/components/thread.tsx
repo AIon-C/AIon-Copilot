@@ -5,9 +5,9 @@ import type Quill from 'quill';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
-import { fileService } from '@/features/file/api/file-service';
 import { Message } from '@/components/message';
 import { Button } from '@/components/ui/button';
+import { fileService } from '@/features/file/api/file-service';
 import { useGenerateUploadUrl } from '@/features/file/api/use-generate-upload-url';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useGetMessage } from '@/features/messages/api/use-get-message';

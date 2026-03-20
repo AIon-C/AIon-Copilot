@@ -43,7 +43,10 @@ export const useGetMessage = ({ id }: UseGetMessageProps) => {
         return null;
       }
 
-      let reactionsByMessageId: Record<string, Array<{ _id: string; _creationTime: number; value: string; count: number; memberIds: string[] }>> = {
+      let reactionsByMessageId: Record<
+        string,
+        Array<{ _id: string; _creationTime: number; value: string; count: number; memberIds: string[] }>
+      > = {
         [message.id]: [],
       };
 

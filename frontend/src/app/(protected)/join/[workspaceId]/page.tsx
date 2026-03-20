@@ -8,8 +8,8 @@ import { useEffect } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { useGetInviteInfo } from '@/features/workspaces/hooks/use-get-invite-info';
 import { useJoin } from '@/features/workspaces/api/use-join';
+import { useGetInviteInfo } from '@/features/workspaces/hooks/use-get-invite-info';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 
 const JoinWorkspaceIdPage = () => {

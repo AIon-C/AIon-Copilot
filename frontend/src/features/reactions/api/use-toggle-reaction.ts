@@ -26,9 +26,7 @@ export const useToggleReaction = () => {
       messageId: values.messageId,
     });
 
-    const hasReaction = currentReactions.some(
-      (reaction) => reaction.emojiCode === values.value && reaction.userId === currentUserId,
-    );
+    const hasReaction = currentReactions.some((reaction) => reaction.emojiCode === values.value && reaction.userId === currentUserId);
 
     if (hasReaction) {
       await reactionService.removeReaction({

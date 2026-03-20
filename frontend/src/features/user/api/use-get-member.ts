@@ -1,9 +1,8 @@
 import { useCallback } from 'react';
 
+import { workspaceService } from '@/features/workspaces/api/workspace-service';
 import { useMockQuery } from '@/mock/hooks';
 import type { Id, MockMember } from '@/mock/types';
-
-import { workspaceService } from '@/features/workspaces/api/workspace-service';
 
 interface UseGetMemberProps {
   id: Id<'members'>;

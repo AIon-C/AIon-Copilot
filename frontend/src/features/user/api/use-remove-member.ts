@@ -1,7 +1,6 @@
+import { workspaceService } from '@/features/workspaces/api/workspace-service';
 import type { Id } from '@/mock/types';
 import { useMockMutation } from '@/mock/use-mock-mutation';
-
-import { workspaceService } from '@/features/workspaces/api/workspace-service';
 
 type RequestType = {
   id: Id<'members'>;

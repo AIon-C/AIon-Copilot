@@ -1,9 +1,8 @@
 import { useEffect } from 'react';
 
 import { authStore } from '@/features/auth/model/auth-store';
-import { tokenStore } from '@/lib/auth/token-store';
-
 import { useMe } from '@/features/user/hooks/use-me';
+import { tokenStore } from '@/lib/auth/token-store';
 
 export const useCurrentUser = () => {
   const { user, initialized, fetchMe } = useMe();

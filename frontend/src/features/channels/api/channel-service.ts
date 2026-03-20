@@ -23,8 +23,8 @@ import type {
   ListChannelsInput,
   MarkChannelReadInput,
   SearchChannelsInput,
-  UpdateChannelInput,
   UnreadCountModel,
+  UpdateChannelInput,
 } from '../model/channel-types';
 import { mapChannel, mapChannelResponse, mapChannels, mapJoinChannelResponse, mapUnreadCounts } from '../utils/channel-mapper';
 import { channelClient } from './channel-client';
