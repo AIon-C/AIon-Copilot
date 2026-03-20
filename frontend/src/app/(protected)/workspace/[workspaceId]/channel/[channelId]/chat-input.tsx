@@ -35,6 +35,7 @@ type CreateMessageValues = {
 export const ChatInput = ({ placeholder }: ChatInputProps) => {
   const [editorKey, setEditorKey] = useState(0);
   const [isPending, setIsPending] = useState(false);
+  const [showPlaceholder, setShowPlaceholder] = useState(true);
 
   const innerRef = useRef<Quill | null>(null);
 
@@ -82,6 +83,7 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
       await createMessage(values, { throwError: true });
 
       setEditorKey((prevKey) => prevKey + 1);
+      setShowPlaceholder(true);
     } catch (error) {
       toast.error('Failed to send message.');
     } finally {
@@ -92,7 +94,14 @@ export const ChatInput = ({ placeholder }: ChatInputProps) => {
 
   return (
     <div className="w-full px-5">
-      <Editor placeholder={placeholder} key={editorKey} onSubmit={handleSubmit} disabled={isPending} innerRef={innerRef} />
+      <Editor
+        placeholder={showPlaceholder ? placeholder : ''}
+        key={editorKey}
+        onSubmit={handleSubmit}
+        disabled={isPending}
+        innerRef={innerRef}
+        onFocus={() => setShowPlaceholder(false)}
+      />
     </div>
   );
 };
