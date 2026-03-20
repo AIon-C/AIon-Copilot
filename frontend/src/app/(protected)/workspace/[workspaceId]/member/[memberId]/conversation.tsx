@@ -5,6 +5,7 @@ import { useGetMessages } from '@/features/messages/api/use-get-messages';
 import { useGetMember } from '@/features/user/api/use-get-member';
 import { useMemberId } from '@/hooks/use-member-id';
 import { usePanel } from '@/hooks/use-panel';
+import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import type { Id } from '@/mock/types';
 
 import { ChatInput } from './chat-input';
@@ -16,10 +17,11 @@ interface ConversationProps {
 
 export const Conversation = ({ id }: ConversationProps) => {
   const memberId = useMemberId();
+  const workspaceId = useWorkspaceId();
 
   const { onOpenProfile } = usePanel();
 
-  const { data: member, isLoading: memberLoading } = useGetMember({ id: memberId });
+  const { data: member, isLoading: memberLoading } = useGetMember({ id: memberId, workspaceId });
 
   const { results, status, loadMore } = useGetMessages({ conversationId: id });
 

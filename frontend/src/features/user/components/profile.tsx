@@ -5,18 +5,10 @@ import { toast } from 'sonner';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
-  DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
 import { useCurrentMember } from '@/features/user/api/use-current-member';
 import { useGetMember } from '@/features/user/api/use-get-member';
 import { useRemoveMember } from '@/features/user/api/use-remove-member';
-import { useUpdateMember } from '@/features/user/api/use-update-member';
 import { useConfirm } from '@/hooks/use-confirm';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import type { Id } from '@/mock/types';
@@ -31,24 +23,28 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
   const workspaceId = useWorkspaceId();
 
   const [LeaveDialog, confirmLeave] = useConfirm('Leave workspace', 'Are you sure you want to leave this workspace?');
-  const [UpdateDialog, confirmUpdate] = useConfirm('Change role', "Are you sure you want to change this member's role?");
   const [RemoveDialog, confirmRemove] = useConfirm('Remove member', 'Are you sure you want to remove this member?');
 
   const { data: currentMember, isLoading: isCurrentMemberLoading } = useCurrentMember({
     workspaceId,
   });
-  const { data: member, isLoading: isMemberLoading } = useGetMember({ id: memberId });
+  const { data: member, isLoading: isMemberLoading } = useGetMember({ id: memberId, workspaceId });
 
-  const { mutate: updateMember, isPending: isUpdatingMember } = useUpdateMember();
   const { mutate: removeMember, isPending: isRemovingMember } = useRemoveMember();
 
   const onRemove = async () => {
+    if (!member) return;
+
     const ok = await confirmRemove();
 
     if (!ok) return;
 
     removeMember(
-      { id: memberId },
+      {
+        id: memberId,
+        workspaceId,
+        userId: member.user._id,
+      },
       {
         onSuccess: () => {
           toast.success('Member removed.');
@@ -60,12 +56,18 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
   };
 
   const onLeave = async () => {
+    if (!member) return;
+
     const ok = await confirmLeave();
 
     if (!ok) return;
 
     removeMember(
-      { id: memberId },
+      {
+        id: memberId,
+        workspaceId,
+        userId: member.user._id,
+      },
       {
         onSuccess: () => {
           toast.success('You left the workspace.');
@@ -73,24 +75,6 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
           onClose();
         },
         onError: () => toast.error('Failed to leave the workspace.'),
-      },
-    );
-  };
-
-  const onUpdate = async (role: 'admin' | 'member') => {
-    if (member?.role === role) return;
-
-    const ok = await confirmUpdate();
-
-    if (!ok) return;
-
-    updateMember(
-      { id: memberId, role },
-      {
-        onSuccess: () => {
-          toast.success('Role changed.');
-        },
-        onError: () => toast.error('Failed to change role.'),
       },
     );
   };
@@ -137,7 +121,6 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
   return (
     <>
       <LeaveDialog />
-      <UpdateDialog />
       <RemoveDialog />
 
       <div className="flex h-full flex-col">
@@ -162,20 +145,9 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
 
           {currentMember.role === 'admin' && currentMember._id !== memberId ? (
             <div className="mt-4 flex items-center gap-2">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="w-full capitalize">
-                    {member.role} <ChevronDown className="ml-2 size-4" />
-                  </Button>
-                </DropdownMenuTrigger>
-
-                <DropdownMenuContent className="w-full">
-                  <DropdownMenuRadioGroup value={member.role} onValueChange={(role) => onUpdate(role as 'admin' | 'member')}>
-                    <DropdownMenuRadioItem value="admin">Admin</DropdownMenuRadioItem>
-                    <DropdownMenuRadioItem value="member">Member</DropdownMenuRadioItem>
-                  </DropdownMenuRadioGroup>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <Button variant="outline" className="w-full capitalize" disabled>
+                {member.role} <ChevronDown className="ml-2 size-4" />
+              </Button>
 
               <Button onClick={onRemove} variant="outline" className="w-full">
                 Remove
