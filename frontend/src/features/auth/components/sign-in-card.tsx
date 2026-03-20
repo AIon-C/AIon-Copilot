@@ -28,7 +28,7 @@ export const SignInCard = ({ onChangeFlowAction }: SignInCardProps) => {
     e.preventDefault();
 
     try {
-      const { } = await login({
+      const {} = await login({
         email,
         password,
       });
