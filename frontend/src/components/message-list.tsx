@@ -141,7 +141,9 @@ export const MessageList = ({
         </div>
       )}
 
-      {variant === 'channel' && channelName && channelCreationTime && <ChannelHero name={channelName} creationTime={channelCreationTime} />}
+      {variant === 'channel' && channelName && channelCreationTime != null && (
+        <ChannelHero name={channelName} creationTime={channelCreationTime} />
+      )}
       {variant === 'conversation' && <ConversationHero name={memberName} image={memberImage} />}
     </div>
   );
