@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { PropsWithChildren } from 'react';
+
 import { ModalProvider } from '@/components/modal-provider';
 import { Toaster } from '@/components/ui/sonner';
 import { siteConfig } from '@/config';
-import { AuthBootstrapper } from '@/features/auth/components/auth-bootstrapper';
 import { AuthBootstrap } from '@/features/auth/components/auth-bootstrap';
+import { AuthBootstrapper } from '@/features/auth/components/auth-bootstrapper';
 
 import './globals.css';
 
