@@ -26,6 +26,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
   const { workspaceSidebarOpen } = useWorkspaceSidebarToggle();
   const workspaceSidebarPanelRef = useRef<ImperativePanelHandle>(null);
   const workspaceSidebarSizeRef = useRef(DEFAULT_WORKSPACE_SIDEBAR_SIZE);
+  const activeCopilotThreadRootId = (copilotContextMessageId || parentMessageId) as Id<'messages'> | null;
 
   const showContextPanel = !!parentMessageId || !!profileMemberId;
   const showAiPanel = !!aiChatOpen;
@@ -100,7 +101,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                         <AiChatPanel
                           onClose={onCloseAiChat}
                           channelId={channelId}
-                          threadRootId={copilotContextMessageId ? (copilotContextMessageId as Id<'messages'>) : undefined}
+                          threadRootId={activeCopilotThreadRootId ?? undefined}
                         />
                       </ResizablePanel>
                     </>
