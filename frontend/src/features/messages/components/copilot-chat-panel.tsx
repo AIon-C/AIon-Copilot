@@ -2,7 +2,7 @@
 
 import { Bot, Loader, User, XIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
@@ -12,6 +12,7 @@ import { getTextFromQuillBody } from '@/features/messages/api/copilot-contract';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
+import type { Id } from '@/mock/types';
 
 const Editor = dynamic(() => import('@/components/editor'), {
   ssr: false,
@@ -32,6 +33,8 @@ interface ChatMessage {
 
 interface AiChatPanelProps {
   onClose: () => void;
+  channelId?: Id<'channels'>;
+  threadRootId?: Id<'messages'>;
 }
 
 interface EditorSubmitPayload {
@@ -39,21 +42,31 @@ interface EditorSubmitPayload {
   image: File | null;
 }
 
-export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
+const INITIAL_MESSAGES: ChatMessage[] = [
+  {
+    id: 'assistant-initial',
+    role: 'assistant',
+    content: 'Welcome to Copilot!! Ask me anything.',
+  },
+];
+
+export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelProps) => {
   const workspaceId = useWorkspaceId();
 
   const [threadId, setThreadId] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 'assistant-initial',
-      role: 'assistant',
-      content: 'Welcome to Copilot!! Ask me anything.',
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
+
+  const contextType = threadRootId ? 'thread' : channelId ? 'channel' : 'free';
 
   const { mutate: createMessage } = useCreateMessage();
+
+  useEffect(() => {
+    setThreadId(null);
+    setMessages(INITIAL_MESSAGES);
+    setEditorKey((prevKey) => prevKey + 1);
+  }, [channelId, threadRootId]);
 
   const handleSubmit = async ({ body }: EditorSubmitPayload) => {
     const prompt = getTextFromQuillBody(body);
@@ -72,6 +85,8 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
         const createdThread = await createCopilotThread({
           workspaceId,
           title: prompt.slice(0, 80),
+          channelId,
+          threadRootId,
           mode: copilotApiConfig.mode,
         });
 
@@ -125,7 +140,10 @@ export const AiChatPanel = ({ onClose }: AiChatPanelProps) => {
   return (
     <div className="flex h-full flex-col">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
-        <p className="text-lg font-bold">Copilot</p>
+        <div>
+          <p className="text-lg font-bold">Copilot</p>
+          <p className="text-xs text-muted-foreground">Context: {contextType}</p>
+        </div>
 
         <Button onClick={onClose} size="iconSm" variant="ghost">
           <XIcon className="size-5 stroke-[1.5]" />

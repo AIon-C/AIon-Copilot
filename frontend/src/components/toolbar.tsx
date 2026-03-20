@@ -1,4 +1,4 @@
-import { MessageSquareText, Pencil, Smile, Trash } from 'lucide-react';
+import { Bot, MessageSquareText, Pencil, Smile, Trash } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 
@@ -11,6 +11,7 @@ interface ToolbarProps {
   handleEdit: () => void;
   handleDelete: () => void;
   handleThread: () => void;
+  handleCopilotContext: () => void;
   handleReaction: (value: string) => void;
   hideThreadButton?: boolean;
 }
@@ -21,6 +22,7 @@ export const Toolbar = ({
   handleEdit,
   handleDelete,
   handleThread,
+  handleCopilotContext,
   handleReaction,
   hideThreadButton,
 }: ToolbarProps) => {
@@ -40,6 +42,12 @@ export const Toolbar = ({
             </Button>
           </Hint>
         )}
+
+        <Hint label="Use as Copilot context">
+          <Button onClick={handleCopilotContext} variant="ghost" size="iconSm" disabled={isPending}>
+            <Bot className="size-4" />
+          </Button>
+        </Hint>
 
         {isAuthor && (
           <Hint label="Edit message">

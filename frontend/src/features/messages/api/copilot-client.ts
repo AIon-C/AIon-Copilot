@@ -23,6 +23,11 @@ type InMemoryThread = {
   id: string;
   workspaceId: string;
   title: string;
+  scope: {
+    type: 'free' | 'channel' | 'thread';
+    channelId?: string;
+    threadRootId?: string;
+  };
   createdAt: string;
   updatedAt: string;
   messages: AiMessageDto[];
@@ -61,6 +66,35 @@ let messageSeq = 1;
 const nowIso = () => new Date().toISOString();
 
 const buildId = (prefix: string, seq: number) => `${prefix}-${seq}`;
+
+const buildThreadScope = ({
+  channelId,
+  threadRootId,
+}: {
+  channelId?: string;
+  threadRootId?: string;
+}): {
+  type: 'free' | 'channel' | 'thread';
+  channelId?: string;
+  threadRootId?: string;
+} => {
+  if (channelId && threadRootId) {
+    return {
+      type: 'thread',
+      channelId,
+      threadRootId,
+    };
+  }
+
+  if (channelId) {
+    return {
+      type: 'channel',
+      channelId,
+    };
+  }
+
+  return { type: 'free' };
+};
 
 const resolveMode = (mode?: CopilotApiMode): CopilotApiMode => mode ?? copilotApiConfig.mode;
 
@@ -221,6 +255,7 @@ const ensureInMemoryThread = (threadId: string, workspaceId: string) => {
     id: threadId,
     workspaceId,
     title: 'Copilot Chat',
+    scope: { type: 'free' },
     createdAt: now,
     updatedAt: now,
     messages: [],
@@ -230,14 +265,26 @@ const ensureInMemoryThread = (threadId: string, workspaceId: string) => {
   return created;
 };
 
-const createInMemoryThread = ({ workspaceId, title }: { workspaceId: string; title: string }): AiThreadDto => {
+const createInMemoryThread = ({
+  workspaceId,
+  title,
+  channelId,
+  threadRootId,
+}: {
+  workspaceId: string;
+  title: string;
+  channelId?: string;
+  threadRootId?: string;
+}): AiThreadDto => {
   const id = buildId('ai-thread', threadSeq++);
   const now = nowIso();
+  const scope = buildThreadScope({ channelId, threadRootId });
 
   const thread: InMemoryThread = {
     id,
     workspaceId,
     title,
+    scope,
     createdAt: now,
     updatedAt: now,
     messages: [],
@@ -250,7 +297,7 @@ const createInMemoryThread = ({ workspaceId, title }: { workspaceId: string; tit
     workspaceId,
     userId: 'mock-user',
     title,
-    scope: { type: 'free' },
+    scope,
     model: 'gpt-4.1-mini',
     createdAt: now,
     updatedAt: now,
@@ -314,26 +361,30 @@ const pushInMemoryMessages = ({
 export const createCopilotThread = async ({
   workspaceId,
   title,
+  channelId,
+  threadRootId,
   mode,
 }: {
   workspaceId: Id<'workspaces'>;
   title: string;
+  channelId?: Id<'channels'>;
+  threadRootId?: Id<'messages'>;
   mode?: CopilotApiMode;
 }): Promise<AiThreadDto> => {
   const resolvedMode = resolveMode(mode);
 
   if (resolvedMode === 'mock' || resolvedMode === 'stub') {
-    return createInMemoryThread({ workspaceId, title });
+    return createInMemoryThread({ workspaceId, title, channelId, threadRootId });
   }
 
   try {
     return await requestJson<AiThreadDto>('/api/ai/threads', {
       method: 'POST',
-      body: JSON.stringify({ workspaceId, title }),
+      body: JSON.stringify({ workspaceId, title, channelId, threadRootId }),
     });
   } catch (error) {
     if (isRealModeRecoverableError(error)) {
-      return createInMemoryThread({ workspaceId, title });
+      return createInMemoryThread({ workspaceId, title, channelId, threadRootId });
     }
     throw error;
   }

@@ -9,6 +9,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '@/componen
 import { AiChatPanel } from '@/features/messages/components/copilot-chat-panel';
 import { Thread } from '@/features/messages/components/thread';
 import { Profile } from '@/features/user/components/profile';
+import { useChannelId } from '@/hooks/use-channel-id';
 import { usePanel } from '@/hooks/use-panel';
 import { useWorkspaceSidebarToggle } from '@/hooks/use-workspace-sidebar-toggle';
 import type { Id } from '@/mock/types';
@@ -21,6 +22,7 @@ const DEFAULT_WORKSPACE_SIDEBAR_SIZE = 20;
 
 const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
   const { aiChatOpen, parentMessageId, profileMemberId, onClose, onCloseAiChat, onCloseMessage } = usePanel();
+  const channelId = useChannelId();
   const { workspaceSidebarOpen } = useWorkspaceSidebarToggle();
   const workspaceSidebarPanelRef = useRef<ImperativePanelHandle>(null);
   const workspaceSidebarSizeRef = useRef(DEFAULT_WORKSPACE_SIDEBAR_SIZE);
@@ -95,7 +97,11 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                     <>
                       <ResizableHandle withHandle />
                       <ResizablePanel minSize={20} defaultSize={29}>
-                        <AiChatPanel onClose={onCloseAiChat} />
+                        <AiChatPanel
+                          onClose={onCloseAiChat}
+                          channelId={channelId}
+                          threadRootId={parentMessageId ? (parentMessageId as Id<'messages'>) : undefined}
+                        />
                       </ResizablePanel>
                     </>
                   )}

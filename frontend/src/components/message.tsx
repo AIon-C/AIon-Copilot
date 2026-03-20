@@ -86,7 +86,7 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm('Delete message', 'Are you sure you want to delete this message? This cannot be undone.');
-  const { parentMessageId, onOpenMessage, onOpenProfile, onCloseMessage } = usePanel();
+  const { parentMessageId, onOpenAiChat, onOpenMessage, onOpenProfile, onCloseMessage } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } = useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } = useRemoveMessage();
@@ -139,6 +139,12 @@ export const Message = ({
         },
       },
     );
+  };
+
+  const handleCopilotContext = () => {
+    const contextMessageId = hideThreadButton && parentMessageId ? (parentMessageId as Id<'messages'>) : id;
+    onOpenMessage(contextMessageId);
+    onOpenAiChat();
   };
 
   if (isCompact) {
@@ -195,6 +201,7 @@ export const Message = ({
               isPending={isPending}
               handleEdit={() => setEditingId(id)}
               handleThread={() => onOpenMessage(id)}
+              handleCopilotContext={handleCopilotContext}
               handleDelete={handleDelete}
               handleReaction={handleReaction}
               hideThreadButton={hideThreadButton}
@@ -272,6 +279,7 @@ export const Message = ({
             isPending={isPending}
             handleEdit={() => setEditingId(id)}
             handleThread={() => onOpenMessage(id)}
+            handleCopilotContext={handleCopilotContext}
             handleDelete={handleDelete}
             handleReaction={handleReaction}
             hideThreadButton={hideThreadButton}
