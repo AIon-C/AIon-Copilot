@@ -35,7 +35,6 @@ export const SignInCard = ({ onChangeFlowAction }: SignInCardProps) => {
 
       router.replace('/');
     } catch {
-      console.error(error);
       throw error;
     }
   };
