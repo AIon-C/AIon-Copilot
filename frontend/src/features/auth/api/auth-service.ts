@@ -16,6 +16,33 @@ import { AuthResult, AuthTokens, LogInInput, RefreshInput, SignUpInput } from '.
 import { mapAuthResponse, mapRefreshResponse } from '../utils/auth-mapper';
 import { authClient } from './auth-client';
 
+function persistTokens(tokens: AuthTokens): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  if (tokens.accessToken) {
+    localStorage.setItem('accessToken', tokens.accessToken);
+  } else {
+    localStorage.removeItem('accessToken');
+  }
+
+  if (tokens.refreshToken) {
+    localStorage.setItem('refreshToken', tokens.refreshToken);
+  } else {
+    localStorage.removeItem('refreshToken');
+  }
+}
+
+function clearPersistedTokens(): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  localStorage.removeItem('accessToken');
+  localStorage.removeItem('refreshToken');
+}
+
 function createClientReqeustId(): string {
   if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
     return crypto.randomUUID();
@@ -25,17 +52,20 @@ function createClientReqeustId(): string {
 
 function applyAuthResult(result: AuthResult): AuthResult {
   tokenStore.replaceTokens(result.tokens);
+  persistTokens(result.tokens);
   authStore.setSession(result);
   return result;
 }
 
 function applyAuthTokens(tokens: AuthTokens): AuthTokens {
   tokenStore.replaceTokens(tokens);
+  persistTokens(tokens);
   authStore.setTokens(tokens);
   return tokens;
 }
 
 function clearLocalAuth(): void {
+  clearPersistedTokens();
   tokenStore.clear();
   authSession.clear();
   authStore.clear();
