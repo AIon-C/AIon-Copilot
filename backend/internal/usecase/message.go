@@ -28,17 +28,20 @@ type messageUsecase struct {
 	msgRepo        domain.MessageRepository
 	attachmentRepo domain.MessageAttachmentRepository
 	chMemberRepo   domain.ChannelMemberRepository
+	fileRepo       domain.FileRepository
 }
 
 func NewMessageUsecase(
 	msgRepo domain.MessageRepository,
 	attachmentRepo domain.MessageAttachmentRepository,
 	chMemberRepo domain.ChannelMemberRepository,
+	fileRepo domain.FileRepository,
 ) MessageUsecase {
 	return &messageUsecase{
 		msgRepo:        msgRepo,
 		attachmentRepo: attachmentRepo,
 		chMemberRepo:   chMemberRepo,
+		fileRepo:       fileRepo,
 	}
 }
 
@@ -80,6 +83,11 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
 			return nil, err
 		}
+		// Resolve file metadata for the response
+		files, err := uc.fileRepo.FindByIDs(ctx, fileIDs)
+		if err == nil {
+			msg.Attachments = files
+		}
 	}
 
 	return msg, nil
@@ -94,11 +102,21 @@ func (uc *messageUsecase) ListMessages(ctx context.Context, userID, channelID, c
 		return nil, "", "", false, false, err
 	}
 
-	return uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
+	msgs, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, err := uc.msgRepo.ListByChannel(ctx, channelID, cursor, limit)
+	if err != nil {
+		return nil, "", "", false, false, err
+	}
+	uc.resolveAttachments(ctx, msgs)
+	return msgs, nextCursor, prevCursor, hasMoreBefore, hasMoreAfter, nil
 }
 
 func (uc *messageUsecase) GetMessage(ctx context.Context, id string) (*domain.Message, error) {
-	return uc.msgRepo.FindByID(ctx, id)
+	msg, err := uc.msgRepo.FindByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+	uc.resolveAttachments(ctx, []*domain.Message{msg})
+	return msg, nil
 }
 
 func (uc *messageUsecase) UpdateMessage(ctx context.Context, userID, msgID, content string) (*domain.Message, error) {
@@ -153,7 +171,65 @@ func (uc *messageUsecase) GetThread(ctx context.Context, rootID string) (*domain
 		return nil, nil, err
 	}
 
+	allMsgs := append([]*domain.Message{root}, replies...)
+	uc.resolveAttachments(ctx, allMsgs)
+
 	return root, replies, nil
+}
+
+// resolveAttachments fetches file metadata for message attachments in batch.
+func (uc *messageUsecase) resolveAttachments(ctx context.Context, msgs []*domain.Message) {
+	if len(msgs) == 0 {
+		return
+	}
+
+	// Collect all message IDs
+	msgIDs := make([]string, len(msgs))
+	for i, m := range msgs {
+		msgIDs[i] = m.ID
+	}
+
+	// Fetch attachments for all messages at once
+	allFileIDs := make([]string, 0)
+	msgAttachments := make(map[string][]string) // messageID -> []fileID
+	for _, msgID := range msgIDs {
+		attachments, err := uc.attachmentRepo.ListByMessage(ctx, msgID)
+		if err != nil {
+			continue
+		}
+		for _, a := range attachments {
+			allFileIDs = append(allFileIDs, a.FileID)
+			msgAttachments[a.MessageID] = append(msgAttachments[a.MessageID], a.FileID)
+		}
+	}
+
+	if len(allFileIDs) == 0 {
+		return
+	}
+
+	// Fetch all files in one query
+	files, err := uc.fileRepo.FindByIDs(ctx, allFileIDs)
+	if err != nil {
+		return
+	}
+
+	fileMap := make(map[string]*domain.File, len(files))
+	for _, f := range files {
+		fileMap[f.ID] = f
+	}
+
+	// Assign files to messages
+	for _, msg := range msgs {
+		fileIDs := msgAttachments[msg.ID]
+		if len(fileIDs) == 0 {
+			continue
+		}
+		for _, fid := range fileIDs {
+			if f, ok := fileMap[fid]; ok {
+				msg.Attachments = append(msg.Attachments, f)
+			}
+		}
+	}
 }
 
 // --- ReactionUsecase ---

@@ -17,6 +17,7 @@ type Message struct {
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 	DeletedAt    *time.Time
+	Attachments  []*File
 }
 
 type MessageAttachment struct {

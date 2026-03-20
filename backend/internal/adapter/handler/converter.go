@@ -123,6 +123,9 @@ func messageToProto(msg *domain.Message) *modelv1.Message {
 	if msg.DeletedAt != nil {
 		pb.Metadata.DeletedAt = timestamppb.New(*msg.DeletedAt)
 	}
+	for _, f := range msg.Attachments {
+		pb.Attachments = append(pb.Attachments, fileToProto(f))
+	}
 	return pb
 }
 
