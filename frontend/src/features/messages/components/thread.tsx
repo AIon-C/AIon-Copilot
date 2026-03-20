@@ -2,7 +2,7 @@ import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
 import { AlertTriangle, Loader, XIcon } from 'lucide-react';
 import dynamic from 'next/dynamic';
 import type Quill from 'quill';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 import { Message } from '@/components/message';
@@ -59,15 +59,17 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
   const [isPending, setIsPending] = useState(false);
 
   const innerRef = useRef<Quill | null>(null);
+  const bottomAnchorRef = useRef<HTMLDivElement | null>(null);
 
   const { data: currentMember } = useCurrentMember({ workspaceId });
   const { data: message, isLoading: isMessageLoading } = useGetMessage({ id: messageId });
+  const threadRootMessageId = (message?.parentMessageId as Id<'messages'> | undefined) ?? messageId;
 
   const { mutate: createMessage } = useCreateMessage();
   const { mutate: generateUploadUrl } = useGenerateUploadUrl();
   const { results, status, loadMore } = useGetMessages({
     channelId,
-    parentMessageId: messageId,
+    parentMessageId: threadRootMessageId,
   });
 
   const canLoadMore = status === 'CanLoadMore';
@@ -81,7 +83,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
       const values: CreateMessageValues = {
         channelId,
         workspaceId,
-        parentMessageId: messageId,
+        parentMessageId: threadRootMessageId,
         body,
         image: undefined,
       };
@@ -141,12 +143,26 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
         groups[dateKey] = [];
       }
 
-      groups[dateKey].unshift(message);
+      groups[dateKey].push(message);
 
       return groups;
     },
     {} as Record<string, typeof results>,
   );
+
+  useEffect(() => {
+    if (status === 'LoadingFirstPage') {
+      return;
+    }
+
+    const rafId = window.requestAnimationFrame(() => {
+      bottomAnchorRef.current?.scrollIntoView({ block: 'end' });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(rafId);
+    };
+  }, [message?._id, results, status]);
 
   if (isMessageLoading || status === 'LoadingFirstPage') {
     return (
@@ -195,7 +211,23 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
         </Button>
       </div>
 
-      <div className="messages-scrollbar flex flex-1 flex-col-reverse overflow-y-auto pb-4">
+      <div className="messages-scrollbar flex flex-1 flex-col justify-end overflow-y-auto pb-4">
+        <Message
+          hideThreadButton
+          memberId={message.memberId}
+          authorName={message.user.name}
+          authorImage={message.user.image}
+          isAuthor={message.memberId === currentMember?._id}
+          body={message.body}
+          image={message.image}
+          createdAt={message._creationTime}
+          updatedAt={message.updatedAt}
+          id={message._id}
+          reactions={message.reactions}
+          isEditing={editingId === message._id}
+          setEditingId={setEditingId}
+        />
+
         {Object.entries(groupedMessages || {}).map(([dateKey, messages]) => (
           <div key={dateKey}>
             <div className="relative my-2 text-center">
@@ -268,21 +300,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
           </div>
         )}
 
-        <Message
-          hideThreadButton
-          memberId={message.memberId}
-          authorName={message.user.name}
-          authorImage={message.user.image}
-          isAuthor={message.memberId === currentMember?._id}
-          body={message.body}
-          image={message.image}
-          createdAt={message._creationTime}
-          updatedAt={message.updatedAt}
-          id={message._id}
-          reactions={message.reactions}
-          isEditing={editingId === message._id}
-          setEditingId={setEditingId}
-        />
+        <div ref={bottomAnchorRef} />
       </div>
 
       <div className="px-4">

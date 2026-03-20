@@ -39,7 +39,7 @@ export function mapMessage(message?: Message): MessageModel | null {
     id: message.id,
     channelId: message.channelId,
     userId: message.userId,
-    threadRootId: message.threadRootId ?? null,
+    threadRootId: message.threadRootId || null,
     content: message.content,
     isEdited: message.isEdited,
     metadata: message.metadata,
