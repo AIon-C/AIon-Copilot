@@ -28,19 +28,19 @@ export const SignInCard = ({ onChangeFlowAction }: SignInCardProps) => {
     e.preventDefault();
 
     try {
-      await login({
+      const { } = await login({
         email,
         password,
       });
 
       router.replace('/');
     } catch {
-      // error state is managed inside useLogin
+      console.error(error);
+      throw error;
     }
   };
 
   const handleOAuthSignIn = async (provider: 'google' | 'github') => {
-    // 今の proto に OAuth API がなければ、ここは未実装でOK
     console.warn(`${provider} OAuth is not implemented yet.`);
   };
 
