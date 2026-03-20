@@ -122,6 +122,12 @@
   font-size: 14px !important;
 }
 
+.ql-editor::selection,
+.ql-editor *::selection {
+  background-color: #475569 !important;
+  color: #f1f5f9 !important;
+}
+
 .ql-editor a {
   color: #38bdf8 !important;
 }
