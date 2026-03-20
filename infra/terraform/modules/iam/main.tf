@@ -36,6 +36,12 @@ resource "google_project_iam_member" "backend_secret_accessor" {
   member  = "serviceAccount:${google_service_account.backend.email}"
 }
 
+resource "google_project_iam_member" "backend_token_creator" {
+  project = var.project_id
+  role    = "roles/iam.serviceAccountTokenCreator"
+  member  = "serviceAccount:${google_service_account.backend.email}"
+}
+
 # AI Agent roles
 resource "google_project_iam_member" "ai_agent_aiplatform_user" {
   project = var.project_id
