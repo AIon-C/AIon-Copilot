@@ -5,8 +5,6 @@ import { useProfileMemberId } from '@/features/user/store/use-profile-member-id'
 
 const aiChatOpenAtom = atom(false);
 
-const aiChatOpenAtom = atom(false);
-
 export const usePanel = () => {
   const [parentMessageId, setParentMessageId] = useParentMessageId();
   const [profileMemberId, setProfileMemberId] = useProfileMemberId();
