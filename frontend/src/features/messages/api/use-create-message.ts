@@ -7,7 +7,7 @@ import { useMockMutation } from '@/mock/use-mock-mutation';
 
 type RequestType = {
   body: string;
-  image?: Id<'_storage'>;
+  image?: string;
   workspaceId: Id<'workspaces'>;
   channelId?: Id<'channels'>;
   conversationId?: Id<'conversations'>;

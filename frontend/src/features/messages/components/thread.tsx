@@ -5,6 +5,7 @@ import type Quill from 'quill';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
+import { fileService } from '@/features/file/api/file-service';
 import { Message } from '@/components/message';
 import { Button } from '@/components/ui/button';
 import { useGenerateUploadUrl } from '@/features/file/api/use-generate-upload-url';
@@ -41,7 +42,7 @@ type CreateMessageValues = {
   workspaceId: Id<'workspaces'>;
   parentMessageId: Id<'messages'>;
   body: string;
-  image?: Id<'_storage'>;
+  image?: string;
 };
 
 interface ThreadProps {
@@ -86,33 +87,45 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
       };
 
       if (image) {
-        const url = await generateUploadUrl(
-          {},
+        const uploadSession = await generateUploadUrl(
+          {
+            workspaceId,
+            fileName: image.name,
+            contentType: image.type || 'application/octet-stream',
+            fileSize: image.size,
+          },
           {
             throwError: true,
           },
         );
 
-        if (!url) throw new Error('URL not found.');
+        if (!uploadSession) throw new Error('Upload session not found.');
 
-        const result = await fetch(url, {
+        const formData = new FormData();
+        formData.append('uploadUrl', uploadSession.uploadUrl);
+        formData.append('file', image);
+
+        const result = await fetch('/api/upload-proxy', {
           method: 'POST',
-          headers: { 'Content-type': image.type },
-          body: image,
+          body: formData,
         });
 
-        if (!result.ok) throw new Error('Failed to upload image.');
+        if (!result.ok) {
+          const payload = (await result.json().catch(() => null)) as { error?: string; detail?: string } | null;
+          throw new Error(payload?.detail || payload?.error || 'Failed to upload image.');
+        }
 
-        const { storageId } = await result.json();
+        await fileService.completeUpload({ fileId: uploadSession.fileId });
 
-        values.image = storageId;
+        values.image = uploadSession.fileId;
       }
 
       await createMessage(values, { throwError: true });
 
       setEditorKey((prevKey) => prevKey + 1);
     } catch (error) {
-      toast.error('Failed to send message.');
+      const message = error instanceof Error ? error.message : 'Failed to send message.';
+      toast.error(message);
     } finally {
       setIsPending(false);
       innerRef?.current?.enable(true);

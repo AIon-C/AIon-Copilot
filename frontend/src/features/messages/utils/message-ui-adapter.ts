@@ -82,6 +82,16 @@ export function toUiMessage(
   options?: {
     workspaceId?: string;
     membersByUserId?: Record<string, MemberContext>;
+    reactionsByMessageId?: Record<
+      string,
+      Array<{
+        _id: string;
+        _creationTime: number;
+        value: string;
+        count: number;
+        memberIds: string[];
+      }>
+    >;
   },
 ): UiMessage {
   const rawMetadata = (message.raw as { metadata?: { createdAt?: ProtoTimestamp; updatedAt?: ProtoTimestamp } } | undefined)?.metadata;
@@ -103,7 +113,7 @@ export function toUiMessage(
       name: userName,
       image: member?.image,
     },
-    reactions: [],
+    reactions: options?.reactionsByMessageId?.[message.id] ?? [],
     workspaceId: options?.workspaceId ?? '',
     channelId: message.channelId || undefined,
     conversationId: undefined,
