@@ -1,3 +1,5 @@
+'use client';
+
 import { TriangleAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -8,40 +10,38 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
-import { useAuthActions } from '@/mock/auth';
 
+import { useLogin } from '../hooks/use-login';
 import type { SignInFlow } from '../types';
 
 interface SignInCardProps {
-  setState: (state: SignInFlow) => void;
+  onChangeFlowAction: (state: SignInFlow) => void;
 }
 
-export const SignInCard = ({ setState }: SignInCardProps) => {
+export const SignInCard = ({ onChangeFlowAction }: SignInCardProps) => {
   const router = useRouter();
-  const { signIn } = useAuthActions();
+  const { login, loading, error } = useLogin();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
-  const [pending, setPending] = useState(false);
 
-  const handleOAuthSignIn = (value: 'github' | 'google') => {
-    setPending(true);
-    signIn(value)
-      .then(() => router.replace('/'))
-      .finally(() => setPending(false));
+  const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      await login({
+        email,
+        password,
+      });
+
+      router.replace('/');
+    } catch {
+      // error state is managed inside useLogin
+    }
   };
 
-  const handleSignIn = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setPending(true);
-    setError('');
-
-    signIn('password', { email, password, flow: 'signIn' })
-      .then(() => router.replace('/'))
-      .catch(() => {
-        setError('Invalid email or password!');
-      })
-      .finally(() => setPending(false));
+  const handleOAuthSignIn = async (provider: 'google' | 'github') => {
+    // 今の proto に OAuth API がなければ、ここは未実装でOK
+    console.warn(`${provider} OAuth is not implemented yet.`);
   };
 
   return (
@@ -60,10 +60,10 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
 
       <CardContent className="space-y-5 px-0 pb-0">
         <form onSubmit={handleSignIn} className="space-y-2.5">
-          <Input disabled={pending} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" required />
+          <Input disabled={loading} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" required />
 
           <Input
-            disabled={pending}
+            disabled={loading}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
@@ -71,7 +71,7 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
             required
           />
 
-          <Button type="submit" className="w-full" size="lg" disabled={pending}>
+          <Button type="submit" className="w-full" size="lg" disabled={loading}>
             Continue
           </Button>
         </form>
@@ -79,12 +79,26 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         <Separator />
 
         <div className="flex flex-col gap-y-2.5">
-          <Button disabled={pending} onClick={() => handleOAuthSignIn('google')} variant="outline" size="lg" className="relative w-full">
+          <Button
+            disabled={loading}
+            onClick={() => handleOAuthSignIn('google')}
+            variant="outline"
+            size="lg"
+            className="relative w-full"
+            type="button"
+          >
             <FcGoogle className="absolute left-2.5 top-3 size-5" />
             Continue with Google
           </Button>
 
-          <Button disabled={pending} onClick={() => handleOAuthSignIn('github')} variant="outline" size="lg" className="relative w-full">
+          <Button
+            disabled={loading}
+            onClick={() => handleOAuthSignIn('github')}
+            variant="outline"
+            size="lg"
+            className="relative w-full"
+            type="button"
+          >
             <FaGithub className="absolute left-2.5 top-3 size-5" />
             Continue with GitHub
           </Button>
@@ -93,9 +107,10 @@ export const SignInCard = ({ setState }: SignInCardProps) => {
         <p className="text-center text-xs text-muted-foreground">
           Don&apos;t have an account?{' '}
           <button
-            disabled={pending}
-            onClick={() => setState('signUp')}
+            disabled={loading}
+            onClick={() => onChangeFlowAction('signUp')}
             className="cursor-pointer font-medium text-sky-700 hover:underline disabled:pointer-events-none disabled:opacity-50"
+            type="button"
           >
             Sign up
           </button>
