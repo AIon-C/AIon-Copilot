@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { TriangleAlert } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -11,8 +11,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 
-import type { SignInFlow } from '../types';
 import { useSignUp } from '../hooks/use-sign-up';
+import type { SignInFlow } from '../types';
 
 interface SignUpCardProps {
   onChangeFlowAction: (state: SignInFlow) => void;
@@ -37,9 +37,7 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
   };
 
   const validatePassword = (value: string) => {
-    return String(value).match(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/,
-    );
+    return String(value).match(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&])[A-Za-z\d@.#$!%*?&]{8,15}$/);
   };
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -106,14 +104,7 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
             required
           />
 
-          <Input
-            disabled={loading}
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-            type="email"
-            required
-          />
+          <Input disabled={loading} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" type="email" required />
 
           <Input
             disabled={loading}

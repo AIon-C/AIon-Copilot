@@ -12,11 +12,7 @@ export const AuthScreen = () => {
   return (
     <div className="flex h-full items-center justify-center bg-[#5C3B58]">
       <div className="md:h-auto md:w-[420px]">
-        {flow === 'signIn' ? (
-          <SignInCard onChangeFlowAction={setFlow} />
-        ) : (
-          <SignUpCard onChangeFlowAction={setFlow} />
-        )}
+        {flow === 'signIn' ? <SignInCard onChangeFlowAction={setFlow} /> : <SignUpCard onChangeFlowAction={setFlow} />}
       </div>
     </div>
   );

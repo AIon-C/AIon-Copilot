@@ -11,14 +11,6 @@ export { useSignUp } from './hooks/use-sign-up';
 
 export { useCurrentUser } from './api/use-current-user';
 
-export type {
-  AuthResult,
-  AuthState,
-  AuthTokens,
-  AuthUser,
-  LogInInput,
-  RefreshInput,
-  SignUpInput,
-} from './model/auth-types';
+export type { AuthResult, AuthState, AuthTokens, AuthUser, LogInInput, RefreshInput, SignUpInput } from './model/auth-types';
 
 export type { SignInFlow } from './types';
