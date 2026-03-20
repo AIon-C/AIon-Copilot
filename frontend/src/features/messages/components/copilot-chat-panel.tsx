@@ -198,9 +198,7 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
             Thread
           </Button>
           <span className="text-xs text-muted-foreground">
-            {contextMode === 'thread'
-              ? `Using thread context (${threadRootId?.slice(0, 8)}...)`
-              : 'Using main channel context'}
+            {contextMode === 'thread' ? `Using thread context (${threadRootId?.slice(0, 8)}...)` : 'Using main channel context'}
           </span>
         </div>
       )}

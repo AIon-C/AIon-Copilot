@@ -98,11 +98,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                     <>
                       <ResizableHandle withHandle />
                       <ResizablePanel minSize={20} defaultSize={29}>
-                        <AiChatPanel
-                          onClose={onCloseAiChat}
-                          channelId={channelId}
-                          threadRootId={activeCopilotThreadRootId ?? undefined}
-                        />
+                        <AiChatPanel onClose={onCloseAiChat} channelId={channelId} threadRootId={activeCopilotThreadRootId ?? undefined} />
                       </ResizablePanel>
                     </>
                   )}

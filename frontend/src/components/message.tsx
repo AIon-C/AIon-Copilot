@@ -86,8 +86,16 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm('Delete message', 'Are you sure you want to delete this message? This cannot be undone.');
-  const { copilotContextMessageId, parentMessageId, onOpenAiChat, onSetCopilotContextMessage, onOpenMessage, onOpenProfile, onCloseAiChat, onCloseMessage } =
-    usePanel();
+  const {
+    copilotContextMessageId,
+    parentMessageId,
+    onOpenAiChat,
+    onSetCopilotContextMessage,
+    onOpenMessage,
+    onOpenProfile,
+    onCloseAiChat,
+    onCloseMessage,
+  } = usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } = useUpdateMessage();
   const { mutate: removeMessage, isPending: isRemovingMessage } = useRemoveMessage();
@@ -167,7 +175,7 @@ export const Message = ({
           className={cn(
             'group relative flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60',
             isEditing && 'bg-[#f2c74433] hover:bg-[#f2c74433]',
-            isCopilotContextActive && 'bg-emerald-50/70 hover:bg-emerald-50/80 ring-1 ring-inset ring-emerald-200',
+            isCopilotContextActive && 'bg-emerald-50/70 ring-1 ring-inset ring-emerald-200 hover:bg-emerald-50/80',
             isRemovingMessage && 'origin-bottom scale-y-0 transform bg-rose-500/50 transition-all duration-200',
           )}
         >
@@ -233,7 +241,7 @@ export const Message = ({
         className={cn(
           'group relative flex flex-col gap-2 p-1.5 px-5 hover:bg-gray-100/60',
           isEditing && 'bg-[#f2c74433] hover:bg-[#f2c74433]',
-          isCopilotContextActive && 'bg-emerald-50/70 hover:bg-emerald-50/80 ring-1 ring-inset ring-emerald-200',
+          isCopilotContextActive && 'bg-emerald-50/70 ring-1 ring-inset ring-emerald-200 hover:bg-emerald-50/80',
           isRemovingMessage && 'origin-bottom scale-y-0 transform bg-rose-500/50 transition-all duration-200',
         )}
       >
