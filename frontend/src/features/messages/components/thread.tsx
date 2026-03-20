@@ -188,7 +188,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
   if (isMessageLoading || status === 'LoadingFirstPage') {
     return (
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col bg-[#191919]">
         <div className="flex h-[49px] items-center justify-between border-b px-4">
           <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
             Thread
@@ -208,7 +208,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
   if (!message) {
     return (
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col bg-[#191919]">
         <div className="flex h-[49px] items-center justify-between border-b px-4">
           <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
             Thread
@@ -228,7 +228,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-[#191919]">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
         <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
           Thread

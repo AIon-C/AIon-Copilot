@@ -97,7 +97,7 @@ export const Header = ({ channelName }: HeaderProps) => {
   };
 
   return (
-    <div className="flex h-[49px] items-center overflow-hidden border-b border-slate-700 bg-slate-900/80 px-4">
+    <div className="flex h-[49px] items-center overflow-hidden border-b border-slate-700 bg-black/90 px-4">
       <ConfirmDialog />
 
       <Dialog>

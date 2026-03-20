@@ -59,7 +59,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
             collapsedSize={0}
             defaultSize={workspaceSidebarOpen ? DEFAULT_WORKSPACE_SIDEBAR_SIZE : 0}
             minSize={11}
-            className="bg-[#0f172a]/95"
+            className="bg-[#1f1f20]"
             onResize={(size) => {
               workspaceSidebarSizeRef.current = size;
             }}
@@ -71,7 +71,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
 
           <ResizablePanel defaultSize={80} minSize={20}>
             <ResizablePanelGroup direction="horizontal" autoSaveId="slack-clone-workspace-content-layout">
-              <ResizablePanel defaultSize={100} minSize={20}>
+              <ResizablePanel defaultSize={100} minSize={20} className="bg-black">
                 {children}
               </ResizablePanel>
 
@@ -80,7 +80,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                   {showContextPanel && (
                     <>
                       <ResizableHandle withHandle />
-                      <ResizablePanel minSize={20} defaultSize={29}>
+                      <ResizablePanel minSize={20} defaultSize={29} className="bg-[#191919]">
                         {parentMessageId ? (
                           <Thread messageId={parentMessageId as Id<'messages'>} onClose={onCloseMessage} />
                         ) : profileMemberId ? (
@@ -97,7 +97,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                   {showAiPanel && (
                     <>
                       <ResizableHandle withHandle />
-                      <ResizablePanel minSize={20} defaultSize={29}>
+                      <ResizablePanel minSize={20} defaultSize={29} className="bg-[#191919]">
                         <AiChatPanel onClose={onCloseAiChat} channelId={channelId} threadRootId={activeCopilotThreadRootId ?? undefined} />
                       </ResizablePanel>
                     </>

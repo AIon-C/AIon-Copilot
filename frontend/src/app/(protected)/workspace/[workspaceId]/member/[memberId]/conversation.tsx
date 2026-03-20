@@ -34,7 +34,7 @@ export const Conversation = ({ id }: ConversationProps) => {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-black">
       <Header memberName={member?.user.name} memberImage={member?.user.image} onClick={() => onOpenProfile(memberId)} />
 
       <MessageList

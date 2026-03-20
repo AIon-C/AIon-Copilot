@@ -10,7 +10,7 @@ export const Sidebar = () => {
   const pathname = usePathname();
 
   return (
-    <aside className="flex h-full w-[70px] flex-col items-center gap-y-4 bg-[#020617]/95 pb-[4px] pt-[9px]">
+    <aside className="flex h-full w-[70px] flex-col items-center gap-y-4 bg-[#232326] pb-[4px] pt-[9px]">
       <WorkspaceSwitcher />
 
       <SidebarButton icon={Home} label="Home" isActive={pathname.includes('/workspace')} />

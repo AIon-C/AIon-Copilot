@@ -166,7 +166,7 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-[#191919]">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
         <div>
           <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
@@ -206,7 +206,7 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
         </div>
       )}
 
-      <div className="messages-scrollbar flex-1 space-y-3 overflow-y-auto bg-muted/20 p-4">
+      <div className="messages-scrollbar flex-1 space-y-3 overflow-y-auto bg-[#191919] p-4">
         {messages.map((message) => (
           <div key={message.id} className={cn('flex w-full', message.role === 'user' ? 'justify-end' : 'justify-start')}>
             <div

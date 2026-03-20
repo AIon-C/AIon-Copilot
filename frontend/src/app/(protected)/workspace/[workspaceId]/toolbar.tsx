@@ -98,7 +98,7 @@ export const Toolbar = () => {
   }, [onKeyDown]);
 
   return (
-    <nav className="flex h-10 items-center justify-between border-b border-cyan-400/20 bg-[#020617]/95 p-1.5 backdrop-blur">
+    <nav className="flex h-10 items-center justify-between border-b border-cyan-400/20 bg-[#232326] p-1.5 backdrop-blur">
       <div className="flex flex-1 items-center">
         <Button
           variant="transparent"
@@ -117,7 +117,11 @@ export const Toolbar = () => {
 
       <div className="min-w-[280px] max-w-[642px] shrink grow-[2]">
         <div className="flex items-center gap-2">
-          <Button onClick={() => setOpen(true)} size="sm" className="h-7 flex-1 justify-start border border-cyan-400/30 bg-slate-900/70 px-2 hover:bg-slate-900">
+          <Button
+            onClick={() => setOpen(true)}
+            size="sm"
+            className="h-7 flex-1 justify-start border border-cyan-400/30 bg-[#1f1f20] px-2 hover:bg-[#232326]"
+          >
             <Search className="mr-2 size-4 text-slate-200" />
             <span className="text-xs text-slate-200">Search {data?.name ?? 'workspace'}...</span>
 
