@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
+import { TextPressure } from '@/components/ui/text-pressure';
 
 import { useLogin } from '../hooks/use-login';
 import type { SignInFlow } from '../types';
@@ -46,7 +47,9 @@ export const SignInCard = ({ onChangeFlowAction }: SignInCardProps) => {
   return (
     <Card className="size-full border-cyan-400/30 bg-slate-950/85 p-8 text-slate-100 backdrop-blur-xl">
       <CardHeader className="px-0 pt-0">
-        <CardTitle className="text-2xl text-white">Login to continue</CardTitle>
+        <CardTitle className="text-white">
+          <TextPressure text="Login to continue" className="h-9" minFontSize={24} textColor="#ffffff" strokeColor="#22d3ee" />
+        </CardTitle>
         <CardDescription className="text-slate-300">Use your email or another service to continue.</CardDescription>
       </CardHeader>
 
