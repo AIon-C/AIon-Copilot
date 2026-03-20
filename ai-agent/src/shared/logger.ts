@@ -5,5 +5,4 @@ export const logger = pino({
   level: config.NODE_ENV === "development" ? "debug" : "info",
 });
 
-export const createChildLogger = (bindings: Record<string, unknown>) =>
-  logger.child(bindings);
+export const createChildLogger = (bindings: Record<string, unknown>) => logger.child(bindings);

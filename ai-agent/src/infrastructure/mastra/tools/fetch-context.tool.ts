@@ -1,7 +1,7 @@
 import { createTool } from "@mastra/core/tools";
 import { z } from "zod";
-import type { ContextCachePort } from "../../../domain/ports/context-cache.port.js";
 import type { ChatContextPort } from "../../../domain/ports/chat-context.port.js";
+import type { ContextCachePort } from "../../../domain/ports/context-cache.port.js";
 import { logger } from "../../../shared/logger.js";
 
 export function createFetchContextTool(

@@ -1,7 +1,7 @@
-import type { ThreadStorePort } from "../../domain/ports/thread-store.port.js";
 import type { Agent } from "@mastra/core/agent";
+import type { ThreadStorePort } from "../../domain/ports/thread-store.port.js";
 import { getScope } from "../../domain/types/index.js";
-import { NotFoundError, ForbiddenError, ValidationError } from "../../shared/errors.js";
+import { ForbiddenError, NotFoundError, ValidationError } from "../../shared/errors.js";
 import { logger } from "../../shared/logger.js";
 
 export class AskUseCase {

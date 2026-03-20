@@ -1,5 +1,5 @@
-import { Hono } from "hono";
 import { swaggerUI } from "@hono/swagger-ui";
+import { Hono } from "hono";
 import { openApiSpec } from "./openapi-spec.js";
 
 export function createSwaggerRoute() {
