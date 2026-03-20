@@ -18,7 +18,7 @@ export const AuthGuard = ({ children }: AuthGuardProps) => {
     if (!initialized) return;
 
     if (!isAuthenticated) {
-      router.replace('/auth/login');
+      router.replace('/auth');
     }
   }, [initialized, isAuthenticated, router]);
 
