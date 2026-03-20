@@ -28,17 +28,20 @@ type messageUsecase struct {
 	msgRepo        domain.MessageRepository
 	attachmentRepo domain.MessageAttachmentRepository
 	chMemberRepo   domain.ChannelMemberRepository
+	eventBus       domain.EventBus
 }
 
 func NewMessageUsecase(
 	msgRepo domain.MessageRepository,
 	attachmentRepo domain.MessageAttachmentRepository,
 	chMemberRepo domain.ChannelMemberRepository,
+	eventBus domain.EventBus,
 ) MessageUsecase {
 	return &messageUsecase{
 		msgRepo:        msgRepo,
 		attachmentRepo: attachmentRepo,
 		chMemberRepo:   chMemberRepo,
+		eventBus:       eventBus,
 	}
 }
 
@@ -82,6 +85,17 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 		}
 	}
 
+	// Broadcast real-time event (fire-and-forget)
+	if uc.eventBus != nil {
+		_ = uc.eventBus.Publish(ctx, channelID, &domain.Event{
+			Type:      domain.EventMessageCreated,
+			ChannelID: channelID,
+			UserID:    userID,
+			Payload:   msg,
+			Timestamp: time.Now(),
+		})
+	}
+
 	return msg, nil
 }
 
@@ -123,6 +137,17 @@ func (uc *messageUsecase) UpdateMessage(ctx context.Context, userID, msgID, cont
 	if err := uc.msgRepo.Update(ctx, msg); err != nil {
 		return nil, err
 	}
+
+	if uc.eventBus != nil {
+		_ = uc.eventBus.Publish(ctx, msg.ChannelID, &domain.Event{
+			Type:      domain.EventMessageUpdated,
+			ChannelID: msg.ChannelID,
+			UserID:    userID,
+			Payload:   msg,
+			Timestamp: time.Now(),
+		})
+	}
+
 	return msg, nil
 }
 
@@ -139,6 +164,17 @@ func (uc *messageUsecase) DeleteMessage(ctx context.Context, userID, msgID strin
 	if err := uc.msgRepo.SoftDelete(ctx, msgID); err != nil {
 		return nil, err
 	}
+
+	if uc.eventBus != nil {
+		_ = uc.eventBus.Publish(ctx, msg.ChannelID, &domain.Event{
+			Type:      domain.EventMessageDeleted,
+			ChannelID: msg.ChannelID,
+			UserID:    userID,
+			Payload:   map[string]string{"messageId": msgID},
+			Timestamp: time.Now(),
+		})
+	}
+
 	return msg, nil
 }
 
