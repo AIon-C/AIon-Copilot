@@ -2,6 +2,11 @@ import { atom, useAtom } from 'jotai';
 
 import { useParentMessageId } from '@/features/messages/store/use-parent-message-id';
 import { useProfileMemberId } from '@/features/user/store/use-profile-member-id';
+<<<<<<< HEAD:frontend/src/hooks/use-panel.ts
+=======
+
+const aiChatOpenAtom = atom(false);
+>>>>>>> bff0d4e (Squashed 'frontend/' changes from fbd138a..cd85ee1):src/hooks/use-panel.ts
 
 const aiChatOpenAtom = atom(false);
 
