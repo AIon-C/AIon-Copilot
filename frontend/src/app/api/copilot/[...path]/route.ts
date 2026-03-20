@@ -12,7 +12,9 @@ async function handler(req: NextRequest, context: RouteContext) {
   }
 
   const { path } = await context.params;
-  const upstreamUrl = `${COPILOT_API_BASE_URL}/${path.join('/')}`;
+  const normalizedBaseUrl = COPILOT_API_BASE_URL.replace(/\/+$/, '');
+  const upstreamPath = path.join('/');
+  const upstreamUrl = `${normalizedBaseUrl}/${upstreamPath}${req.nextUrl.search}`;
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS);
@@ -22,7 +24,14 @@ async function handler(req: NextRequest, context: RouteContext) {
 
     const headers: Record<string, string> = {};
     if (body !== undefined) headers['Content-Type'] = req.headers.get('content-type') ?? 'application/json';
-    if (COPILOT_API_TOKEN) headers['Authorization'] = `Bearer ${COPILOT_API_TOKEN}`;
+    const accept = req.headers.get('accept');
+    if (accept) headers['Accept'] = accept;
+    const incomingAuthorization = req.headers.get('authorization');
+    if (incomingAuthorization) {
+      headers['Authorization'] = incomingAuthorization;
+    } else if (COPILOT_API_TOKEN) {
+      headers['Authorization'] = `Bearer ${COPILOT_API_TOKEN}`;
+    }
 
     const upstream = await fetch(upstreamUrl, {
       method: req.method,

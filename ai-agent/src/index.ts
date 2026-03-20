@@ -1,8 +1,8 @@
 import { serve } from "@hono/node-server";
-import { config } from "./shared/config.js";
-import { logger } from "./shared/logger.js";
 import { buildContainer } from "./di/container.js";
 import { closeRedis } from "./infrastructure/persistence/redis/client.js";
+import { config } from "./shared/config.js";
+import { logger } from "./shared/logger.js";
 
 const { app, pgPool } = buildContainer();
 

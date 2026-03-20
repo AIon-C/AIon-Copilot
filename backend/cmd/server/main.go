@@ -82,19 +82,30 @@ func main() {
 		os.Exit(1)
 	}
 
+	// EventBus (Redis Pub/Sub for WebSocket broadcasting)
+	eventBus := infra.NewRedisPubSub(rdb)
+
 	// Usecase
 	authUC := usecase.NewAuthUsecase(userRepo, refreshTokenRepo, jwtManager)
 	userUC := usecase.NewUserUsecase(userRepo)
 	wsUC := usecase.NewWorkspaceUsecase(wsRepo, wsMemberRepo, wsInviteRepo)
 	chUC := usecase.NewChannelUsecase(chRepo, chMemberRepo, wsMemberRepo)
-	msgUC := usecase.NewMessageUsecase(msgRepo, msgAttachmentRepo, chMemberRepo, fileRepo)
+	msgUC := usecase.NewMessageUsecase(msgRepo, msgAttachmentRepo, chMemberRepo, fileRepo, eventBus)
 	reactionUC := usecase.NewReactionUsecase(reactionRepo)
 	fileUC := usecase.NewFileUsecase(fileRepo, objectStorage, cfg.GCSBucket)
+
+	// WebSocket Hub
+	wsHub := handler.NewHub(eventBus)
+	go wsHub.Run()
+	wsHandler := handler.NewWSHandler(wsHub, jwtManager)
 
 	// Handler + Interceptor
 	interceptors := connect.WithInterceptors(handler.NewAuthInterceptor(jwtManager))
 
 	mux := http.NewServeMux()
+
+	// WebSocket endpoint
+	mux.HandleFunc("/ws", wsHandler.ServeHTTP)
 
 	// Health & readiness checks
 	infra.RegisterHealthHandlers(mux, db, rdb)

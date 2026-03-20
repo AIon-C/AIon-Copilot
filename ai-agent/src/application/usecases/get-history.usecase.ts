@@ -1,7 +1,7 @@
-import type { ThreadStorePort } from "../../domain/ports/thread-store.port.js";
 import type { MessageStorePort } from "../../domain/ports/message-store.port.js";
+import type { ThreadStorePort } from "../../domain/ports/thread-store.port.js";
 import type { AiMessage } from "../../domain/types/index.js";
-import { NotFoundError, ForbiddenError } from "../../shared/errors.js";
+import { ForbiddenError, NotFoundError } from "../../shared/errors.js";
 
 export class GetHistoryUseCase {
   constructor(

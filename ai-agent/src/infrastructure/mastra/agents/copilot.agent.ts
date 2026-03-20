@@ -1,10 +1,10 @@
-import { Agent } from "@mastra/core/agent";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createVertex } from "@ai-sdk/google-vertex";
-import { memory } from "../memory.js";
-import { createFetchContextTool } from "../tools/fetch-context.tool.js";
-import { createDetectTopicTool } from "../tools/detect-topic.tool.js";
+import { Agent } from "@mastra/core/agent";
 import { config } from "../../../shared/config.js";
+import { memory } from "../memory.js";
+import type { createDetectTopicTool } from "../tools/detect-topic.tool.js";
+import type { createFetchContextTool } from "../tools/fetch-context.tool.js";
 
 function createModel() {
   if (config.GCP_PROJECT_ID) {

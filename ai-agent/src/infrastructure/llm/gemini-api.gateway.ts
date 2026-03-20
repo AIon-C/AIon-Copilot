@@ -1,6 +1,11 @@
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { generateText, streamText } from "ai";
-import type { LLMGatewayPort, LLMStreamResult, LLMStreamOptions, LLMGenerateOptions } from "../../domain/ports/llm-gateway.port.js";
+import type {
+  LLMGatewayPort,
+  LLMGenerateOptions,
+  LLMStreamOptions,
+  LLMStreamResult,
+} from "../../domain/ports/llm-gateway.port.js";
 import type { LLMMessage } from "../../domain/types/index.js";
 import { config } from "../../shared/config.js";
 import { LLMError } from "../../shared/errors.js";
@@ -11,10 +16,7 @@ export class GeminiApiGateway implements LLMGatewayPort {
     apiKey: config.GOOGLE_GENERATIVE_AI_API_KEY!,
   });
 
-  async stream(
-    messages: LLMMessage[],
-    options?: LLMStreamOptions,
-  ): Promise<LLMStreamResult> {
+  async stream(messages: LLMMessage[], options?: LLMStreamOptions): Promise<LLMStreamResult> {
     const modelName = options?.model ?? "gemini-2.5-flash";
     const startTime = Date.now();
 

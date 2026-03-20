@@ -15,10 +15,7 @@ export type FreeScope = {
 
 export type Scope = ChannelScope | ThreadScope | FreeScope;
 
-export function determineScope(
-  channelId: string | null,
-  threadRootId: string | null,
-): Scope {
+export function determineScope(channelId: string | null, threadRootId: string | null): Scope {
   if (channelId && threadRootId) {
     return { type: "thread", channelId, threadRootId };
   }

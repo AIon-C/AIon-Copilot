@@ -1,5 +1,5 @@
-import type { TopicDetectorPort } from "../../../domain/ports/topic-detector.port.js";
 import type { LLMGatewayPort } from "../../../domain/ports/llm-gateway.port.js";
+import type { TopicDetectorPort } from "../../../domain/ports/topic-detector.port.js";
 import type { ChatContextMessage, LLMMessage } from "../../../domain/types/index.js";
 
 export class TopicDetectorAdapter implements TopicDetectorPort {

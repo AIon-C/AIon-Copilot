@@ -137,7 +137,7 @@ func newMsgUC() (MessageUsecase, *mockMessageRepo, *mockMsgChMemberRepo) {
 	seedChMember(chMemberRepo, "ch-1", "user-1")
 	seedChMember(chMemberRepo, "ch-1", "user-2")
 	seedChMember(chMemberRepo, "ch-1", "user-3")
-	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{}, chMemberRepo, newMockFileRepo())
+	uc := NewMessageUsecase(msgRepo, &mockAttachmentRepo{}, chMemberRepo, newMockFileRepo(), nil)
 	return uc, msgRepo, chMemberRepo
 }
 

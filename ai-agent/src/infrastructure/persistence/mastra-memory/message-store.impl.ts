@@ -1,7 +1,11 @@
 import type { Pool } from "pg";
 import { v4 as uuid } from "uuid";
 import type { MessageStorePort } from "../../../domain/ports/message-store.port.js";
-import type { AiMessage, CreateMessageInput, MessageMetadata } from "../../../domain/types/index.js";
+import type {
+  AiMessage,
+  CreateMessageInput,
+  MessageMetadata,
+} from "../../../domain/types/index.js";
 
 export class PgMessageStoreImpl implements MessageStorePort {
   constructor(private readonly pool: Pool) {}
