@@ -12,6 +12,7 @@ interface ToolbarProps {
   handleDelete: () => void;
   handleThread: () => void;
   handleCopilotContext: () => void;
+  isCopilotContextActive?: boolean;
   handleReaction: (value: string) => void;
   hideThreadButton?: boolean;
 }
@@ -23,6 +24,7 @@ export const Toolbar = ({
   handleDelete,
   handleThread,
   handleCopilotContext,
+  isCopilotContextActive,
   handleReaction,
   hideThreadButton,
 }: ToolbarProps) => {
@@ -43,8 +45,14 @@ export const Toolbar = ({
           </Hint>
         )}
 
-        <Hint label="Use as Copilot context">
-          <Button onClick={handleCopilotContext} variant="ghost" size="iconSm" disabled={isPending}>
+        <Hint label={isCopilotContextActive ? 'Copilot context selected' : 'Use as Copilot context'}>
+          <Button
+            onClick={handleCopilotContext}
+            variant="ghost"
+            size="iconSm"
+            disabled={isPending}
+            className={isCopilotContextActive ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 hover:text-emerald-700' : undefined}
+          >
             <Bot className="size-4" />
           </Button>
         </Hint>

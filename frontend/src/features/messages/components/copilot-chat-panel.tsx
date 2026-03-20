@@ -52,21 +52,28 @@ const INITIAL_MESSAGES: ChatMessage[] = [
 
 export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelProps) => {
   const workspaceId = useWorkspaceId();
+  const hasThreadContext = !!threadRootId;
 
   const [threadId, setThreadId] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
   const [editorKey, setEditorKey] = useState(0);
+  const [contextMode, setContextMode] = useState<'main' | 'thread'>(hasThreadContext ? 'thread' : 'main');
   const [messages, setMessages] = useState<ChatMessage[]>(INITIAL_MESSAGES);
 
-  const contextType = threadRootId ? 'thread' : channelId ? 'channel' : 'free';
+  const effectiveThreadRootId = contextMode === 'thread' ? threadRootId : undefined;
+  const contextType = effectiveThreadRootId ? 'thread' : channelId ? 'main' : 'free';
 
   const { mutate: createMessage } = useCreateMessage();
+
+  useEffect(() => {
+    setContextMode(hasThreadContext ? 'thread' : 'main');
+  }, [hasThreadContext]);
 
   useEffect(() => {
     setThreadId(null);
     setMessages(INITIAL_MESSAGES);
     setEditorKey((prevKey) => prevKey + 1);
-  }, [channelId, threadRootId]);
+  }, [channelId, effectiveThreadRootId]);
 
   const handleSubmit = async ({ body }: EditorSubmitPayload) => {
     const prompt = getTextFromQuillBody(body);
@@ -86,7 +93,7 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
           workspaceId,
           title: prompt.slice(0, 80),
           channelId,
-          threadRootId,
+          threadRootId: effectiveThreadRootId,
           mode: copilotApiConfig.mode,
         });
 
@@ -149,6 +156,34 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
           <XIcon className="size-5 stroke-[1.5]" />
         </Button>
       </div>
+
+      {hasThreadContext && (
+        <div className="flex items-center gap-2 border-b px-4 py-2">
+          <Button
+            type="button"
+            size="sm"
+            variant={contextMode === 'main' ? 'default' : 'outline'}
+            onClick={() => setContextMode('main')}
+            disabled={isThinking}
+          >
+            Main
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={contextMode === 'thread' ? 'default' : 'outline'}
+            onClick={() => setContextMode('thread')}
+            disabled={isThinking}
+          >
+            Thread
+          </Button>
+          <span className="text-xs text-muted-foreground">
+            {contextMode === 'thread'
+              ? `Using thread context (${threadRootId?.slice(0, 8)}...)`
+              : 'Using main channel context'}
+          </span>
+        </div>
+      )}
 
       <div className="messages-scrollbar flex-1 space-y-3 overflow-y-auto bg-muted/20 p-4">
         {messages.map((message) => (

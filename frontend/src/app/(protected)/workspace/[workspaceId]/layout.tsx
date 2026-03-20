@@ -21,7 +21,7 @@ import { WorkspaceSidebar } from './workspace-sidebar';
 const DEFAULT_WORKSPACE_SIDEBAR_SIZE = 20;
 
 const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
-  const { aiChatOpen, parentMessageId, profileMemberId, onClose, onCloseAiChat, onCloseMessage } = usePanel();
+  const { aiChatOpen, copilotContextMessageId, parentMessageId, profileMemberId, onClose, onCloseAiChat, onCloseMessage } = usePanel();
   const channelId = useChannelId();
   const { workspaceSidebarOpen } = useWorkspaceSidebarToggle();
   const workspaceSidebarPanelRef = useRef<ImperativePanelHandle>(null);
@@ -100,7 +100,7 @@ const WorkspaceIdLayout = ({ children }: Readonly<PropsWithChildren>) => {
                         <AiChatPanel
                           onClose={onCloseAiChat}
                           channelId={channelId}
-                          threadRootId={parentMessageId ? (parentMessageId as Id<'messages'>) : undefined}
+                          threadRootId={copilotContextMessageId ? (copilotContextMessageId as Id<'messages'>) : undefined}
                         />
                       </ResizablePanel>
                     </>
