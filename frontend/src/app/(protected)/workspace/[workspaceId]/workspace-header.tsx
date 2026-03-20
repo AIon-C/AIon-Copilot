@@ -29,7 +29,7 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
   return (
     <>
       <PreferencesModal open={preferencesOpen} setOpen={setPreferencesOpen} initialValue={workspace.name} />
-      <InviteModal open={inviteOpen} setOpen={setInviteOpen} name={workspace.name} joinCode={workspace.joinCode} />
+      <InviteModal open={inviteOpen} setOpen={setInviteOpen} name={workspace.name} />
 
       <div className="flex h-[49px] items-center justify-between gap-0.5 px-4">
         <DropdownMenu>

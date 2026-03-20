@@ -35,8 +35,8 @@ export const Header = ({ channelName }: HeaderProps) => {
   const channelId = useChannelId();
   const workspaceId = useWorkspaceId();
   const [ConfirmDialog, confirm] = useConfirm(
-    'Delete this channel?',
-    'You are about to delete this channel and any of its associated messages. This action is irreversible.',
+    'Leave this channel?',
+    'You are about to leave this channel. You can join again later if you have permission.',
   );
 
   const [value, setValue] = useState(channelName);
@@ -44,7 +44,7 @@ export const Header = ({ channelName }: HeaderProps) => {
 
   const { data: member, isLoading: memberLoading } = useCurrentMember({ workspaceId });
   const { mutate: updateChannel, isPending: isUpdatingChannel } = useUpdateChannel();
-  const { mutate: removeChannel, isPending: isRemovingChannel } = useRemoveChannel();
+  const { mutate: leaveChannel, isPending: isLeavingChannel } = useRemoveChannel();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s+/g, '-').toLowerCase();
@@ -75,21 +75,21 @@ export const Header = ({ channelName }: HeaderProps) => {
     );
   };
 
-  const handleDelete = async () => {
+  const handleLeave = async () => {
     const ok = await confirm();
 
     if (!ok) return;
 
-    removeChannel(
+    leaveChannel(
       { id: channelId },
       {
         onSuccess: () => {
-          toast.success('Channel deleted');
+          toast.success('Left channel.');
 
           router.push(`/workspace/${workspaceId}`);
         },
         onError: () => {
-          toast.error('Failed to delete channel.');
+          toast.error('Failed to leave channel.');
         },
       },
     );
@@ -166,16 +166,14 @@ export const Header = ({ channelName }: HeaderProps) => {
               </DialogContent>
             </Dialog>
 
-            {member?.role === 'admin' && (
-              <button
-                onClick={handleDelete}
-                disabled={isRemovingChannel}
-                className="flex cursor-pointer items-center gap-x-2 rounded-lg border bg-white px-5 py-4 text-rose-600 hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50"
-              >
-                <Trash className="size-4" />
-                <p className="text-sm font-semibold">Delete channel</p>
-              </button>
-            )}
+            <button
+              onClick={handleLeave}
+              disabled={isLeavingChannel}
+              className="flex cursor-pointer items-center gap-x-2 rounded-lg border bg-white px-5 py-4 text-rose-600 hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50"
+            >
+              <Trash className="size-4" />
+              <p className="text-sm font-semibold">Leave channel</p>
+            </button>
           </div>
         </DialogContent>
       </Dialog>
