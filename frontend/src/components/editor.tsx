@@ -21,6 +21,7 @@ type EditorValue = {
 interface EditorProps {
   onSubmit: ({ image, body }: EditorValue) => void;
   onCancel?: () => void;
+  onFocus?: () => void;
   placeholder?: string;
   defaultValue?: Delta | Op[];
   disabled?: boolean;
@@ -31,6 +32,7 @@ interface EditorProps {
 const Editor = ({
   onCancel,
   onSubmit,
+  onFocus,
   placeholder = 'Write something...',
   defaultValue = [],
   disabled = false,
@@ -50,8 +52,11 @@ const Editor = ({
   const defaultValueRef = useRef(defaultValue);
   const disabledRef = useRef(disabled);
 
+  const onFocusRef = useRef(onFocus);
+
   useLayoutEffect(() => {
     submitRef.current = onSubmit;
+    onFocusRef.current = onFocus;
     placeholderRef.current = placeholder;
     defaultValueRef.current = defaultValue;
     disabledRef.current = disabled;
@@ -113,19 +118,54 @@ const Editor = ({
     quill.setContents(defaultValueRef.current);
     setText(quill.getText());
 
-    quill.on(Quill.events.TEXT_CHANGE, () => {
+    const clearPlaceholder = () => {
+      const editorEl = quill.root;
+      if (editorEl.dataset.placeholder) {
+        editorEl.dataset.placeholder = '';
+      }
+    };
+
+    const handleTextChange = (_delta: unknown, _oldDelta: unknown, source: string) => {
       setText(quill.getText());
-    });
+      if (source === 'user') {
+        clearPlaceholder();
+        onFocusRef.current?.();
+      }
+    };
+
+    quill.on(Quill.events.TEXT_CHANGE, handleTextChange);
+
+    const handleRootFocusIn = () => {
+      clearPlaceholder();
+      onFocusRef.current?.();
+    };
+
+    const handleCompositionStart = () => {
+      clearPlaceholder();
+      onFocusRef.current?.();
+    };
+
+    quill.root.addEventListener('focusin', handleRootFocusIn);
+    quill.root.addEventListener('compositionstart', handleCompositionStart);
 
     return () => {
       if (container) container.innerHTML = '';
 
-      quill.off(Quill.events.TEXT_CHANGE);
+      quill.off(Quill.events.TEXT_CHANGE, handleTextChange);
 
       if (quillRef) quillRef.current = null;
       if (innerRef) innerRef.current = null;
+
+      quill.root.removeEventListener('focusin', handleRootFocusIn);
+      quill.root.removeEventListener('compositionstart', handleCompositionStart);
     };
   }, [innerRef]);
+
+  useEffect(() => {
+    if (!quillRef.current) return;
+    const editorEl = quillRef.current.root;
+    editorEl.dataset.placeholder = placeholder || '';
+  }, [placeholder]);
 
   const toggleToolbar = () => {
     setIsToolbarVisible((current) => !current);
