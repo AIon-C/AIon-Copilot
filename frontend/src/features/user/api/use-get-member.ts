@@ -1,15 +1,43 @@
 import { useCallback } from 'react';
 
-import { getMemberById } from '@/mock/api';
+import { workspaceService } from '@/features/workspaces/api/workspace-service';
 import { useMockQuery } from '@/mock/hooks';
-import type { Id } from '@/mock/types';
+import type { Id, MockMember } from '@/mock/types';
 
 interface UseGetMemberProps {
   id: Id<'members'>;
+  workspaceId: Id<'workspaces'>;
 }
 
-export const useGetMember = ({ id }: UseGetMemberProps) => {
-  const queryFn = useCallback(() => getMemberById({ id }), [id]);
+export const useGetMember = ({ id, workspaceId }: UseGetMemberProps) => {
+  const queryFn = useCallback(async (): Promise<MockMember | null> => {
+    try {
+      const members = await workspaceService.listWorkspaceMembers({ workspaceId });
+      const member = members.find((item) => item.id === id);
+
+      if (!member) {
+        return null;
+      }
+
+      const shortId = member.userId.slice(0, 6) || 'user';
+
+      return {
+        _id: member.id as Id<'members'>,
+        _creationTime: 0,
+        role: member.role === 'admin' ? 'admin' : 'member',
+        workspaceId: member.workspaceId as Id<'workspaces'>,
+        userId: member.userId as Id<'users'>,
+        user: {
+          _id: member.userId as Id<'users'>,
+          name: `User ${shortId}`,
+          email: `${shortId}@unknown.local`,
+          image: undefined,
+        },
+      };
+    } catch {
+      return null;
+    }
+  }, [id, workspaceId]);
 
   return useMockQuery(queryFn);
 };

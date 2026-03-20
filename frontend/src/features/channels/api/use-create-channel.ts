@@ -1,6 +1,7 @@
-import { createChannel } from '@/mock/api';
 import type { Id } from '@/mock/types';
 import { useMockMutation } from '@/mock/use-mock-mutation';
+
+import { channelService } from './channel-service';
 
 type RequestType = {
   name: string;
@@ -10,5 +11,8 @@ type RequestType = {
 type ResponseType = Id<'channels'> | null;
 
 export const useCreateChannel = () => {
-  return useMockMutation<RequestType, ResponseType>((values) => createChannel(values));
+  return useMockMutation<RequestType, ResponseType>(async (values) => {
+    const channel = await channelService.createChannel(values);
+    return (channel?.id as Id<'channels'> | undefined) ?? null;
+  });
 };

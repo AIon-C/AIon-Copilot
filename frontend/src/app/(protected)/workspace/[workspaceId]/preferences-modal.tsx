@@ -18,6 +18,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { useCurrentUser } from '@/features/auth/api/use-current-user';
 import { useRemoveWorkspace } from '@/features/workspaces/api/use-remove-workspace';
 import { useUpdateWorkspace } from '@/features/workspaces/api/use-update-workspace';
 import { useConfirm } from '@/hooks/use-confirm';
@@ -32,32 +33,39 @@ interface PreferencesModalProps {
 export const PreferencesModal = ({ open, setOpen, initialValue }: PreferencesModalProps) => {
   const router = useRouter();
   const workspaceId = useWorkspaceId();
-  const [ConfirmDialog, confirmDeleteWorkspace] = useConfirm('Are you sure?', "This action can't be undone.");
+  const [ConfirmDialog, confirmLeaveWorkspace] = useConfirm('Leave this workspace?', 'You will lose access until you are invited again.');
 
   const [value, setValue] = useState(initialValue);
   const [editOpen, setEditOpen] = useState(false);
 
+  const { data: currentUser } = useCurrentUser();
   const { mutate: updateWorkspace, isPending: isUpdatingWorkspace } = useUpdateWorkspace();
   const { mutate: removeWorkspace, isPending: isRemovingWorkspace } = useRemoveWorkspace();
 
   const handleRemove = async () => {
-    const ok = await confirmDeleteWorkspace();
+    if (!currentUser?.id) {
+      toast.error('Failed to resolve current user.');
+      return;
+    }
+
+    const ok = await confirmLeaveWorkspace();
 
     if (!ok) return;
 
     removeWorkspace(
       {
-        id: workspaceId,
+        workspaceId,
+        userId: currentUser.id,
       },
       {
         onSuccess: () => {
-          toast.success('Workspace removed.');
+          toast.success('Left workspace.');
 
           setOpen(false);
           router.replace('/');
         },
         onError: () => {
-          toast.error('Failed to remove workspace.');
+          toast.error('Failed to leave workspace.');
         },
       },
     );
@@ -154,7 +162,7 @@ export const PreferencesModal = ({ open, setOpen, initialValue }: PreferencesMod
               className="flex cursor-pointer items-center gap-x-2 rounded-lg border bg-white px-5 py-4 text-rose-600 hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50"
             >
               <Trash className="size-4" />
-              <p className="text-sm font-semibold">Delete workspace</p>
+              <p className="text-sm font-semibold">Leave workspace</p>
             </button>
           </div>
         </DialogContent>
