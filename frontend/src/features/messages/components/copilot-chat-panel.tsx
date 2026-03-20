@@ -10,6 +10,7 @@ import { copilotApiConfig } from '@/config';
 import { createCopilotThread, getCopilotUserErrorMessage } from '@/features/messages/api/copilot-client';
 import { getTextFromQuillBody } from '@/features/messages/api/copilot-contract';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
+import { usePanel } from '@/hooks/use-panel';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { cn } from '@/lib/utils';
 import type { Id } from '@/mock/types';
@@ -53,6 +54,7 @@ const INITIAL_MESSAGES: ChatMessage[] = [
 export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelProps) => {
   const workspaceId = useWorkspaceId();
   const hasThreadContext = !!threadRootId;
+  const { copilotContextMessageId, onSetCopilotContextMessage } = usePanel();
 
   const [threadId, setThreadId] = useState<string | null>(null);
   const [isThinking, setIsThinking] = useState(false);
@@ -64,6 +66,24 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
   const contextType = effectiveThreadRootId ? 'thread' : channelId ? 'main' : 'free';
 
   const { mutate: createMessage } = useCreateMessage();
+
+  const handleSelectMainContext = () => {
+    setContextMode('main');
+    onSetCopilotContextMessage(null);
+  };
+
+  const handleSelectThreadContext = () => {
+    if (!threadRootId) return;
+
+    if (contextMode === 'thread' && copilotContextMessageId === threadRootId) {
+      setContextMode('main');
+      onSetCopilotContextMessage(null);
+      return;
+    }
+
+    setContextMode('thread');
+    onSetCopilotContextMessage(threadRootId);
+  };
 
   useEffect(() => {
     setContextMode(hasThreadContext ? 'thread' : 'main');
@@ -163,7 +183,7 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
             type="button"
             size="sm"
             variant={contextMode === 'main' ? 'default' : 'outline'}
-            onClick={() => setContextMode('main')}
+            onClick={handleSelectMainContext}
             disabled={isThinking}
           >
             Main
@@ -172,7 +192,7 @@ export const AiChatPanel = ({ onClose, channelId, threadRootId }: AiChatPanelPro
             type="button"
             size="sm"
             variant={contextMode === 'thread' ? 'default' : 'outline'}
-            onClick={() => setContextMode('thread')}
+            onClick={handleSelectThreadContext}
             disabled={isThinking}
           >
             Thread
