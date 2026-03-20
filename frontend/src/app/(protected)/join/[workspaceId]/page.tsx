@@ -59,7 +59,7 @@ const JoinWorkspaceIdPage = () => {
 
   return (
     <div className="flex h-full flex-col items-center justify-center gap-y-8 rounded-lg bg-white p-8 shadow-md">
-      <Image src="/logo.svg" alt="Logo" width={60} height={60} />
+      <Image src="/logo.png" alt="AIon Copilot logo" width={60} height={60} />
 
       <div className="flex max-w-md flex-col items-center justify-center gap-y-4">
         <div className="flex flex-col items-center justify-center gap-y-2">

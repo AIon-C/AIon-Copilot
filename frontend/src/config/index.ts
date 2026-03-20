@@ -1,10 +1,18 @@
 import type { Metadata } from 'next';
 
 export const siteConfig: Metadata = {
-  title: 'Slack Clone',
+  title: 'AIon Copilot',
   description:
-    'Collaborate with your team using real-time messaging, rich text editing, and emoji support in this Slack-like app built with Next.js and Shadcn UI.',
+    'AIon Copilot is an AI-powered assistant designed to help developers build a Slack clone application. It provides explanations, and guidance throughout the development process, making it easier for developers to create a feature-rich and user-friendly Slack clone.',
+  icons: {
+    icon: '/logo.png',
+  },
   keywords: [
+    'AIon Copilot',
+    'AIon',
+    'copilot',
+    'AI assistant',
+    'Slack clone',
     'reactjs',
     'nextjs',
     'next-auth',
