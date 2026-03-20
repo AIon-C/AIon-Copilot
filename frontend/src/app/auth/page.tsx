@@ -4,7 +4,7 @@ import { GuestGuard } from '@/features/auth/components/guest-guard';
 const AuthPage = () => {
   return (
     <GuestGuard>
-      <AuthScreen />;
+      <AuthScreen />
     </GuestGuard>
   );
 };

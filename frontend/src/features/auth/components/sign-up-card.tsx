@@ -79,10 +79,10 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
   const displayError = localError ?? error;
 
   return (
-    <Card className="size-full p-8">
+    <Card className="size-full border-emerald-400/30 bg-slate-950/85 p-8 text-slate-100 backdrop-blur-xl">
       <CardHeader className="px-0 pt-0">
-        <CardTitle>Sign up to continue</CardTitle>
-        <CardDescription>Use your email or another service to continue.</CardDescription>
+        <CardTitle className="text-2xl text-white">Sign up to continue</CardTitle>
+        <CardDescription className="text-slate-300">Use your email or another service to continue.</CardDescription>
       </CardHeader>
 
       {!!displayError && (
@@ -124,7 +124,7 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
             required
           />
 
-          <Button type="submit" className="w-full" size="lg" disabled={loading}>
+          <Button type="submit" className="w-full bg-emerald-400 text-slate-900 hover:bg-emerald-300" size="lg" disabled={loading}>
             Continue
           </Button>
         </form>
@@ -138,7 +138,7 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
             onClick={() => handleOAuthSignUp('google')}
             variant="outline"
             size="lg"
-            className="relative w-full"
+            className="relative w-full border-slate-700 bg-slate-900/70 hover:bg-slate-800"
           >
             <FcGoogle className="absolute left-2.5 top-3 size-5" />
             Continue with Google
@@ -150,7 +150,7 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
             onClick={() => handleOAuthSignUp('github')}
             variant="outline"
             size="lg"
-            className="relative w-full"
+            className="relative w-full border-slate-700 bg-slate-900/70 hover:bg-slate-800"
           >
             <FaGithub className="absolute left-2.5 top-3 size-5" />
             Continue with GitHub
@@ -163,7 +163,7 @@ export const SignUpCard = ({ onChangeFlowAction }: SignUpCardProps) => {
             type="button"
             disabled={loading}
             onClick={() => onChangeFlowAction('signIn')}
-            className="cursor-pointer font-medium text-sky-700 hover:underline disabled:pointer-events-none disabled:opacity-50"
+            className="cursor-pointer font-medium text-emerald-300 hover:underline disabled:pointer-events-none disabled:opacity-50"
           >
             Sign in
           </button>

@@ -39,7 +39,7 @@ const HomePage = () => {
   }, [initialized, isAuthenticated, isLoading, workspaceId, open, setOpen, router]);
 
   return (
-    <div className="flex h-full flex-1 flex-col items-center justify-center gap-2 bg-[#5E2C5F]/95 text-white">
+    <div className="flex h-full flex-1 flex-col items-center justify-center gap-2 bg-[#030712]/95 text-cyan-100">
       <Loader className="size-5 animate-spin" />
     </div>
   );

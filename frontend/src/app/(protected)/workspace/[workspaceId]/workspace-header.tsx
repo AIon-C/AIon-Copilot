@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { ShinyText } from '@/components/ui/shiny-text';
 import { Doc } from '@/mock/types';
 
 import { InviteModal } from './invite-modal';
@@ -34,15 +35,21 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
       <div className="flex h-[49px] items-center justify-between gap-0.5 px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="transparent" className="w-auto overflow-hidden p-1.5 text-lg font-semibold" size="sm">
-              <span className="truncate">{workspace.name}</span>
+            <Button
+              variant="transparent"
+              className="w-auto overflow-hidden p-1.5 text-lg font-semibold text-slate-100 hover:text-cyan-200"
+              size="sm"
+            >
+              <ShinyText className="max-w-[180px] truncate" color="#e2e8f0" shineColor="#ffffff" speed={2.4} spread={110}>
+                {workspace.name}
+              </ShinyText>
               <ChevronDown className="ml-1 size-4 shrink-0" />
             </Button>
           </DropdownMenuTrigger>
 
           <DropdownMenuContent side="bottom" align="start" className="w-64">
             <DropdownMenuItem className="cursor-pointer capitalize">
-              <div className="relative mr-2 flex size-9 items-center justify-center overflow-hidden rounded-md bg-[#616061] text-xl font-semibold text-white">
+              <div className="relative mr-2 flex size-9 items-center justify-center overflow-hidden rounded-md border border-cyan-400/30 bg-slate-900 text-xl font-semibold text-cyan-100">
                 {workspace.name.charAt(0).toUpperCase()}
               </div>
 

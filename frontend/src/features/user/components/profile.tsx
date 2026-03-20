@@ -175,7 +175,7 @@ export const Profile = ({ memberId, onClose }: ProfileProps) => {
             <div className="flex flex-col">
               <p className="text-[13px] font-semibold text-muted-foreground">Email Address</p>
 
-              <Link href={`mailto:${member.user.email}`} className="text-sm text-[#1264a3] hover:underline">
+              <Link href={`mailto:${member.user.email}`} className="text-sm text-cyan-300 hover:underline">
                 {member.user.email}
               </Link>
             </div>

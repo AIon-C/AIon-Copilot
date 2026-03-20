@@ -115,7 +115,7 @@ export const PreferencesModal = ({ open, setOpen, initialValue }: PreferencesMod
                   <div className="flex w-full items-center justify-between">
                     <p className="text-sm font-semibold">Workspace name</p>
 
-                    <p className="cursor-pointer text-sm font-semibold text-[#1264A3] hover:underline">Edit</p>
+                    <p className="cursor-pointer text-sm font-semibold text-cyan-300 hover:underline">Edit</p>
                   </div>
 
                   <p className="text-sm">{value}</p>

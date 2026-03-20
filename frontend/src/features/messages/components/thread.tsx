@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 
 import { Message } from '@/components/message';
 import { Button } from '@/components/ui/button';
+import { ShinyText } from '@/components/ui/shiny-text';
 import { fileService } from '@/features/file/api/file-service';
 import { useGenerateUploadUrl } from '@/features/file/api/use-generate-upload-url';
 import { useCreateMessage } from '@/features/messages/api/use-create-message';
@@ -187,9 +188,11 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
   if (isMessageLoading || status === 'LoadingFirstPage') {
     return (
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col bg-[#191919]">
         <div className="flex h-[49px] items-center justify-between border-b px-4">
-          <p className="text-lg font-bold">Thread</p>
+          <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+            Thread
+          </ShinyText>
 
           <Button onClick={onClose} size="iconSm" variant="ghost">
             <XIcon className="size-5 stroke-[1.5]" />
@@ -205,9 +208,11 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
   if (!message) {
     return (
-      <div className="flex h-full flex-col">
+      <div className="flex h-full flex-col bg-[#191919]">
         <div className="flex h-[49px] items-center justify-between border-b px-4">
-          <p className="text-lg font-bold">Thread</p>
+          <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+            Thread
+          </ShinyText>
 
           <Button onClick={onClose} size="iconSm" variant="ghost">
             <XIcon className="size-5 stroke-[1.5]" />
@@ -223,9 +228,11 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
   }
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-[#191919]">
       <div className="flex h-[49px] items-center justify-between border-b px-4">
-        <p className="text-lg font-bold">Thread</p>
+        <ShinyText className="text-lg font-bold" color="#cbd5e1" shineColor="#ffffff" speed={2.2} spread={115}>
+          Thread
+        </ShinyText>
 
         <Button onClick={onClose} size="iconSm" variant="ghost">
           <XIcon className="size-5 stroke-[1.5]" />
@@ -254,7 +261,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
             <div className="relative my-2 text-center">
               <hr className="absolute left-0 right-0 top-1/2 border-t border-gray-300" />
 
-              <span className="relative inline-block rounded-full border border-gray-300 bg-white px-4 py-1 text-xs shadow-sm">
+              <span className="relative inline-block rounded-full border border-slate-600 bg-slate-900/90 px-4 py-1 text-xs shadow-sm">
                 {formatDateLabel(dateKey)}
               </span>
             </div>
@@ -315,7 +322,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
           <div className="relative my-2 text-center">
             <hr className="absolute left-0 right-0 top-1/2 border-t border-gray-300" />
 
-            <span className="relative inline-block rounded-full border border-gray-300 bg-white px-4 py-1 text-xs shadow-sm">
+            <span className="relative inline-block rounded-full border border-slate-600 bg-slate-900/90 px-4 py-1 text-xs shadow-sm">
               <Loader className="size-4 animate-spin" />
             </span>
           </div>
