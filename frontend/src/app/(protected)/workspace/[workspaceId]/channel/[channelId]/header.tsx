@@ -8,7 +8,6 @@ import { FaChevronDown } from 'react-icons/fa';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { ShinyText } from '@/components/ui/shiny-text';
 import {
   Dialog,
   DialogClose,
@@ -20,6 +19,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
+import { ShinyText } from '@/components/ui/shiny-text';
 import { useRemoveChannel } from '@/features/channels/api/use-remove-channel';
 import { useUpdateChannel } from '@/features/channels/api/use-update-channel';
 import { useCurrentMember } from '@/features/user/api/use-current-member';

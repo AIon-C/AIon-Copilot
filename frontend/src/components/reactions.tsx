@@ -38,9 +38,7 @@ export const Reactions = ({ data, onChange }: ReactionsProps) => {
             )}
           >
             {reaction.value}{' '}
-            <span
-              className={cn('text-xs font-semibold text-slate-400', reaction.memberIds.includes(currentMemberId) && 'text-slate-200')}
-            >
+            <span className={cn('text-xs font-semibold text-slate-400', reaction.memberIds.includes(currentMemberId) && 'text-slate-200')}>
               {reaction.count}
             </span>
           </button>

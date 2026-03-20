@@ -35,7 +35,11 @@ export const WorkspaceHeader = ({ workspace, isAdmin }: WorkspaceHeaderProps) =>
       <div className="flex h-[49px] items-center justify-between gap-0.5 px-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="transparent" className="w-auto overflow-hidden p-1.5 text-lg font-semibold text-slate-100 hover:text-cyan-200" size="sm">
+            <Button
+              variant="transparent"
+              className="w-auto overflow-hidden p-1.5 text-lg font-semibold text-slate-100 hover:text-cyan-200"
+              size="sm"
+            >
               <ShinyText className="max-w-[180px] truncate" color="#e2e8f0" shineColor="#ffffff" speed={2.4} spread={110}>
                 {workspace.name}
               </ShinyText>
