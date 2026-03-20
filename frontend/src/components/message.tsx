@@ -86,7 +86,7 @@ export const Message = ({
   threadTimestamp,
 }: MessageProps) => {
   const [ConfirmDialog, confirm] = useConfirm('Delete message', 'Are you sure you want to delete this message? This cannot be undone.');
-  const { aiChatOpen, copilotContextMessageId, parentMessageId, onOpenAiChat, onSetCopilotContextMessage, onOpenMessage, onOpenProfile, onCloseMessage } =
+  const { copilotContextMessageId, parentMessageId, onOpenAiChat, onSetCopilotContextMessage, onOpenMessage, onOpenProfile, onCloseAiChat, onCloseMessage } =
     usePanel();
 
   const { mutate: updateMessage, isPending: isUpdatingMessage } = useUpdateMessage();
@@ -95,7 +95,8 @@ export const Message = ({
 
   const avatarFallback = authorName.charAt(0).toUpperCase();
   const isPending = isUpdatingMessage || isRemovingMessage || isTogglingReaction;
-  const isCopilotContextActive = aiChatOpen && copilotContextMessageId === id;
+  const contextMessageId = hideThreadButton && parentMessageId ? (parentMessageId as Id<'messages'>) : id;
+  const isCopilotContextActive = copilotContextMessageId === contextMessageId;
 
   const handleUpdate = ({ body }: { body: string }) => {
     updateMessage(
@@ -145,7 +146,13 @@ export const Message = ({
   };
 
   const handleCopilotContext = () => {
-    const contextMessageId = hideThreadButton && parentMessageId ? (parentMessageId as Id<'messages'>) : id;
+    if (copilotContextMessageId === contextMessageId) {
+      onSetCopilotContextMessage(null);
+      onCloseAiChat();
+      toast.success('Copilotコンテキストを解除しました。');
+      return;
+    }
+
     onSetCopilotContextMessage(contextMessageId);
     onOpenAiChat();
     toast.success('Copilotコンテキストを設定しました。');
