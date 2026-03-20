@@ -113,8 +113,8 @@ export const Header = ({ channelName }: HeaderProps) => {
           </Button>
         </DialogTrigger>
 
-        <DialogContent className="overflow-hidden bg-gray-50 p-0">
-          <DialogHeader className="border-b bg-white p-4">
+        <DialogContent className="overflow-hidden border-slate-700 bg-slate-900 p-0 text-slate-100">
+          <DialogHeader className="border-b border-slate-700 bg-slate-900 p-4">
             <DialogTitle># {channelName}</DialogTitle>
 
             <VisuallyHidden.Root>
@@ -127,7 +127,7 @@ export const Header = ({ channelName }: HeaderProps) => {
               <DialogTrigger asChild>
                 <button
                   disabled={isUpdatingChannel}
-                  className="flex w-full cursor-pointer flex-col rounded-lg border bg-white px-5 py-4 hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50"
+                  className="flex w-full cursor-pointer flex-col rounded-lg border border-slate-700 bg-slate-800 px-5 py-4 text-slate-100 hover:bg-slate-700 disabled:pointer-events-none disabled:opacity-50"
                 >
                   <div className="flex w-full items-center justify-between">
                     <p className="text-sm font-semibold">Channel name</p>
@@ -175,7 +175,7 @@ export const Header = ({ channelName }: HeaderProps) => {
             <button
               onClick={handleLeave}
               disabled={isLeavingChannel}
-              className="flex cursor-pointer items-center gap-x-2 rounded-lg border bg-white px-5 py-4 text-rose-600 hover:bg-gray-50 disabled:pointer-events-none disabled:opacity-50"
+              className="flex cursor-pointer items-center gap-x-2 rounded-lg border border-slate-700 bg-slate-800 px-5 py-4 text-rose-400 hover:bg-slate-700 disabled:pointer-events-none disabled:opacity-50"
             >
               <Trash className="size-4" />
               <p className="text-sm font-semibold">Leave channel</p>
