@@ -42,7 +42,7 @@ patches:
       data:
         NODE_ENV: "production"
         REDIS_URL: "redis://redis:6379"
-        GCP_PROJECT_ID: "aion-copilot-prod"
+        GCP_PROJECT_ID: "aion-copilot"
         GCP_LOCATION: "asia-northeast1"
   - target:
       kind: Secret
@@ -56,3 +56,14 @@ patches:
         DATABASE_URL: "postgres://chatapp:uy0RRp4YPWfR829y%2FohCHYIV1tytrTOS@10.192.0.3:5432/chatapp"
         JWT_SECRET: "kWgVSLL15WnDy1BvADBUxf84XD/umZ2vPfOeIOsClu8="
         GOOGLE_GENERATIVE_AI_API_KEY: "AIzaSyDCfPYe_qwryhfxN9nWNeYm94eab37CPAA"
+  - target:
+      kind: Service
+      name: ai-agent
+    patch: |
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: ai-agent
+        annotations:
+          cloud.google.com/neg: '{"ingress": true}'
+          cloud.google.com/backend-config: '{"default": "ai-agent-backend-config"}'
