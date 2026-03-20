@@ -1,10 +1,36 @@
-import { useCallback } from 'react';
+import { useEffect } from 'react';
 
-import { getCurrentUser } from '@/mock/api';
-import { useMockQuery } from '@/mock/hooks';
+import { authStore } from '@/features/auth/model/auth-store';
+import { tokenStore } from '@/lib/auth/token-store';
+
+import { useMe } from '@/features/user/hooks/use-me';
 
 export const useCurrentUser = () => {
-  const queryFn = useCallback(() => getCurrentUser(), []);
+  const { user, initialized, fetchMe } = useMe();
 
-  return useMockQuery(queryFn);
+  useEffect(() => {
+    if (initialized) {
+      return;
+    }
+
+    if (!tokenStore.hasAccessToken()) {
+      authStore.markInitialized();
+      return;
+    }
+
+    const persistedTokens = tokenStore.getTokens();
+    authStore.setState({
+      tokens: persistedTokens,
+      isAuthenticated: Boolean(persistedTokens.accessToken),
+    });
+
+    void fetchMe().catch(() => {
+      // error state is managed by useMe/authStore
+    });
+  }, [fetchMe, initialized]);
+
+  return {
+    data: user,
+    isLoading: !initialized,
+  };
 };
