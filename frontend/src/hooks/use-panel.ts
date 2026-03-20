@@ -33,6 +33,7 @@ export const usePanel = () => {
 
   const onCloseAiChat = () => {
     setAiChatOpen(false);
+    setCopilotContextMessageId(null);
   };
 
   const onCloseMessage = () => {
