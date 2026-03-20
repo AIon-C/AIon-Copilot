@@ -60,6 +60,9 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
 
   const innerRef = useRef<Quill | null>(null);
   const bottomAnchorRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  const prevResultsLengthRef = useRef(0);
+  const prevMessageIdRef = useRef<string | undefined>(undefined);
 
   const { data: currentMember } = useCurrentMember({ workspaceId });
   const { data: message, isLoading: isMessageLoading } = useGetMessage({ id: messageId });
@@ -155,6 +158,24 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
       return;
     }
 
+    const currentLength = results?.length ?? 0;
+    const prevLength = prevResultsLengthRef.current;
+    const prevMessageId = prevMessageIdRef.current;
+    const currentMessageId = message?._id;
+
+    prevResultsLengthRef.current = currentLength;
+    prevMessageIdRef.current = currentMessageId;
+
+    const threadSwitched = currentMessageId !== prevMessageId;
+
+    if (!threadSwitched) {
+      if (currentLength <= prevLength) return;
+
+      const el = scrollContainerRef.current;
+      const nearBottom = !el || el.scrollHeight - el.scrollTop - el.clientHeight < 100;
+      if (!nearBottom) return;
+    }
+
     const rafId = window.requestAnimationFrame(() => {
       bottomAnchorRef.current?.scrollIntoView({ block: 'end' });
     });
@@ -211,7 +232,7 @@ export const Thread = ({ messageId, onClose }: ThreadProps) => {
         </Button>
       </div>
 
-      <div className="messages-scrollbar flex flex-1 flex-col justify-end overflow-y-auto pb-4">
+      <div ref={scrollContainerRef} className="messages-scrollbar flex flex-1 flex-col justify-end overflow-y-auto pb-4">
         <Message
           hideThreadButton
           memberId={message.memberId}
