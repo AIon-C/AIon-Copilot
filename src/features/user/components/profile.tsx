@@ -13,10 +13,10 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Separator } from '@/components/ui/separator';
-import { useCurrentMember } from '@/features/members/api/use-current-member';
-import { useGetMember } from '@/features/members/api/use-get-member';
-import { useRemoveMember } from '@/features/members/api/use-remove-member';
-import { useUpdateMember } from '@/features/members/api/use-update-member';
+import { useCurrentMember } from '@/features/user/api/use-current-member';
+import { useGetMember } from '@/features/user/api/use-get-member';
+import { useRemoveMember } from '@/features/user/api/use-remove-member';
+import { useUpdateMember } from '@/features/user/api/use-update-member';
 import { useConfirm } from '@/hooks/use-confirm';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import type { Id } from '@/mock/types';

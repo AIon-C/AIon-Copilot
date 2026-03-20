@@ -2,8 +2,8 @@ import { differenceInMinutes, format, isToday, isYesterday } from 'date-fns';
 import { Loader } from 'lucide-react';
 import { useState } from 'react';
 
-import { useCurrentMember } from '@/features/members/api/use-current-member';
 import type { GetMessagesReturnType } from '@/features/messages/api/use-get-messages';
+import { useCurrentMember } from '@/features/user/api/use-current-member';
 import { useWorkspaceId } from '@/hooks/use-workspace-id';
 import { Id } from '@/mock/types';
 
