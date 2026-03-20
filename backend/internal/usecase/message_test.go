@@ -86,6 +86,10 @@ func (m *mockAttachmentRepo) ListByMessage(_ context.Context, _ string) ([]*doma
 	return nil, nil
 }
 
+func (m *mockAttachmentRepo) ListByMessages(_ context.Context, _ []string) ([]*domain.MessageAttachment, error) {
+	return nil, nil
+}
+
 // --- ch member mock for message tests ---
 
 type mockMsgChMemberRepo struct {

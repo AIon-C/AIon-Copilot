@@ -73,6 +73,17 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 	}
 
 	if len(fileIDs) > 0 {
+		// Validate that all referenced files exist before creating attachments
+		files, err := uc.fileRepo.FindByIDs(ctx, fileIDs)
+		if err != nil {
+			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
+			return nil, err
+		}
+		if len(files) != len(fileIDs) {
+			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
+			return nil, &domain.ValidationError{Field: "file_ids", Message: "one or more attachments not found"}
+		}
+
 		attachments := make([]*domain.MessageAttachment, len(fileIDs))
 		for i, fid := range fileIDs {
 			attachments[i] = &domain.MessageAttachment{
@@ -82,15 +93,22 @@ func (uc *messageUsecase) SendMessage(ctx context.Context, userID, channelID, co
 			}
 		}
 		if err := uc.attachmentRepo.CreateBatch(ctx, attachments); err != nil {
-			// Compensate: remove the orphaned message
 			_ = uc.msgRepo.SoftDelete(ctx, msg.ID)
 			return nil, err
 		}
-		// Resolve file metadata for the response
-		files, err := uc.fileRepo.FindByIDs(ctx, fileIDs)
-		if err == nil {
-			msg.Attachments = files
+
+		// Preserve client-specified order
+		fileMap := make(map[string]*domain.File, len(files))
+		for _, f := range files {
+			fileMap[f.ID] = f
 		}
+		orderedFiles := make([]*domain.File, 0, len(fileIDs))
+		for _, fid := range fileIDs {
+			if f, ok := fileMap[fid]; ok {
+				orderedFiles = append(orderedFiles, f)
+			}
+		}
+		msg.Attachments = orderedFiles
 	}
 
 	// Broadcast real-time event (fire-and-forget)
@@ -156,6 +174,8 @@ func (uc *messageUsecase) UpdateMessage(ctx context.Context, userID, msgID, cont
 		return nil, err
 	}
 
+	uc.resolveAttachments(ctx, []*domain.Message{msg})
+
 	if uc.eventBus != nil {
 		_ = uc.eventBus.Publish(ctx, msg.ChannelID, &domain.Event{
 			Type:      domain.EventMessageUpdated,
@@ -178,6 +198,8 @@ func (uc *messageUsecase) DeleteMessage(ctx context.Context, userID, msgID strin
 	if msg.UserID != userID {
 		return nil, domain.ErrForbidden
 	}
+
+	uc.resolveAttachments(ctx, []*domain.Message{msg})
 
 	if err := uc.msgRepo.SoftDelete(ctx, msgID); err != nil {
 		return nil, err
@@ -213,37 +235,31 @@ func (uc *messageUsecase) GetThread(ctx context.Context, rootID string) (*domain
 	return root, replies, nil
 }
 
-// resolveAttachments fetches file metadata for message attachments in batch.
+// resolveAttachments fetches file metadata for message attachments in batch (2 queries total).
 func (uc *messageUsecase) resolveAttachments(ctx context.Context, msgs []*domain.Message) {
 	if len(msgs) == 0 {
 		return
 	}
 
-	// Collect all message IDs
 	msgIDs := make([]string, len(msgs))
 	for i, m := range msgs {
 		msgIDs[i] = m.ID
 	}
 
-	// Fetch attachments for all messages at once
-	allFileIDs := make([]string, 0)
-	msgAttachments := make(map[string][]string) // messageID -> []fileID
-	for _, msgID := range msgIDs {
-		attachments, err := uc.attachmentRepo.ListByMessage(ctx, msgID)
-		if err != nil {
-			continue
-		}
-		for _, a := range attachments {
-			allFileIDs = append(allFileIDs, a.FileID)
-			msgAttachments[a.MessageID] = append(msgAttachments[a.MessageID], a.FileID)
-		}
-	}
-
-	if len(allFileIDs) == 0 {
+	// Single query for all attachments across all messages
+	attachments, err := uc.attachmentRepo.ListByMessages(ctx, msgIDs)
+	if err != nil || len(attachments) == 0 {
 		return
 	}
 
-	// Fetch all files in one query
+	allFileIDs := make([]string, 0, len(attachments))
+	msgAttachments := make(map[string][]string, len(msgs))
+	for _, a := range attachments {
+		allFileIDs = append(allFileIDs, a.FileID)
+		msgAttachments[a.MessageID] = append(msgAttachments[a.MessageID], a.FileID)
+	}
+
+	// Single query for all files
 	files, err := uc.fileRepo.FindByIDs(ctx, allFileIDs)
 	if err != nil {
 		return
@@ -254,17 +270,18 @@ func (uc *messageUsecase) resolveAttachments(ctx context.Context, msgs []*domain
 		fileMap[f.ID] = f
 	}
 
-	// Assign files to messages
 	for _, msg := range msgs {
 		fileIDs := msgAttachments[msg.ID]
 		if len(fileIDs) == 0 {
 			continue
 		}
+		resolved := make([]*domain.File, 0, len(fileIDs))
 		for _, fid := range fileIDs {
 			if f, ok := fileMap[fid]; ok {
-				msg.Attachments = append(msg.Attachments, f)
+				resolved = append(resolved, f)
 			}
 		}
+		msg.Attachments = resolved
 	}
 }
 

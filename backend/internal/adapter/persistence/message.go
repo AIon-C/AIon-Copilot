@@ -151,6 +151,21 @@ func (r *messageAttachmentRepository) ListByMessage(ctx context.Context, message
 	return result, nil
 }
 
+func (r *messageAttachmentRepository) ListByMessages(ctx context.Context, messageIDs []string) ([]*domain.MessageAttachment, error) {
+	if len(messageIDs) == 0 {
+		return nil, nil
+	}
+	var models []model.MessageAttachment
+	if err := r.db.WithContext(ctx).Where("message_id IN ?", messageIDs).Find(&models).Error; err != nil {
+		return nil, err
+	}
+	result := make([]*domain.MessageAttachment, len(models))
+	for i := range models {
+		result[i] = messageAttachmentModelToDomain(&models[i])
+	}
+	return result, nil
+}
+
 // --- ReactionRepository ---
 
 type reactionRepository struct{ db *gorm.DB }
